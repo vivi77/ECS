@@ -34,11 +34,10 @@ endforeach(OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES)
 
 function(generateLib NAME)
   # Can set SRCS, HDRS, DIRS, LIBS
-  include(CMakeLists_${NAME}.txt OPTIONAL)
+  include(${NAME}/CMakeLists_${NAME}.txt OPTIONAL)
 
-  file(GLOB TMP_SRCS ${NAME}*.cpp)
-  set(SRCS ${SRCS} ${TMP_SRCS})
-  set(HDRS ${HDRS} ${NAME}.hh S_lib.hh)
+  file(GLOB TMP_SRCS ${NAME}/*.cpp)
+  set(HDRS ${HDRS} ${NAME}/*.hh ${NAME}/*.hpp S_lib.hh)
   set(DIRS ${DIRS}
     ${CMAKE_BINARY_DIR}/S
     ${CMAKE_BINARY_DIR}/E
@@ -57,7 +56,7 @@ function(generateLib NAME)
     DESTINATION ${INCLUDE_INSTALL_DIR})
 endfunction(generateLib)
 
-set(SYS_LIST CLISystem)
+subdirlist(SYS_LIST ${CMAKE_CURRENT_SOURCE_DIR})
 foreach(S ${SYS_LIST})
-  generateLib(${S})
+  add_subdirectory(${S})
 endforeach()

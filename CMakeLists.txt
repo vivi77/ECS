@@ -1,6 +1,18 @@
 cmake_minimum_required(VERSION 3.0)
 project(dll_test)
 
+#https://stackoverflow.com/questions/7787823/cmake-how-to-get-the-name-of-all-subdirectories-of-a-directory
+macro(SUBDIRLIST result curdir)
+  file(GLOB children RELATIVE ${curdir} ${curdir}/*)
+  set(dirlist "")
+  foreach(child ${children})
+    if(IS_DIRECTORY ${curdir}/${child})
+      list(APPEND dirlist ${child})
+    endif()
+  endforeach()
+  set(${result} ${dirlist})
+endmacro()
+
 set(OUTPUT_LOCATION ${CMAKE_SOURCE_DIR}/bin/${CMAKE_SYSTEM_NAME})
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${OUTPUT_LOCATION})
