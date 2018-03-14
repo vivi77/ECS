@@ -1,13 +1,8 @@
 #include "CoreEvent.hh"
 #include "E_lib.hh"
 #include "EIDGenerator.hh"
-
-static void assignID()
-{
-  CoreEvent::assignID(EIDGenerator::getSingleton().generateID());
-}
-
-template struct EntryPointWrapper<CoreEvent>;
+#include "EManager.hh"
+#include <iostream>
 
 extern "C"
 {
@@ -21,3 +16,11 @@ extern "C"
     delete ptr;
   }
 }
+
+static void setup()
+{
+  CoreEvent::assignID(EIDGenerator::getSingleton().generateID());
+  EManager::registerEventDtor(CoreEvent::getEventID(), (EManager::Dtor)&destroy);
+}
+
+template struct EntryPointWrapper<CoreEvent>;

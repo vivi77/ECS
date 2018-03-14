@@ -4,13 +4,7 @@
 #include <algorithm>
 
 std::vector<EManager::IEListenerPtr> EManager::_listeners;
-
-void EManager::fire(const IEListener::EPtr& e)
-{
-  lel::Log{} << "Fire event: ID: " << e->getID() << "\n";
-  for (auto& it : _listeners)
-    it->update(e);
-}
+std::unordered_map<EManager::EventID, EManager::Dtor> EManager::_registeredEvents;
 
 void EManager::registerListener(const IEListenerPtr& listener)
 {
@@ -54,6 +48,13 @@ void EManager::deregisterListenerSystem(const EManager::SPtr& s)
   auto it = std::find(beginIt, endIt, listener);
   if (it != endIt)
     _listeners.erase(it);
+}
+
+void EManager::registerEventDtor(const EventID id, Dtor dtor)
+{
+  auto it = _registeredEvents.find(id);
+  if (it == std::end(_registeredEvents))
+    _registeredEvents.insert(std::make_pair(id, dtor));
 }
 
 EManager::IEListenerPtr EManager::castSystemToListener(const EManager::SPtr& s)

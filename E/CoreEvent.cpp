@@ -1,12 +1,5 @@
 #include "CoreEvent.hh"
 
-CoreEvent::CoreEvent()
-  : _type{Type::UNKNOWN}
-  , _data{}
-{
-  // Do nothing
-}
-
 CoreEvent::CoreEvent(Type t)
   : _type{t}
   , _data{}

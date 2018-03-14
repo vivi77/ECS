@@ -16,8 +16,7 @@ public:
   };
 
 public:
-  CoreEvent();
-  CoreEvent(Type t);
+  CoreEvent(Type t = Type::UNKNOWN);
   CoreEvent(Type t, const std::string& data);
   virtual ~CoreEvent() = default;
 
@@ -28,6 +27,6 @@ public:
   void setData(const std::string& data);
 
 private:
-  Type _type;
+  Type _type = Type::UNKNOWN;
   std::string _data;
 };

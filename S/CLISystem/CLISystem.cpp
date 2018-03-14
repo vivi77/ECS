@@ -26,7 +26,7 @@ void CLISystem::Tokenizer::tokenize()
     {
       const auto start = i;
       ++i;
-      while (!isBlank(_line[i]))
+      while (i < lineSize && !isBlank(_line[i]))
         ++i;
       auto token = _line.substr(start, i - start);
       _tokens.emplace(token, Type::STRING);
@@ -53,7 +53,7 @@ void CLISystem::exec()
 {
   std::string input;
   if (!std::getline(std::cin, input))
-    EManager::fire(std::make_shared<CoreEvent>(CoreEvent::Type::EXIT));
+    EManager::fire<CoreEvent>(CoreEvent::Type::EXIT);
   else
   {
     Tokenizer tokenizer{input};
@@ -63,12 +63,10 @@ void CLISystem::exec()
       if (cmd.first == "add")
       {
         auto arg1 = tokenizer.consume(Tokenizer::Type::STRING);
-        EManager::fire(std::make_shared<CoreEvent>(CoreEvent::Type::ADD_SYSTEM, arg1.first));
       }
       else if (cmd.first == "remove")
       {
         auto arg1 = tokenizer.consume(Tokenizer::Type::STRING);
-        EManager::fire(std::make_shared<CoreEvent>(CoreEvent::Type::REM_SYSTEM, arg1.first));
       }
       else if (cmd.first == "help")
       {
@@ -77,7 +75,7 @@ void CLISystem::exec()
       }
       else if (cmd.first == "exit" || cmd.first == "quit")
       {
-        EManager::fire(std::make_shared<CoreEvent>(CoreEvent::Type::EXIT));
+        EManager::fire<CoreEvent>(CoreEvent::Type::EXIT);
       }
       else
         std::cerr << "Unknown command '" << cmd.first << "'\n";

@@ -4,6 +4,7 @@
 
 class EIDGEN_EXPORT EIDGenerator
 {
+public:
   using ID = unsigned;
 
 public:
