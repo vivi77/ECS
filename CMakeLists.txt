@@ -35,7 +35,7 @@ set(INCLUDE_INSTALL_DIR ${INSTALL_FOLDER}/include)
 
 if(UNIX)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -W -Wall -Wextra")
-  #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address,undefined")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address,undefined")
   if (DEBUG)
     message(STATUS "DEBUG ACTIVATED")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DDEBUG")
@@ -71,7 +71,7 @@ set(HDRS
 
 add_executable(${NAME} ${SRCS} ${HDRS})
 target_link_libraries(${NAME} PUBLIC EManager CoreEvent)
-target_include_directories(${NAME} PUBLIC C S E ${CMAKE_BINARY_DIR}/E ..)
+target_include_directories(${NAME} PUBLIC C S E E/CoreEvent ${CMAKE_BINARY_DIR}/E/CoreEvent ..)
 
 if(UNIX)
   target_link_libraries(${NAME} PUBLIC dl stdc++fs)

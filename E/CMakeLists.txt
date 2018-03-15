@@ -49,6 +49,11 @@ foreach(OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES})
 endforeach(OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES)
 
 function(generateLib NAME)
+  # Resets these variables so it does not overlap between the different events
+  set(SRCS "")
+  set(HDRS "")
+  set(DIRS "")
+
   # Can set SRCS, HDRS, DIRS, LIBS
   include(CMakeLists_${NAME}.txt OPTIONAL)
 
@@ -71,7 +76,7 @@ function(generateLib NAME)
     DESTINATION ${INCLUDE_INSTALL_DIR})
 endfunction(generateLib)
 
-set(EVENT_LIST CoreEvent)
+subdirlist(EVENT_LIST ${CMAKE_CURRENT_SOURCE_DIR})
 foreach (EVENT ${EVENT_LIST})
-  generateLib(${EVENT})
+  add_subdirectory(${EVENT})
 endforeach()

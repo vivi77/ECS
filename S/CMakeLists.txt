@@ -32,30 +32,6 @@ foreach(OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES})
   set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY})
 endforeach(OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES)
 
-function(generateLib NAME)
-  # Can set SRCS, HDRS, DIRS, LIBS
-  include(${NAME}/CMakeLists_${NAME}.txt OPTIONAL)
-
-  file(GLOB TMP_SRCS ${NAME}/*.cpp)
-  set(HDRS ${HDRS} ${NAME}/*.hh ${NAME}/*.hpp S_lib.hh)
-  set(DIRS ${DIRS}
-    ${CMAKE_BINARY_DIR}/S
-    ${CMAKE_BINARY_DIR}/E
-    ${PROJECT_SOURCE_DIR}/E
-    ${PROJECT_SOURCE_DIR}/S)
-  add_library(${NAME} SHARED ${SRCS} ${HDRS})
-  target_include_directories(${NAME} PUBLIC ${DIRS})
-  target_link_libraries(${NAME} ${IDLIB_NAME} ${LIBS})
-  set_target_properties(${NAME} PROPERTIES IMPORTED_LOCATION ${SYS_OUTPUT_LOCATION})
-  generate_export_header(${NAME})
-  string(TOLOWER ${NAME} NAME_LOW)
-  install(TARGETS ${NAME} DESTINATION ${LIBRARY_INSTALL_DIR}/S)
-  install(FILES
-    ${HDRS}
-    ${CMAKE_BINARY_DIR}/S/${NAME_LOW}_export.h
-    DESTINATION ${INCLUDE_INSTALL_DIR})
-endfunction(generateLib)
-
 subdirlist(SYS_LIST ${CMAKE_CURRENT_SOURCE_DIR})
 foreach(S ${SYS_LIST})
   add_subdirectory(${S})

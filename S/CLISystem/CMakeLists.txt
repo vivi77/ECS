@@ -5,9 +5,10 @@ file(GLOB HDRS *.hh *.hpp)
 set(HDRS ${HDRS} ../S_lib.hh)
 set(DIRS ${DIRS}
   ${CMAKE_BINARY_DIR}/S/CLISystem
-  ${CMAKE_BINARY_DIR}/E
+  ${CMAKE_BINARY_DIR}/E/CoreEvent
   ${PROJECT_SOURCE_DIR}/S
-  ${PROJECT_SOURCE_DIR}/E)
+  ${PROJECT_SOURCE_DIR}/E
+  ${PROJECT_SOURCE_DIR}/E/CoreEvent)
 
 add_library(${NAME} SHARED ${SRCS} ${HDRS})
 target_include_directories(${NAME} PUBLIC ${DIRS})
