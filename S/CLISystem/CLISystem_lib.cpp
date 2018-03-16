@@ -19,7 +19,6 @@ extern "C"
 
   CLISYSTEM_EXPORT void destroy(IS* ptr)
   {
-    std::cout << "yolololo\n";
     delete ptr;
   }
 }
