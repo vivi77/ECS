@@ -1,5 +1,4 @@
 #include "FileSearcher.hh"
-#include <experimental/filesystem>
 
 namespace ECS
 {
@@ -18,7 +17,7 @@ namespace ECS
       {
         if (std::regex_match(it.path().filename().u8string(), rg))
         {
-          _result.emplace_back(it.path().u8string());
+          _result.emplace_back(it.path());
         }
       }
     }
@@ -30,7 +29,7 @@ namespace ECS
       {
         if (it.path().extension() == extension)
         {
-          _result.emplace_back(it.path().u8string());
+          _result.emplace_back(it.path());
         }
       }
     }

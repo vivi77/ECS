@@ -5,24 +5,67 @@
 #include "CoreEvent.hh"
 #include "EManager.hh"
 
+namespace
+{
+  std::list<SystemData> setupData()
+  {
+    std::list<SystemData> l;
+
+    ECS::Utility::FileSearcher fs;
+    fs.searchFile(Core::sysLibPath.data(), std::regex(Core::autoLoadedSysRegex.data()));
+    auto libFetcher = [&l](const std::experimental::filesystem::path& path)
+    {
+      SystemData data;
+      data.path = path;
+      data.loader.loadLibrary(data.path.u8string().c_str());
+      Core::log << "Library: " << data.path.filename().u8string() << " found\n";
+
+      if (!data.loader.isValid())
+      {
+        Core::log << "Library '" << data.path.filename().u8string() << "' has an invalid system\n";
+        return ;
+      }
+
+      auto ctor = data.loader.getSymbol<IS*(*)()>("create");
+      auto dtor = data.loader.getSymbol<void(*)(IS*)>("destroy");
+      if (!ctor.isValid() || !dtor.isValid())
+      {
+        Core::log << data.loader.getLastError() << "\n";
+        return ;
+      }
+
+      data.sys = std::shared_ptr<IS>(ctor(), dtor);
+      Core::log << "Library '" << data.path.filename().u8string() << "' has a valid system\n";
+      l.emplace_back(std::move(data));
+    };
+
+    (void)fs.applyOnResult(libFetcher);
+    return l;
+  }
+} /* ! */
+
 std::string_view Core::sysLibPath = lel::meta::conditional_os<std::string_view>("lib/S", ".").value;
 std::string_view Core::autoLoadedSysRegex = lel::meta::conditional_os<std::string_view>("lib(CLISystem)[.]so", "S[0-9]*[.]dll").value;
 lel::Log Core::log{};
 
 Core::Core()
   : _quit{false}
-  , _sysLibs{searchLibraries()}
-  , _systems{extractSystems(_sysLibs)}
-{
-}
+  , _data{setupData()}
+{}
 
 void Core::run()
 {
+  if (_data.empty())
+  {
+    log << "There is no valid system\nQuitting program\n";
+    return ;
+  }
+
   EManager::registerListener(shared_from_this());
   while (!shouldQuit())
   {
-    for (auto& sys : _systems)
-      sys->exec();
+    for (auto& data : _data)
+      data.sys->exec();
   }
   EManager::deregisterListener(shared_from_this());
 }
@@ -64,51 +107,4 @@ bool Core::shouldQuit() const
 void Core::stopCore()
 {
   _quit = true;
-}
-
-// static
-std::vector<lel::OSLoader> Core::searchLibraries()
-{
-  ECS::Utility::FileSearcher fs;
-  auto libFetcher = [](const auto& path) -> lel::OSLoader
-  {
-    lel::OSLoader loader;
-    loader.loadLibrary(path.c_str());
-    log << "Library: " << path << " found\n";
-    return loader;
-  };
-
-  fs.searchFile(sysLibPath.data(), std::regex(autoLoadedSysRegex.data()));
-  return fs.applyOnResult<lel::OSLoader>(libFetcher);
-}
-
-std::vector<Core::SysPtr> Core::extractSystems(std::vector<lel::OSLoader>& libs)
-{
-  std::vector<SysPtr> sys;
-
-  const auto nbLibs = libs.size();
-  log << "Number of libraries found: " << nbLibs << "\n";
-  for (unsigned i = 0; i < nbLibs; ++i)
-  {
-    auto& lib = libs[i];
-    if (lib.isValid())
-    {
-      auto ctor = lib.getSymbol<IS*(*)()>("create");
-      auto dtor = lib.getSymbol<void(*)(IS*)>("destroy");
-      if (!ctor.isValid() || !dtor.isValid())
-        {
-          log << lib.getLastError() << "\n";
-          continue ;
-        }
-      sys.emplace_back(std::shared_ptr<IS>(ctor(), dtor));
-      log << "Library #" << i << " has a valid system\n";
-    }
-    else
-      {
-        log << "Library #" << i << " has NOT a valid system\n";
-        log << lib.getLastError() << "\n";
-      }
-  }
-  log << "Valid systems found: " << sys.size() << "\n";
-  return sys;
 }

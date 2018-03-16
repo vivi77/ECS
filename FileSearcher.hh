@@ -1,5 +1,6 @@
 #pragma once
 
+#include <experimental/filesystem>
 #include <string>
 #include <vector>
 #include <regex>
@@ -10,6 +11,10 @@ namespace ECS
   {
     class FileSearcher
     {
+    public:
+      using Result = std::experimental::filesystem::path;
+      using ResultContainer = std::vector<Result>;
+
     public:
       void searchFile(const char* path, const std::regex&);
       void searchExtension(const char* path, const char* extension);
@@ -32,7 +37,7 @@ namespace ECS
         return result;
       }
 
-      std::vector<std::string> getResult() const
+      ResultContainer getResult() const
       {
         return _result;
       }
@@ -41,7 +46,7 @@ namespace ECS
       static const char* DYNAMIC_LIBRARY_EXTENSION;
 
     private:
-      std::vector<std::string> _result;
+      ResultContainer _result;
     };
   } /* !Utility */
 } /* !ECS */
