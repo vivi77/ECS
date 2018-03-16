@@ -1,7 +1,13 @@
 set(NAME CLISystem)
 
-file(GLOB SRCS *.cpp)
-file(GLOB HDRS *.hh *.hpp)
+file(GLOB SRCS
+  *.cpp
+  ../../../parsing/CLI*.cpp)
+file(GLOB HDRS
+  *.hh
+  *.hpp
+  ../../../parsing/CLI*.hh
+  ../../../parsing/CLI*.hpp)
 set(HDRS ${HDRS} ../S_lib.hh)
 set(DIRS ${DIRS}
   ${CMAKE_BINARY_DIR}/S/CLISystem
