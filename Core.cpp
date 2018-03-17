@@ -125,16 +125,9 @@ void Core::delayedEventUpdate()
     data.path = static_cast<std::string>(sysLibPath) + addSysPath;
     log << "Add system '" << data.path << "' requested\n";
 
-    auto beginIt = std::begin(_data);
-    auto endIt = std::end(_data);
-    auto pred = [&data](const SystemData& it) -> bool
+    if (lel::OSLoader::isLibraryLoaded(addSysPath.c_str()))
     {
-      return data.path == it.path;
-    };
-    auto it = std::find_if(beginIt, endIt, pred);
-    if (it != endIt)
-    {
-      log << "System '" << data.path << "' already added\n";
+      log << "[ LOG ] Library already added\n";
       continue ;
     }
 
