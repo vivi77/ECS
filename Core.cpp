@@ -7,6 +7,28 @@
 
 namespace
 {
+  bool checkSystemValidity(SystemData& data)
+  {
+    if (!data.loader.isValid())
+    {
+      Core::log << "Library '" << data.path.filename().u8string() << "' has an invalid system\n";
+      return false;
+    }
+
+    auto ctor = data.loader.getSymbol<IS*(*)()>("create");
+    auto dtor = data.loader.getSymbol<void(*)(IS*)>("destroy");
+    if (!ctor.isValid() || !dtor.isValid())
+    {
+      Core::log << data.loader.getLastError() << "\n";
+      return false;
+    }
+
+    data.sys = std::shared_ptr<IS>(ctor(), dtor);
+    Core::log << "Library '" << data.path.filename().u8string()
+      << "' has a valid system\n";
+    return true;
+  }
+
   std::list<SystemData> setupData()
   {
     std::list<SystemData> l;
@@ -19,24 +41,11 @@ namespace
       data.path = path;
       data.loader.loadLibrary(data.path.u8string().c_str());
       Core::log << "Library: " << data.path.filename().u8string() << " found\n";
-
-      if (!data.loader.isValid())
+      if (checkSystemValidity(data))
       {
-        Core::log << "Library '" << data.path.filename().u8string() << "' has an invalid system\n";
-        return ;
+        l.emplace_back(std::move(data));
+        Core::log << "System '" << l.back().path.filename().u8string() << "' added\n";
       }
-
-      auto ctor = data.loader.getSymbol<IS*(*)()>("create");
-      auto dtor = data.loader.getSymbol<void(*)(IS*)>("destroy");
-      if (!ctor.isValid() || !dtor.isValid())
-      {
-        Core::log << data.loader.getLastError() << "\n";
-        return ;
-      }
-
-      data.sys = std::shared_ptr<IS>(ctor(), dtor);
-      Core::log << "Library '" << data.path.filename().u8string() << "' has a valid system\n";
-      l.emplace_back(std::move(data));
     };
 
     (void)fs.applyOnResult(libFetcher);
@@ -51,6 +60,8 @@ lel::Log Core::log{};
 Core::Core()
   : _quit{false}
   , _data{setupData()}
+  , _addRequest{}
+  , _remRequest{}
 {}
 
 void Core::run()
@@ -62,11 +73,14 @@ void Core::run()
   }
 
   EManager::registerListener(shared_from_this());
-  while (!shouldQuit())
+  while (!shouldQuit() && !_data.empty())
   {
     for (auto& data : _data)
       data.sys->exec();
+    delayedEventUpdate();
   }
+  if (_data.empty())
+    log << "There is no more system\nExiting program\n";
   EManager::deregisterListener(shared_from_this());
 }
 
@@ -82,16 +96,10 @@ void Core::update(const IEListener::EPtr& e)
       stopCore();
       break;
     case CoreEvent::Type::ADD_SYSTEM:
-      {
-        auto systemName = event->getData();
-        log << "Add system '" << systemName << "' requested\n";
-      }
+      _addRequest.emplace_back(event->getData());
       break;
     case CoreEvent::Type::REM_SYSTEM:
-      {
-        auto systemName = event->getData();
-        log << "Remove system '" << systemName << "' requested\n";
-      }
+      _remRequest.emplace_back(event->getData());
       break;
     default:
       break;
@@ -107,4 +115,56 @@ bool Core::shouldQuit() const
 void Core::stopCore()
 {
   _quit = true;
+}
+
+void Core::delayedEventUpdate()
+{
+  for (const auto& addSysPath : _addRequest)
+  {
+    SystemData data;
+    data.path = addSysPath;
+    log << "Add system '" << data.path << "' requested\n";
+
+    auto beginIt = std::begin(_data);
+    auto endIt = std::end(_data);
+    auto pred = [&data](const SystemData& it) -> bool
+    {
+      log << it.path << "\n";
+      return data.path == it.path;
+    };
+    auto it = std::find_if(beginIt, endIt, pred);
+    if (it != endIt)
+    {
+      log << "System '" << data.path << "' already added\n";
+      return ;
+    }
+
+    data.loader.loadLibrary(data.path.u8string().c_str());
+    if (checkSystemValidity(data))
+    {
+      _data.emplace_back(std::move(data));
+      log << "System '" << data.path.filename().u8string() << "' added\n";
+    }
+  }
+
+  for (const auto& remSysPath : _remRequest)
+  {
+    auto systemPath = remSysPath;
+    log << "Remove system '" << systemPath << "' requested\n";
+
+    auto beginIt = std::begin(_data);
+    auto endIt = std::end(_data);
+    auto pred = [&systemPath](const SystemData& data) -> bool
+    {
+      return data.path.filename() == systemPath;
+    };
+    auto it = std::find_if(beginIt, endIt, pred);
+    if (it != endIt)
+    {
+      log << "Removing system with path:'" << it->path << "'\n";
+      _data.erase(it);
+    }
+    else
+      log << "System not found\n";
+  }
 }

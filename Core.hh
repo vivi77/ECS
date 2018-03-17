@@ -29,10 +29,13 @@ public:
 private:
   bool shouldQuit() const;
   void stopCore();
+  void delayedEventUpdate();
 
 private:
   bool _quit;
   std::list<SystemData> _data;
+  std::list<std::string> _addRequest;
+  std::list<std::string> _remRequest;
 
 public:
   static std::string_view sysLibPath;
