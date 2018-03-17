@@ -69,13 +69,30 @@ set(HDRS
   ../meta/conditional_os.hpp
   )
 
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/../CMakeModules)
+if (CMAKE_COMPILER_IS_GNUCXX)
+  include(CodeCoverage)
+  append_coverage_compiler_flags()
+  find_program(lcov_found NAMES lcov)
+  if (lcov_found)
+    setup_target_for_coverage(NAME ${NAME}_coverage
+      EXECUTABLE ${NAME} coverage)
+  else()
+    message(STATUS "lcov not found")
+  endif()
+endif()
+
 add_executable(${NAME} ${SRCS} ${HDRS})
 target_link_libraries(${NAME} PUBLIC EManager CoreEvent)
 target_include_directories(${NAME} PUBLIC C S E E/CoreEvent ${CMAKE_BINARY_DIR}/E/CoreEvent ..)
 
 if(UNIX)
+  if (CMAKE_COMPILER_IS_GNUCXX)
+    target_link_libraries(${NAME} PUBLIC gcov)
+  endif()
   target_link_libraries(${NAME} PUBLIC dl stdc++fs)
 endif(UNIX)
+
 
 #install(TARGETS ${NAME}
 #  RUNTIME DESTINATION ${INSTALL_FOLDER}
