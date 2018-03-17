@@ -53,7 +53,7 @@ namespace
   }
 } /* ! */
 
-std::string_view Core::sysLibPath = lel::meta::conditional_os<std::string_view>("lib/S", ".").value;
+std::string_view Core::sysLibPath = lel::meta::conditional_os<std::string_view>("lib/S/", ".").value;
 std::string_view Core::autoLoadedSysRegex = lel::meta::conditional_os<std::string_view>("lib(CLISystem)[.]so", "S[0-9]*[.]dll").value;
 lel::Log Core::log{};
 
@@ -122,21 +122,20 @@ void Core::delayedEventUpdate()
   for (const auto& addSysPath : _addRequest)
   {
     SystemData data;
-    data.path = addSysPath;
+    data.path = static_cast<std::string>(sysLibPath) + addSysPath;
     log << "Add system '" << data.path << "' requested\n";
 
     auto beginIt = std::begin(_data);
     auto endIt = std::end(_data);
     auto pred = [&data](const SystemData& it) -> bool
     {
-      log << it.path << "\n";
       return data.path == it.path;
     };
     auto it = std::find_if(beginIt, endIt, pred);
     if (it != endIt)
     {
       log << "System '" << data.path << "' already added\n";
-      return ;
+      continue ;
     }
 
     data.loader.loadLibrary(data.path.u8string().c_str());
@@ -146,6 +145,7 @@ void Core::delayedEventUpdate()
       log << "System '" << data.path.filename().u8string() << "' added\n";
     }
   }
+  _addRequest.clear();
 
   for (const auto& remSysPath : _remRequest)
   {
@@ -167,4 +167,5 @@ void Core::delayedEventUpdate()
     else
       log << "System not found\n";
   }
+  _remRequest.clear();
 }
