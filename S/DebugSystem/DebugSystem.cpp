@@ -1,5 +1,6 @@
 #include "DebugSystem.hh"
 #include "CoreEvent.hh"
+#include "EManagerEvent.hh"
 
 namespace
 {
@@ -28,7 +29,7 @@ namespace
     log << "[INFO]" << msg;
   }
 
-  void debugCoreEvent(const std::shared_ptr<CoreEvent>& event, lel::Log& log)
+  void debugEvent(const std::shared_ptr<CoreEvent>& event, lel::Log& log)
   {
     switch (event->getType())
     {
@@ -71,8 +72,100 @@ namespace
       default:
         break;
     }
-    log << "\033[0m\n";
   }
+
+  void debugEvent(const std::shared_ptr<EManagerEvent>& event, lel::Log& log)
+  {
+    switch (event->getType())
+    {
+      case EManagerEvent::Type::EVENT_ADDED:
+        {
+          std::string msg = "Add event ID#";
+          msg += std::to_string(std::get<EManagerEvent::ID>(event->getData()));
+          msg += " requested";
+          okEvent(log, msg);
+          break;
+        }
+      case EManagerEvent::Type::EVENT_ALREADY_ADDED:
+        badEvent(log, "Event ID#" + std::to_string(std::get<EManagerEvent::ID>(event->getData())) + " already added");
+        break;
+      case EManagerEvent::Type::LISTENER_ADDED:
+        okEvent(log, "Listener added: address: " + std::get<std::string>(event->getData()));
+        break;
+      case EManagerEvent::Type::LISTENER_ALREADY_ADDED:
+        badEvent(log, "Listener already added: address: " + std::get<std::string>(event->getData()));
+        break;
+      case EManagerEvent::Type::LISTENER_NOT_FOUND:
+        badEvent(log, "Listener not found: searching address: " + std::get<std::string>(event->getData()));
+        break;
+      case EManagerEvent::Type::LISTENER_REMOVED:
+        okEvent(log, "Listener removed: address: " + std::get<std::string>(event->getData()));
+        break;
+      case EManagerEvent::Type::NOT_LISTENER:
+        badEvent(log, "Object at address " + std::get<std::string>(event->getData()) + "is not a listener");
+        break;
+      case EManagerEvent::Type::UNKNOWN:
+        infoEvent(log, "Unknown event found");
+      default:
+        break;
+    }
+  }
+
+  [[maybe_unused]]
+  void debugEventFallback(const DebugSystem::EPtr& event, lel::Log& log)
+  {
+    log << "Unknwon event with ID#" << event->getID() << " fired";
+  }
+
+  template <class C, typename ... Args>
+    struct exist_debugEventFct
+    {
+      struct No {};
+      struct Yes {};
+
+      template <class LHS, typename ... A, typename = decltype(debugEvent(std::declval<A>()...))>
+        static Yes helper(int);
+      template <typename, typename ...>
+        static No helper(...);
+
+      static constexpr bool value = std::is_same_v<decltype(helper<C, Args...>(0)), Yes>;
+    };
+
+  template <typename T>
+  struct updateCtor
+  {
+    inline static void partialDebugEvent(const DebugSystem::EPtr& event, lel::Log& log)
+    {
+      if (event->getID() == T::getEventID())
+      {
+        using HeadPtr = const decltype(std::static_pointer_cast<T>(event));
+        if constexpr (exist_debugEventFct<T, HeadPtr&, lel::Log&>::value)
+          debugEvent(std::static_pointer_cast<T>(event), log);
+        else
+          debugEventFallback(event, log);
+      }
+      else
+        log << "Event with an unknown id: " << event->getID();
+    }
+  };
+
+  template <typename Head, typename ... Tail>
+  struct updateCtor<std::tuple<Head, Tail...>>
+  {
+    inline static void partialDebugEvent(const DebugSystem::EPtr& event, lel::Log& log)
+    {
+      if (event->getID() == Head::getEventID())
+      {
+        using HeadPtr = const decltype(std::static_pointer_cast<Head>(event));
+        if constexpr (exist_debugEventFct<Head, HeadPtr&, lel::Log&>::value)
+          debugEvent(std::static_pointer_cast<Head>(event), log);
+        else
+          debugEventFallback(event, log);
+      }
+      else
+        updateCtor<Tail...>::partialDebugEvent(event, log);
+    }
+  };
 } /* ! */
 
 void DebugSystem::exec()
@@ -81,8 +174,8 @@ void DebugSystem::exec()
 
 void DebugSystem::update(const EPtr& event)
 {
-  if (event->getID() == CoreEvent::getEventID())
-    debugCoreEvent(std::static_pointer_cast<CoreEvent>(event), _log);
-  else
-    _log << "Event id" << event->getID() << " fired\n";
+  using TypeList = std::tuple<CoreEvent, EManagerEvent>;
+
+  updateCtor<TypeList>::partialDebugEvent(event, _log);
+  _log << "\033[0m\n";
 }

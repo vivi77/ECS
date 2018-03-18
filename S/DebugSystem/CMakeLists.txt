@@ -9,7 +9,9 @@ set(HDRS ${HDRS} ../S_lib.hh)
 set(DIRS ${DIRS}
   ${CMAKE_BINARY_DIR}/S/${NAME}
   ${CMAKE_BINARY_DIR}/E/CoreEvent
+  ${CMAKE_BINARY_DIR}/E/EManagerEvent
   ${PROJECT_SOURCE_DIR}/E/CoreEvent
+  ${PROJECT_SOURCE_DIR}/E/EManagerEvent
   ${PROJECT_SOURCE_DIR}/E/
   ${PROJECT_SOURCE_DIR}/S)
 
