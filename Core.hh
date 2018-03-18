@@ -3,7 +3,6 @@
 #include "IS.hh"
 #include "IEListener.hh"
 #include "dlloader/OSLoader.hpp"
-#include "log/Log.hh"
 #include <experimental/filesystem>
 #include <memory>
 #include <list>
@@ -40,5 +39,4 @@ private:
 public:
   static std::string_view sysLibPath;
   static std::string_view autoLoadedSysRegex;
-  static lel::Log log;
 };

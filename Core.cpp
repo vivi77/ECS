@@ -1,6 +1,5 @@
 #include "Core.hh"
 #include "meta/conditional_os.hpp"
-#include "log/Log.hh"
 #include "FileSearcher.hh"
 #include "CoreEvent.hh"
 #include "EManager.hh"
@@ -11,8 +10,9 @@ namespace
   {
     if (!data.loader.isValid())
     {
-      Core::log << "Library '" << data.path.filename().u8string() << "' has an invalid system\n";
-      Core::log << data.loader.getLastError() << "\n";
+      EManager::fire<CoreEvent>(CoreEvent::Type::SYSTEM_NOT_FOUND,
+                                data.path.u8string(),
+                                data.loader.getLastError());
       return false;
     }
 
@@ -20,19 +20,15 @@ namespace
     auto dtor = data.loader.getSymbol<void(*)(IS*)>("destroy");
     if (!ctor.isValid() || !dtor.isValid())
     {
-      Core::log << data.loader.getLastError() << "\n";
+      EManager::fire<CoreEvent>(CoreEvent::Type::INVALID_SYSTEM,
+                                data.path.filename().u8string(),
+                                data.loader.getLastError());
       return false;
     }
 
     data.sys = std::shared_ptr<IS>(ctor(), dtor);
-    Core::log << "Library '" << data.path.filename().u8string()
-      << "' has a valid system\n";
-
     if (data.sys->isListener())
-    {
       EManager::registerListenerSystem(data.sys);
-      Core::log << "Registered to the event listener\n";
-    }
     return true;
   }
 
@@ -47,11 +43,11 @@ namespace
       SystemData data;
       data.path = path;
       data.loader.loadLibrary(data.path.u8string().c_str());
-      Core::log << "Library: " << data.path.filename().u8string() << " found\n";
       if (checkSystemValidity(data))
       {
         l.emplace_back(std::move(data));
-        Core::log << "System '" << l.back().path.filename().u8string() << "' added\n";
+        EManager::fire<CoreEvent>(CoreEvent::Type::ADD_SYSTEM_SUCCESS,
+                                  l.back().path.u8string());
       }
     };
 
@@ -65,11 +61,11 @@ namespace
     {
       SystemData data;
       data.path = static_cast<std::string>(Core::sysLibPath) + addSysPath;
-      Core::log << "Add system '" << data.path << "' requested\n";
 
       if (lel::OSLoader::isLibraryLoaded(addSysPath.c_str()))
       {
-        Core::log << "[ LOG ] Library already added\n";
+        EManager::fire<CoreEvent>(CoreEvent::Type::ALREADY_ADDED_SYSTEM,
+                                  data.path.u8string());
         continue ;
       }
 
@@ -77,7 +73,8 @@ namespace
       if (checkSystemValidity(data))
       {
         datalist.emplace_back(std::move(data));
-        Core::log << "System '" << datalist.back().path.filename().u8string() << "' added\n";
+        EManager::fire<CoreEvent>(CoreEvent::Type::ADD_SYSTEM_SUCCESS,
+                                  datalist.back().path.u8string());
       }
     }
     addRequest.clear();
@@ -88,7 +85,6 @@ namespace
     for (const auto& removeSysPath : removeRequest)
     {
       auto systemPath = removeSysPath;
-      Core::log << "Remove system '" << systemPath << "' requested\n";
 
       auto beginIt = std::begin(datalist);
       auto endIt = std::end(datalist);
@@ -97,15 +93,18 @@ namespace
         return data.path.filename() == systemPath;
       };
       auto it = std::find_if(beginIt, endIt, pred);
-      if (it != endIt)
+
+      if (it == endIt)
       {
-        if (it->sys->isListener())
-          EManager::deregisterListenerSystem(it->sys);
-        Core::log << "Removing system with path:'" << it->path << "'\n";
-        datalist.erase(it);
+        EManager::fire<CoreEvent>(CoreEvent::Type::SYSTEM_NOT_FOUND, systemPath);
+        continue;
       }
-      else
-        Core::log << "System not found\n";
+
+      if (it->sys->isListener())
+        EManager::deregisterListenerSystem(it->sys);
+      EManager::fire<CoreEvent>(CoreEvent::Type::REM_SYSTEM_SUCCESS,
+                                it->path.u8string());
+      datalist.erase(it);
     }
     removeRequest.clear();
   }
@@ -113,7 +112,6 @@ namespace
 
 std::string_view Core::sysLibPath = lel::meta::conditional_os<std::string_view>("lib/S/", ".").value;
 std::string_view Core::autoLoadedSysRegex = lel::meta::conditional_os<std::string_view>("lib(CLISystem)[.]so", "S[0-9]*[.]dll").value;
-lel::Log Core::log{};
 
 Core::Core()
   : _quit{false}
@@ -126,7 +124,7 @@ void Core::run()
 {
   if (_data.empty())
   {
-    log << "There is no valid system\nQuitting program\n";
+    EManager::fire<CoreEvent>(CoreEvent::Type::CLOSING);
     return ;
   }
 
@@ -137,8 +135,7 @@ void Core::run()
       data.sys->exec();
     delayedEventUpdate();
   }
-  if (_data.empty())
-    log << "There is no more system\nExiting program\n";
+  EManager::fire<CoreEvent>(CoreEvent::Type::CLOSING);
   EManager::deregisterListener(shared_from_this());
 }
 
@@ -150,14 +147,13 @@ void Core::update(const IEListener::EPtr& e)
     switch (event->getType())
     {
     case CoreEvent::Type::EXIT:
-      log << "Stop core requested\n";
       stopCore();
       break;
     case CoreEvent::Type::ADD_SYSTEM:
-      _addRequest.emplace_back(event->getData());
+      _addRequest.emplace_back(event->getData()[0]);
       break;
     case CoreEvent::Type::REM_SYSTEM:
-      _remRequest.emplace_back(event->getData());
+      _remRequest.emplace_back(event->getData()[0]);
       break;
     default:
       break;

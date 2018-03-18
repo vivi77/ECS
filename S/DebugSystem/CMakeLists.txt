@@ -8,7 +8,9 @@ file(GLOB HDRS
 set(HDRS ${HDRS} ../S_lib.hh)
 set(DIRS ${DIRS}
   ${CMAKE_BINARY_DIR}/S/${NAME}
-  ${PROJECT_SOURCE_DIR}/E
+  ${CMAKE_BINARY_DIR}/E/CoreEvent
+  ${PROJECT_SOURCE_DIR}/E/CoreEvent
+  ${PROJECT_SOURCE_DIR}/E/
   ${PROJECT_SOURCE_DIR}/S)
 
 add_library(${NAME} SHARED ${SRCS} ${HDRS})
