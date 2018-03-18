@@ -1,7 +1,15 @@
 #include "EManager.hh"
-#include "log/Log.hh"
 #include "IS.hh"
 #include <algorithm>
+
+namespace
+{
+  EManager::IEListenerPtr castSystemToListener(const EManager::SPtr& s)
+  {
+    // No better solution yet
+    return std::dynamic_pointer_cast<IEListener>(s);
+  }
+} /* ! */
 
 std::vector<EManager::IEListenerPtr> EManager::_listeners;
 std::unordered_map<EManager::EventID, EManager::Dtor> EManager::_registeredEvents;
@@ -55,10 +63,4 @@ void EManager::registerEventDtor(const EventID id, Dtor dtor)
   auto it = _registeredEvents.find(id);
   if (it == std::end(_registeredEvents))
     _registeredEvents.insert(std::make_pair(id, dtor));
-}
-
-EManager::IEListenerPtr EManager::castSystemToListener(const EManager::SPtr& s)
-{
-  // No better solution yet
-  return std::dynamic_pointer_cast<IEListener>(s);
 }

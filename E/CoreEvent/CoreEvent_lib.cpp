@@ -1,8 +1,8 @@
 #include "CoreEvent.hh"
-#include "E_lib.hh"
-#include "EIDGenerator.hh"
 #include "EManager.hh"
-#include <iostream>
+#include "EManagerEvent.hh"
+#include "EIDGenerator.hh"
+#include "E_lib.hh"
 
 extern "C"
 {
@@ -21,6 +21,7 @@ static void setup()
 {
   CoreEvent::assignID(EIDGenerator::getSingleton().generateID());
   EManager::registerEventDtor(CoreEvent::getEventID(), (EManager::Dtor)&destroy);
+  EManager::fire<EManagerEvent>(EManagerEvent::Type::EVENT_ADDED, CoreEvent::getEventID());
 }
 
 template struct EntryPointWrapper<CoreEvent>;

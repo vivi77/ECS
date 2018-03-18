@@ -48,34 +48,6 @@ foreach(OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES})
   set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY})
 endforeach(OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES)
 
-function(generateLib NAME)
-  # Resets these variables so it does not overlap between the different events
-  set(SRCS "")
-  set(HDRS "")
-  set(DIRS "")
-
-  # Can set SRCS, HDRS, DIRS, LIBS
-  include(CMakeLists_${NAME}.txt OPTIONAL)
-
-  set(SRCS ${SRCS} ${NAME}_lib.cpp ${NAME}.cpp)
-  set(HDRS ${HDRS} ${NAME}.hh E_lib.hh)
-  set(DIRS ${DIRS}
-    ${CMAKE_BINARY_DIR}/E
-    ${CMAKE_SOURCE_DIR}/S
-    ${CMAKE_SOURCE_DIR}/..)
-  add_library(${NAME} SHARED ${SRCS} ${HDRS})
-  target_include_directories(${NAME} PUBLIC ${DIRS})
-  target_link_libraries(${NAME} ${MANAGER_NAME} ${IDLIB_NAME} ${LIBS})
-  set_target_properties(${NAME} PROPERTIES IMPORTED_LOCATION ${EVENT_OUTPUT_LOCATION})
-  generate_export_header(${NAME})
-  string(TOLOWER ${NAME} NAME_LOW)
-  install(TARGETS ${NAME} DESTINATION ${LIBRARY_INSTALL_DIR}/E)
-  install(FILES
-    ${HDRS}
-    ${CMAKE_BINARY_DIR}/E/${NAME_LOW}_export.h
-    DESTINATION ${INCLUDE_INSTALL_DIR})
-endfunction(generateLib)
-
 subdirlist(EVENT_LIST ${CMAKE_CURRENT_SOURCE_DIR})
 foreach (EVENT ${EVENT_LIST})
   add_subdirectory(${EVENT})

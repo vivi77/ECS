@@ -2,9 +2,9 @@
 
 #include "emanager_export.h"
 #include "IEListener.hh"
+#include "log/Log.hh"
 #include <vector>
 #include <unordered_map>
-#include <iostream>
 
 class IS;
 
@@ -23,7 +23,7 @@ public:
     auto it = _registeredEvents.find(Event::getEventID());
     if (it == std::end(_registeredEvents))
     {
-      std::cout << "Event dtor (ID:" << Event::getEventID() << ") not found\n"
+      lel::Log{} << "Event dtor (ID:" << Event::getEventID() << ") not found\n"
         << "Don't forget to register your event destructor with "
         << "'registerEventDtor' method";
       return ;
@@ -39,9 +39,6 @@ public:
   static void registerListenerSystem(const SPtr& s);
   static void deregisterListenerSystem(const SPtr& s);
   static void registerEventDtor(const EventID id, Dtor dtor);
-
-private:
-  static IEListenerPtr castSystemToListener(const SPtr& s);
 
 private:
   static std::vector<IEListenerPtr> _listeners;
