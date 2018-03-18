@@ -5,14 +5,19 @@
 
 class EMANAGEREVENT_EXPORT EManagerEvent : public CRTPE<EManagerEvent>
 {
-  using ID = unsigned; //EIDGenerate::ID
+  using ID = unsigned; //SIDGenerate::ID
 
 public:
   enum class Type : char
   {
     UNKNOWN,
+    // OK
+    LISTENER_ADDED,
+    LISTENER_REMOVED,
     EVENT_ADDED,
-    EVENT_REMOVED,
+
+    // ERROR
+    NOT_LISTENER,
   };
 
 public:
