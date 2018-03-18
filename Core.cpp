@@ -12,6 +12,7 @@ namespace
     if (!data.loader.isValid())
     {
       Core::log << "Library '" << data.path.filename().u8string() << "' has an invalid system\n";
+      Core::log << data.loader.getLastError() << "\n";
       return false;
     }
 
@@ -26,6 +27,12 @@ namespace
     data.sys = std::shared_ptr<IS>(ctor(), dtor);
     Core::log << "Library '" << data.path.filename().u8string()
       << "' has a valid system\n";
+
+    if (data.sys->isListener())
+    {
+      EManager::registerListenerSystem(data.sys);
+      Core::log << "Registered to the event listener\n";
+    }
     return true;
   }
 
@@ -50,6 +57,57 @@ namespace
 
     (void)fs.applyOnResult(libFetcher);
     return l;
+  }
+
+  void updateAddRequest(std::list<std::string>& addRequest, std::list<SystemData>& datalist)
+  {
+    for (const auto& addSysPath : addRequest)
+    {
+      SystemData data;
+      data.path = static_cast<std::string>(Core::sysLibPath) + addSysPath;
+      Core::log << "Add system '" << data.path << "' requested\n";
+
+      if (lel::OSLoader::isLibraryLoaded(addSysPath.c_str()))
+      {
+        Core::log << "[ LOG ] Library already added\n";
+        continue ;
+      }
+
+      data.loader.loadLibrary(data.path.u8string().c_str());
+      if (checkSystemValidity(data))
+      {
+        datalist.emplace_back(std::move(data));
+        Core::log << "System '" << datalist.back().path.filename().u8string() << "' added\n";
+      }
+    }
+    addRequest.clear();
+  }
+
+  void updateRemoveRequest(std::list<std::string>& removeRequest, std::list<SystemData>& datalist)
+  {
+    for (const auto& removeSysPath : removeRequest)
+    {
+      auto systemPath = removeSysPath;
+      Core::log << "Remove system '" << systemPath << "' requested\n";
+
+      auto beginIt = std::begin(datalist);
+      auto endIt = std::end(datalist);
+      auto pred = [&systemPath](const SystemData& data) -> bool
+      {
+        return data.path.filename() == systemPath;
+      };
+      auto it = std::find_if(beginIt, endIt, pred);
+      if (it != endIt)
+      {
+        if (it->sys->isListener())
+          EManager::deregisterListenerSystem(it->sys);
+        Core::log << "Removing system with path:'" << it->path << "'\n";
+        datalist.erase(it);
+      }
+      else
+        Core::log << "System not found\n";
+    }
+    removeRequest.clear();
   }
 } /* ! */
 
@@ -119,46 +177,6 @@ void Core::stopCore()
 
 void Core::delayedEventUpdate()
 {
-  for (const auto& addSysPath : _addRequest)
-  {
-    SystemData data;
-    data.path = static_cast<std::string>(sysLibPath) + addSysPath;
-    log << "Add system '" << data.path << "' requested\n";
-
-    if (lel::OSLoader::isLibraryLoaded(addSysPath.c_str()))
-    {
-      log << "[ LOG ] Library already added\n";
-      continue ;
-    }
-
-    data.loader.loadLibrary(data.path.u8string().c_str());
-    if (checkSystemValidity(data))
-    {
-      _data.emplace_back(std::move(data));
-      log << "System '" << data.path.filename().u8string() << "' added\n";
-    }
-  }
-  _addRequest.clear();
-
-  for (const auto& remSysPath : _remRequest)
-  {
-    auto systemPath = remSysPath;
-    log << "Remove system '" << systemPath << "' requested\n";
-
-    auto beginIt = std::begin(_data);
-    auto endIt = std::end(_data);
-    auto pred = [&systemPath](const SystemData& data) -> bool
-    {
-      return data.path.filename() == systemPath;
-    };
-    auto it = std::find_if(beginIt, endIt, pred);
-    if (it != endIt)
-    {
-      log << "Removing system with path:'" << it->path << "'\n";
-      _data.erase(it);
-    }
-    else
-      log << "System not found\n";
-  }
-  _remRequest.clear();
+  updateAddRequest(_addRequest, _data);
+  updateRemoveRequest(_remRequest, _data);
 }
