@@ -21,8 +21,11 @@ set(HDRS EManager.hh ${CMAKE_SOURCE_DIR}/../log/Log.hh)
 add_library(${MANAGER_NAME} SHARED ${SRCS} ${HDRS})
 target_include_directories(${MANAGER_NAME} PUBLIC
   ${CMAKE_BINARY_DIR}/E
-  ${CMAKE_SOURCE_DIR}/S
-  ${CMAKE_SOURCE_DIR}/..)
+  ${CMAKE_BINARY_DIR}/E/EManagerEvent
+  ${PROJECT_SOURCE_DIR}/E/
+  ${PROJECT_SOURCE_DIR}/E/EManagerEvent
+  ${PROJECT_SOURCE_DIR}/S
+  ${PROJECT_SOURCE_DIR}/..)
 set_target_properties(${MANAGER_NAME} PROPERTIES IMPORTED_LOCATION ${OUTPUT_LOCATION})
 generate_export_header(${MANAGER_NAME})
 string(TOLOWER ${MANAGER_NAME} MANAGER_NAME_LOW)
