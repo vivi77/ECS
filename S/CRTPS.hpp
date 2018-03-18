@@ -1,6 +1,9 @@
 #pragma once
 
 #include "IS.hh"
+#include "IEListener.hh"
+#include <type_traits>
+#include <iostream>
 
 template <class D>
 class CRTPS : public IS
@@ -22,6 +25,11 @@ public:
   ID getID() const final
   {
     return getSystemID();
+  }
+
+  bool isListener() const final
+  {
+    return std::is_base_of_v<IEListener, D>;
   }
 
   static ID getSystemID()

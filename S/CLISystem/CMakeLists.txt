@@ -10,7 +10,7 @@ file(GLOB HDRS
   ../../../parsing/CLI*.hpp)
 set(HDRS ${HDRS} ../S_lib.hh)
 set(DIRS ${DIRS}
-  ${CMAKE_BINARY_DIR}/S/CLISystem
+  ${CMAKE_BINARY_DIR}/S/${NAME}
   ${CMAKE_BINARY_DIR}/E/CoreEvent
   ${PROJECT_SOURCE_DIR}/S
   ${PROJECT_SOURCE_DIR}/E
