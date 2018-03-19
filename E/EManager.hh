@@ -2,7 +2,7 @@
 
 #include "emanager_export.h"
 #include "IEListener.hh"
-#include "log/Log.hh"
+#include "EManagerEvent.hh"
 #include <vector>
 #include <unordered_map>
 
@@ -23,13 +23,11 @@ public:
     auto it = _registeredEvents.find(Event::getEventID());
     if (it == std::end(_registeredEvents))
     {
-      lel::Log{} << "Event dtor (ID:" << Event::getEventID() << ") not found\n"
-        << "Don't forget to register your event destructor with "
-        << "'registerEventDtor' method";
+      EManager::template fire<EManagerEvent>(EManagerEvent::Type::EVENT_DTOR_NOT_FOUND, Event::getEventID());
       return ;
     }
 
-    auto ev = std::shared_ptr<Event>(new Event(args...), it->second);
+    auto ev = std::shared_ptr<Event>(new Event(std::forward<Args>(args)...), it->second);
     for (auto& it : _listeners)
       it->update(ev);
   }

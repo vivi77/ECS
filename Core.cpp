@@ -114,10 +114,7 @@ std::string_view Core::sysLibPath = lel::meta::conditional_os<std::string_view>(
 std::string_view Core::autoLoadedSysRegex = lel::meta::conditional_os<std::string_view>("lib(CLISystem)[.]so", "S[0-9]*[.]dll").value;
 
 Core::Core()
-  : _quit{false}
-  , _data{setupData()}
-  , _addRequest{}
-  , _remRequest{}
+  : _data{setupData()}
 {}
 
 void Core::run()

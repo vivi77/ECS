@@ -1,5 +1,4 @@
 #include "EManager.hh"
-#include "EManagerEvent.hh"
 #include "IS.hh"
 #include <algorithm>
 #include <sstream>
@@ -78,7 +77,7 @@ void EManager::registerEventDtor(const EventID id, Dtor dtor)
   auto it = _registeredEvents.find(id);
   if (it == std::end(_registeredEvents))
   {
-    _registeredEvents.insert(std::make_pair(id, dtor));
+    _registeredEvents.emplace(std::make_pair(id, dtor));
     ev = EManagerEvent::Type::EVENT_ADDED;
   }
   EManager::fire<EManagerEvent>(ev, id);

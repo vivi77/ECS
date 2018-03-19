@@ -1,6 +1,8 @@
 #include "DebugSystem.hh"
 #include "CoreEvent.hh"
 #include "EManagerEvent.hh"
+#include "CManagerEvent.hh"
+#include <sstream>
 
 namespace
 {
@@ -27,6 +29,13 @@ namespace
   inline void infoEvent(lel::Log& log, const std::string& msg)
   {
     log << "[INFO]" << msg;
+  }
+
+  std::string to_string(void* ptr)
+  {
+    std::stringstream ss;
+    ss << ptr;
+    return ss.str();
   }
 
   void debugEvent(const std::shared_ptr<CoreEvent>& event, lel::Log& log)
@@ -104,8 +113,34 @@ namespace
       case EManagerEvent::Type::NOT_LISTENER:
         badEvent(log, "Object at address " + std::get<std::string>(event->getData()) + "is not a listener");
         break;
+      case EManagerEvent::Type::EVENT_DTOR_NOT_FOUND:
+        badEvent(log, "Event ID#" + std::to_string(std::get<EManagerEvent::ID>(event->getData())) + " has not registered a dtor. Creation of event FORBIDDEN");
+        break;
       case EManagerEvent::Type::UNKNOWN:
         infoEvent(log, "Unknown event found");
+      default:
+        break;
+    }
+  }
+
+  void debugEvent(const std::shared_ptr<CManagerEvent>& event, lel::Log& log)
+  {
+    switch (event->getType())
+    {
+      case CManagerEvent::Type::COMP_ADDED:
+        okEvent(log, "Component ID#" + std::to_string(std::get<CManagerEvent::CID>(event->getData())) + " added");
+        break;
+      case CManagerEvent::Type::COMP_ALREADY_ADDED:
+        badEvent(log, "Component ID#" + std::to_string(std::get<CManagerEvent::CID>(event->getData())) + " added");
+        break;
+      case CManagerEvent::Type::COMP_CREATED:
+        okEvent(log, "Component created (address:" + to_string(std::get<CManagerEvent::CPtr>(event->getData()).get()) + ")");
+        break;
+      case CManagerEvent::Type::COMP_DTOR_NOT_FOUND:
+        badEvent(log, "Component ID#" + std::to_string(std::get<CManagerEvent::CID>(event->getData())) + " not found");
+        break;
+      case CManagerEvent::Type::UNKNOWN:
+        infoEvent(log, "Unknown component event");
       default:
         break;
     }
@@ -132,7 +167,10 @@ namespace
     };
 
   template <typename T>
-  struct updateCtor
+  struct updateCtor;
+
+  template <typename T>
+  struct updateCtor<std::tuple<T>>
   {
     inline static void partialDebugEvent(const DebugSystem::EPtr& event, lel::Log& log)
     {
@@ -163,7 +201,7 @@ namespace
           debugEventFallback(event, log);
       }
       else
-        updateCtor<Tail...>::partialDebugEvent(event, log);
+        updateCtor<std::tuple<Tail...>>::partialDebugEvent(event, log);
     }
   };
 } /* ! */
@@ -174,7 +212,7 @@ void DebugSystem::exec()
 
 void DebugSystem::update(const EPtr& event)
 {
-  using TypeList = std::tuple<CoreEvent, EManagerEvent>;
+  using TypeList = std::tuple<CoreEvent, EManagerEvent, CManagerEvent>;
 
   updateCtor<TypeList>::partialDebugEvent(event, _log);
   _log << "\033[0m\n";

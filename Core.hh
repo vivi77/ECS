@@ -31,7 +31,7 @@ private:
   void delayedEventUpdate();
 
 private:
-  bool _quit;
+  bool _quit = false;
   std::list<SystemData> _data;
   std::list<std::string> _addRequest;
   std::list<std::string> _remRequest;
