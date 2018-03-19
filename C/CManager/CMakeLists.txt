@@ -12,6 +12,11 @@ target_include_directories(${MANAGER_NAME} PUBLIC
   ${PROJECT_SOURCE_DIR}/E/EManagerEvent
   ${PROJECT_SOURCE_DIR}/E/CManagerEvent
   ${PROJECT_SOURCE_DIR}/C
+  ${PROJECT_SOURCE_DIR}/S
+  )
+target_link_libraries(${MANAGER_NAME}
+  EManager
+  CManagerEvent
   )
 
 set_target_properties(${MANAGER_NAME} PROPERTIES IMPORTED_LOCATION ${OUTPUT_LOCATION})

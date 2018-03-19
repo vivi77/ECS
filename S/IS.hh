@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Entity.hh"
+#include "Entity/Entity.hh"
 #include <memory>
 
 class IS

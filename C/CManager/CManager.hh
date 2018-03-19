@@ -2,6 +2,7 @@
 
 #include "cmanager_export.h"
 #include "IC.hh"
+#include "IS.hh"
 #include "EManager.hh"
 #include "CManagerEvent.hh"
 #include <memory>
@@ -13,6 +14,7 @@ public:
   using CPtr = std::shared_ptr<IC>;
   using CID = unsigned; //CIDGenerator::ID
   using Dtor = void(*)(IC*);
+  using SPtr = std::shared_ptr<IS>;
 
 public:
   template <class C, typename ... Args>
@@ -25,8 +27,9 @@ public:
       return nullptr;
     }
 
-    std::unique_ptr<C> comp{new C{std::forward<Args>(args)...,}, it->second};
+    std::shared_ptr<C> comp{new C{std::forward<Args>(args)...,}, it->second};
     EManager::fire<CManagerEvent>(CManagerEvent::Type::COMP_CREATED, comp->getId());
+    _components.emplace_back(comp);
     return comp;
   }
 
@@ -34,4 +37,5 @@ public:
 
 private:
   static std::unordered_map<CID, Dtor> _registerComponentDtor;
+  static std::vector<CPtr> _components;
 };

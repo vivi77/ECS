@@ -37,6 +37,7 @@ set(INCLUDE_INSTALL_DIR ${INSTALL_FOLDER}/include)
 if(UNIX)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -W -Wall -Wextra")
   set(CMAKE_CXX_FLAGS_DEBUG "-g3 -DDEBUG -fsanitize=address,undefined")
+  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wl,--no-undefined")
 endif(UNIX)
 
 add_subdirectory(./Entity)
@@ -81,13 +82,16 @@ add_executable(${NAME} ${SRCS} ${HDRS})
 target_link_libraries(${NAME} PUBLIC
   EntityLogic
   EManager
-  CoreEvent)
+  CManager
+  CoreEvent
+  CManagerEvent)
 target_include_directories(${NAME} PUBLIC
+  ${CMAKE_BINARY_DIR}/E/CoreEvent
   C
+  C/CManager
   S
   E
   E/CoreEvent
-  ${CMAKE_BINARY_DIR}/E/CoreEvent
   ..)
 
 if(UNIX)

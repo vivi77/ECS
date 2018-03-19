@@ -19,7 +19,10 @@ set(DIRS ${DIRS}
 add_library(${NAME} SHARED ${SRCS} ${HDRS})
 target_include_directories(${NAME} PUBLIC ${DIRS})
 # IDLIB_NAME variable available from ECS/S/CMakeLists.txt
-target_link_libraries(${NAME} ${IDLIB_NAME} EManager ${LIBS})
+target_link_libraries(${NAME} ${IDLIB_NAME}
+  EManager
+  CoreEvent
+  ${LIBS})
 set_target_properties(${NAME} PROPERTIES IMPORTED_LOCATION ${SYS_OUTPUT_LOCATION})
 generate_export_header(${NAME})
 

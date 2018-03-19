@@ -54,10 +54,13 @@ void CLISystem::exec()
 
     if (expr->getType() != lel::CLIParserType::COMMAND)
     {
-      if (expr->getType() != lel::CLIParserType::EOL)
+      if (expr->getType() == lel::CLIParserType::CANCEL)
+      {
+        std::cout << "quit\n";
+        EManager::fire<CoreEvent>(CoreEvent::Type::EXIT);
+      }
+      else if (expr->getType() != lel::CLIParserType::EOL)
         std::cout << "This is not a command. (Type: " << expr->getType() << ")\n";
-      else if (expr->getType() == lel::CLIParserType::CANCEL)
-        std::cout << "\n";
       return ;
     }
 

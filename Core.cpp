@@ -3,16 +3,20 @@
 #include "FileSearcher.hh"
 #include "CoreEvent.hh"
 #include "EManager.hh"
+#include "CManager.hh"
+#include "EntityManager.hh"
+#include <iostream>
 
 namespace
 {
-  bool checkSystemValidity(SystemData& data)
+  bool trySystemRegistering(SystemData& data)
   {
     if (!data.loader.isValid())
     {
       EManager::fire<CoreEvent>(CoreEvent::Type::SYSTEM_NOT_FOUND,
                                 data.path.u8string(),
                                 data.loader.getLastError());
+      std::cerr << data.loader.getLastError() << "\n";
       return false;
     }
 
@@ -29,6 +33,7 @@ namespace
     data.sys = std::shared_ptr<IS>(ctor(), dtor);
     if (data.sys->isListener())
       EManager::registerListenerSystem(data.sys);
+    EntityManager::updateSysComponent(data.sys);
     return true;
   }
 
@@ -43,7 +48,7 @@ namespace
       SystemData data;
       data.path = path;
       data.loader.loadLibrary(data.path.u8string().c_str());
-      if (checkSystemValidity(data))
+      if (trySystemRegistering(data))
       {
         l.emplace_back(std::move(data));
         EManager::fire<CoreEvent>(CoreEvent::Type::ADD_SYSTEM_SUCCESS,
@@ -70,7 +75,7 @@ namespace
       }
 
       data.loader.loadLibrary(data.path.u8string().c_str());
-      if (checkSystemValidity(data))
+      if (trySystemRegistering(data))
       {
         datalist.emplace_back(std::move(data));
         EManager::fire<CoreEvent>(CoreEvent::Type::ADD_SYSTEM_SUCCESS,

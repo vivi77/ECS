@@ -2,6 +2,7 @@
 #include "debugsystem_export.h"
 #include "SIDGenerator.hh"
 #include "S_lib.hh"
+#include "CManager.hh"
 
 extern "C"
 {
