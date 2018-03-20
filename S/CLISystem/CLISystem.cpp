@@ -72,3 +72,6 @@ void CLISystem::exec()
     return ;
   }
 }
+
+void CLISystem::registerEntity(const EntityPtr&)
+{}

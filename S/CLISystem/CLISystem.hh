@@ -35,6 +35,7 @@ public:
   CLISystem();
   virtual ~CLISystem() = default;
   void exec() override;
+  void registerEntity(const EntityPtr&) override;
 
 private:
   lel::CLIProducer _cliproducer;

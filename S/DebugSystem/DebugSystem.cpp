@@ -179,3 +179,6 @@ void DebugSystem::update(const EPtr& event)
   updateCtor<TypeList>::partialDebugEvent(event, _log);
   _log << "\033[0m\n";
 }
+
+void DebugSystem::registerEntity(const EntityPtr&)
+{}
