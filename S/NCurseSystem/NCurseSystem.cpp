@@ -1,4 +1,12 @@
 #include "NCurseSystem.hh"
+#include "E/CLISystemEvent/CLISystemEvent.hh"
+#include "E/EManager.hh"
+#include "C/CompTerminalDrawable/CompTerminalDrawable.hh"
+#include <curses.h>
+
+#include "E/CoreEvent/CoreEvent.hh"
+#include "Entity/EntityManager.hh"
+//#include "C/CManager/CManager.hh"
 
 void NCurseSystem::exec()
 {
@@ -8,9 +16,14 @@ void NCurseSystem::exec()
   //  mvprintw(comp->pos.y, comp->pos.x, comp->str);
   //  attroff();
   //}
+  char c = getch();
+  if (c == 'q')
+    EManager::fire<CoreEvent>(CoreEvent::Type::EXIT);
+  else if (c == 'c')
+    EntityManager::createEntity({std::make_shared<CompTerminalDrawable>("c")});
 }
 
-void NCurseSystem::registerEntity(const EntityPtr& entity)
+void NCurseSystem::registerEntity(const EntityPtr&)
 {
   //NCurseData data;
 
@@ -26,8 +39,14 @@ void NCurseSystem::registerEntity(const EntityPtr& entity)
 
 void NCurseSystem::setup()
 {
+  EManager::fire<CLISystemEvent>(CLISystemEvent::Type::DISABLE);
+  initscr();
+  cbreak();
+  noecho();
 }
 
 void NCurseSystem::atRemove()
 {
+  endwin();
+  EManager::fire<CLISystemEvent>(CLISystemEvent::Type::ENABLE);
 }

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CRTPE.hpp"
+#include "E/CRTPE.hpp"
 #include "E/CLISystemEvent/clisystemevent_export.h"
 
 class CLISYSTEMEVENT_EXPORT CLISystemEvent : public CRTPE<CLISystemEvent>

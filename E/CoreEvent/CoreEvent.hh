@@ -1,7 +1,7 @@
 #pragma once
 
-#include "CRTPE.hpp"
-#include "coreevent_export.h"
+#include "E/CRTPE.hpp"
+#include "E/CoreEvent/coreevent_export.h"
 #include <string>
 #include <vector>
 

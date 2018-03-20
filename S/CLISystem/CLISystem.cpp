@@ -49,6 +49,9 @@ CLISystem::CLISystem()
 
 void CLISystem::exec()
 {
+  if (!_enabled)
+    return ;
+
   try
   {
     auto expr = _cliparser.parseExpression();

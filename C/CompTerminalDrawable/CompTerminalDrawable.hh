@@ -25,6 +25,8 @@ struct COMPTERMINALDRAWABLE_EXPORT CompTerminalDrawable :
   };
 
 public:
+  CompTerminalDrawable(const char*);
+  CompTerminalDrawable(const int, const int, const char*);
   CompTerminalDrawable(const int, const int, const char*, const Color);
   virtual ~CompTerminalDrawable() = default;
 
