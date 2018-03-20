@@ -119,6 +119,7 @@ namespace
         EManager::deregisterListenerSystem(it->sys);
       EManager::fire<CoreEvent>(CoreEvent::Type::REM_SYSTEM_SUCCESS,
                                 it->path.u8string(), to_string(it->sys.get()));
+      it->sys->atRemove();
       datalist.erase(it);
     }
     removeRequest.clear();
@@ -132,6 +133,7 @@ namespace
         EManager::deregisterListenerSystem(container.back().sys);
       EManager::fire<CoreEvent>(CoreEvent::Type::REM_SYSTEM_SUCCESS,
                                 container.back().path.u8string(), to_string(container.back().sys.get()));
+      container.back().sys->atRemove();
       container.pop_back();
     }
   }

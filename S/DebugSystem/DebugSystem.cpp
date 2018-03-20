@@ -9,27 +9,27 @@ namespace
 {
   inline void requestEvent(lel::Log& log, const std::string& msg)
   {
-    log << "\033[34m[ RQ ]" << msg;
+    log << "\033[34m[ RQ ] " << msg;
   }
 
   inline void badEvent(lel::Log& log, const std::string& msg)
   {
-    log << "\033[31m[ KO ]" << msg;
+    log << "\033[31m[ KO ] " << msg;
   }
 
   inline void okEvent(lel::Log& log, const std::string& msg)
   {
-    log << "\033[32m[ OK ]" << msg;
+    log << "\033[32m[ OK ] " << msg;
   }
 
   inline void warnEvent(lel::Log& log, const std::string& msg)
   {
-    log << "\033[33m[WARN]" << msg;
+    log << "\033[33m[WARN] " << msg;
   }
 
   inline void infoEvent(lel::Log& log, const std::string& msg)
   {
-    log << "[INFO]" << msg;
+    log << "[INFO] " << msg;
   }
 
   std::string to_string(void* ptr)
@@ -50,7 +50,7 @@ namespace
         badEvent(log, {"Cannot add system '" + event->getData()[0] + "'"});
         break;
       case CoreEvent::Type::ADD_SYSTEM_SUCCESS:
-        okEvent(log, {"System '" + event->getData()[0] + "' added (" + event->getData()[1] + ")"});
+        okEvent(log, {"System '" + event->getData()[0] + "' added to Core execution (" + event->getData()[1] + ")"});
         break;
       case CoreEvent::Type::ALREADY_ADDED_SYSTEM:
         warnEvent(log, {"System '" + event->getData()[0] + "' already added"});
@@ -72,7 +72,7 @@ namespace
         badEvent(log, {"Cannot remove system '" + event->getData()[0] + "'"});
         break;
       case CoreEvent::Type::REM_SYSTEM_SUCCESS:
-        okEvent(log, {"System '" + event->getData()[0] + "' removed (" + event->getData()[1] + ")"});
+        okEvent(log, {"System '" + event->getData()[0] + "' removed to Core execution (" + event->getData()[1] + ")"});
         break;
       case CoreEvent::Type::SYSTEM_NOT_FOUND:
         badEvent(log, {"System '" + event->getData()[0] + "' not found"});
@@ -99,16 +99,16 @@ namespace
         badEvent(log, "Event ID#" + std::to_string(std::get<EManagerEvent::ID>(event->getData())) + " already added");
         break;
       case EManagerEvent::Type::LISTENER_ADDED:
-        okEvent(log, "Listener added: address: " + std::get<std::string>(event->getData()));
+        okEvent(log, "Listener added (" + std::get<std::string>(event->getData()) + ")");
         break;
       case EManagerEvent::Type::LISTENER_ALREADY_ADDED:
-        badEvent(log, "Listener already added: address: " + std::get<std::string>(event->getData()));
+        badEvent(log, "Listener already added (" + std::get<std::string>(event->getData()) + ")");
         break;
       case EManagerEvent::Type::LISTENER_NOT_FOUND:
-        badEvent(log, "Listener not found: searching address: " + std::get<std::string>(event->getData()));
+        badEvent(log, "Listener not found (" + std::get<std::string>(event->getData()) + ")");
         break;
       case EManagerEvent::Type::LISTENER_REMOVED:
-        okEvent(log, "Listener removed: address: " + std::get<std::string>(event->getData()));
+        okEvent(log, "Listener removed (" + std::get<std::string>(event->getData()) + ")");
         break;
       case EManagerEvent::Type::NOT_LISTENER:
         badEvent(log, "Object at address " + std::get<std::string>(event->getData()) + "is not a listener");
@@ -238,4 +238,6 @@ void DebugSystem::setup()
 {}
 
 void DebugSystem::atRemove()
-{}
+{
+  okEvent(_log, "DebugSystem unloaded (" + to_string(this) + ")\n");
+}
