@@ -1,8 +1,9 @@
 #pragma once
 
-#include "CRTPS.hpp"
+#include "S/CRTPS.hpp"
 #include "parsing/CLIParser.hh"
 #include "parsing/CLIParserOutputs.hh"
+#include "E/IEListener.hh"
 #include <functional>
 
 class CmdManager
@@ -29,7 +30,7 @@ private:
   std::unordered_map<Command, Callback> _actions;
 };
 
-class CLISystem : public CRTPS<CLISystem>
+class CLISystem : public CRTPS<CLISystem>, public IEListener
 {
 public:
   CLISystem();
@@ -38,6 +39,8 @@ public:
   void registerEntity(const EntityPtr&) override;
   void setup() override;
   void atRemove() override;
+
+  void update(const EPtr&) override;
 
 private:
   lel::CLIProducer _cliproducer;

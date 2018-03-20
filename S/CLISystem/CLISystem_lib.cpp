@@ -1,7 +1,7 @@
 #include "CLISystem.hh"
-#include "clisystem_export.h"
-#include "S_lib.hh"
-#include "SIDGenerator.hh"
+#include "S/S_lib.hh"
+#include "S/SIDGenerator.hh"
+#include "S/CLISystem/clisystem_export.h"
 
 static void assignID()
 {

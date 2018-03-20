@@ -4,8 +4,6 @@
 #include "C/CManager/CManager.hh"
 #include "E/EManager.hh"
 
-#include <iostream>
-
 void destroy(IC* ptr)
 {
   delete ptr;

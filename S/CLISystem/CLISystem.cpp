@@ -1,6 +1,7 @@
 #include "CLISystem.hh"
-#include "CoreEvent.hh"
-#include "EManager.hh"
+#include "E/CoreEvent/CoreEvent.hh"
+#include "E/EManager.hh"
+#include "E/CLISystemEvent/CLISystemEvent.hh"
 #include <experimental/source_location>
 
 CLISystem::CLISystem()
@@ -84,3 +85,19 @@ void CLISystem::setup()
 
 void CLISystem::atRemove()
 {}
+
+void CLISystem::update(const EPtr& ptr)
+{
+  if (ptr->getID() == CLISystemEvent::getEventID())
+  {
+    auto ev = std::static_pointer_cast<CLISystemEvent>(ptr);
+    switch (ev->getType())
+    {
+      case CLISystemEvent::Type::DISABLE:
+        break;
+      case CLISystemEvent::Type::ENABLE:
+        break;
+      default: break;
+    }
+  }
+}
