@@ -26,6 +26,8 @@ public:
 
   void exec() override;
   void registerEntity(const EntityPtr&) override;
+  void setup() override;
+  void atRemove() override;
 
 private:
   std::vector<NCurseData> _drawableComp;

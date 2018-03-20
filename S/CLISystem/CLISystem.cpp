@@ -78,3 +78,9 @@ void CLISystem::exec()
 
 void CLISystem::registerEntity(const EntityPtr&)
 {}
+
+void CLISystem::setup()
+{}
+
+void CLISystem::atRemove()
+{}

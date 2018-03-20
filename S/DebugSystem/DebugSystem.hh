@@ -11,6 +11,8 @@ public:
   void exec() override;
   void update(const EPtr&) override;
   void registerEntity(const EntityPtr&) override;
+  void setup() override;
+  void atRemove() override;
 
 private:
   lel::Log _log;

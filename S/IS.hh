@@ -15,4 +15,6 @@ public:
   virtual ID getID() const = 0;
   virtual bool isListener() const = 0;
   virtual void registerEntity(const EntityPtr&) = 0;
+  virtual void setup() = 0;
+  virtual void atRemove() = 0;
 };

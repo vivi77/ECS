@@ -220,3 +220,9 @@ void DebugSystem::update(const EPtr& event)
 
 void DebugSystem::registerEntity(const EntityPtr&)
 {}
+
+void DebugSystem::setup()
+{}
+
+void DebugSystem::atRemove()
+{}

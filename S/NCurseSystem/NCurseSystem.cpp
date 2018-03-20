@@ -23,3 +23,11 @@ void NCurseSystem::registerEntity(const EntityPtr& entity)
   //if (data.isValid())
     //_drawableComp.emplace_back(data);
 }
+
+void NCurseSystem::setup()
+{
+}
+
+void NCurseSystem::atRemove()
+{
+}

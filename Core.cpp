@@ -32,6 +32,7 @@ namespace
     }
 
     data.sys = std::shared_ptr<IS>(ctor(), dtor);
+    data.sys->setup();
     if (data.sys->isListener())
       EManager::registerListenerSystem(data.sys);
     EntityManager::updateSysComponent(data.sys);

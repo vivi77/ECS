@@ -1,6 +1,7 @@
 #include "NCurseSystem.hh"
 #include "S/IS.hh"
 #include "S/S_lib.hh"
+#include "S/SIDGenerator.hh"
 
 extern "C"
 {
@@ -14,3 +15,10 @@ extern "C"
     delete ptr;
   }
 }
+
+void assignID()
+{
+  NCurseSystem::assignID(SIDGenerator::getSingleton().generateID());
+}
+
+template struct EntryPointWrapper<NCurseSystem>;
