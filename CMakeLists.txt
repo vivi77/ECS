@@ -49,6 +49,7 @@ set(SRCS
   main.cpp
   Core.cpp
   FileSearcher.cpp
+  ./StartupLoader.cpp
   ../dlloader/LinuxDLLoader.cpp
   ../dlloader/WindowsDLLoader.cpp
   ../log/Log.cpp
@@ -57,6 +58,7 @@ set(SRCS
 set(HDRS
   Core.hh
   FileSearcher.hh
+  ./StartupLoader.hh
   ../dlloader/DLLoader.hpp
   ../dlloader/LinuxDLLoader.hh
   ../dlloader/OSLoader.hpp

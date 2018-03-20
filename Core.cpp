@@ -1,11 +1,12 @@
 #include "Core.hh"
 #include "meta/conditional_os.hpp"
-#include "FileSearcher.hh"
 #include "CoreEvent.hh"
 #include "EManager.hh"
 #include "CManager.hh"
 #include "EntityManager.hh"
+#include "StartupLoader.hh"
 #include <iostream>
+#include <algorithm>
 
 namespace
 {
@@ -40,23 +41,22 @@ namespace
   std::list<SystemData> setupData()
   {
     std::list<SystemData> l;
+    StartupLoader startup{"startup.ecs"};
 
-    ECS::Utility::FileSearcher fs;
-    fs.searchFile(Core::sysLibPath.data(), std::regex(Core::autoLoadedSysRegex.data()));
     auto libFetcher = [&l](const std::experimental::filesystem::path& path)
     {
       SystemData data;
-      data.path = path;
+      data.path = Core::sysLibPath;
+      data.path += path;
       data.loader.loadLibrary(data.path.u8string().c_str());
       if (trySystemRegistering(data))
       {
-        l.emplace_back(std::move(data));
+        l.emplace_back(data);
         EManager::fire<CoreEvent>(CoreEvent::Type::ADD_SYSTEM_SUCCESS,
-                                  l.back().path.u8string());
+                                  data.path.u8string());
       }
     };
-
-    (void)fs.applyOnResult(libFetcher);
+    startup.applyOnPaths(libFetcher);
     return l;
   }
 
@@ -115,7 +115,7 @@ namespace
   }
 } /* ! */
 
-std::string_view Core::sysLibPath = lel::meta::conditional_os<std::string_view>("lib/S/", ".").value;
+std::string_view Core::sysLibPath = lel::meta::conditional_os<std::string_view>("lib/S/", "./").value;
 std::string_view Core::autoLoadedSysRegex = lel::meta::conditional_os<std::string_view>("lib(CLISystem)[.]so", "S[0-9]*[.]dll").value;
 
 Core::Core()
