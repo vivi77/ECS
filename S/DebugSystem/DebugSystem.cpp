@@ -1,7 +1,8 @@
 #include "DebugSystem.hh"
-#include "CoreEvent.hh"
-#include "EManagerEvent.hh"
-#include "CManagerEvent.hh"
+#include "E/CoreEvent/CoreEvent.hh"
+#include "E/EManagerEvent/EManagerEvent.hh"
+#include "E/CManagerEvent/CManagerEvent.hh"
+#include "E/CLISystemEvent/CLISystemEvent.hh"
 #include <sstream>
 
 namespace
@@ -49,7 +50,7 @@ namespace
         badEvent(log, {"Cannot add system '" + event->getData()[0] + "'"});
         break;
       case CoreEvent::Type::ADD_SYSTEM_SUCCESS:
-        okEvent(log, {"System '" + event->getData()[0] + "' added"});
+        okEvent(log, {"System '" + event->getData()[0] + "' added (" + event->getData()[1] + ")"});
         break;
       case CoreEvent::Type::ALREADY_ADDED_SYSTEM:
         warnEvent(log, {"System '" + event->getData()[0] + "' already added"});
@@ -71,14 +72,13 @@ namespace
         badEvent(log, {"Cannot remove system '" + event->getData()[0] + "'"});
         break;
       case CoreEvent::Type::REM_SYSTEM_SUCCESS:
-        okEvent(log, {"System '" + event->getData()[0] + "' removed"});
+        okEvent(log, {"System '" + event->getData()[0] + "' removed (" + event->getData()[1] + ")"});
         break;
       case CoreEvent::Type::SYSTEM_NOT_FOUND:
         badEvent(log, {"System '" + event->getData()[0] + "' not found"});
         break;
-      case CoreEvent::Type::UNKNOWN:
-        infoEvent(log, "Unknown event found");
       default:
+        infoEvent(log, "Unknown component event");
         break;
     }
   }
@@ -116,9 +116,8 @@ namespace
       case EManagerEvent::Type::EVENT_DTOR_NOT_FOUND:
         badEvent(log, "Event ID#" + std::to_string(std::get<EManagerEvent::ID>(event->getData())) + " has not registered a dtor. Creation of event FORBIDDEN");
         break;
-      case EManagerEvent::Type::UNKNOWN:
-        infoEvent(log, "Unknown event found");
       default:
+        infoEvent(log, "Unknown component event");
         break;
     }
   }
@@ -139,8 +138,22 @@ namespace
       case CManagerEvent::Type::COMP_DTOR_NOT_FOUND:
         badEvent(log, "Component ID#" + std::to_string(std::get<CManagerEvent::CID>(event->getData())) + " not found");
         break;
-      case CManagerEvent::Type::UNKNOWN:
+      default:
         infoEvent(log, "Unknown component event");
+        break;
+    }
+  }
+
+  void debugEvent(const std::shared_ptr<CLISystemEvent>& event, lel::Log& log)
+  {
+    switch (event->getType())
+    {
+      case CLISystemEvent::Type::DISABLE:
+        requestEvent(log, "Request CLISystem to be disabled. There will be no confirmation response");
+        break;
+      case CLISystemEvent::Type::ENABLE:
+        requestEvent(log, "Request CLISystem to be enabled. There will be no confirmation response");
+        break;
       default:
         break;
     }
@@ -212,7 +225,7 @@ void DebugSystem::exec()
 
 void DebugSystem::update(const EPtr& event)
 {
-  using TypeList = std::tuple<CoreEvent, EManagerEvent, CManagerEvent>;
+  using TypeList = std::tuple<CoreEvent, EManagerEvent, CManagerEvent, CLISystemEvent>;
 
   updateCtor<TypeList>::partialDebugEvent(event, _log);
   _log << "\033[0m\n";

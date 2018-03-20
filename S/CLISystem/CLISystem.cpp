@@ -44,6 +44,7 @@ CLISystem::CLISystem()
       }
     },
   } //CLISystem::_cmds end of initialization
+  , _enabled{true}
 {}
 
 void CLISystem::exec()
@@ -94,8 +95,10 @@ void CLISystem::update(const EPtr& ptr)
     switch (ev->getType())
     {
       case CLISystemEvent::Type::DISABLE:
+        _enabled = false;
         break;
       case CLISystemEvent::Type::ENABLE:
+        _enabled = true;
         break;
       default: break;
     }

@@ -1,9 +1,5 @@
 set(NAME DebugSystem)
 
-set(EME EManagerEvent)
-set(CME CManagerEvent)
-set(CE CoreEvent)
-
 file(GLOB SRCS
   *.cpp)
 file(GLOB HDRS
@@ -11,21 +7,8 @@ file(GLOB HDRS
   *.hpp)
 set(HDRS ${HDRS} ../S_lib.hh)
 set(DIRS ${DIRS}
-  ${CMAKE_BINARY_DIR}/S/${NAME}
-
-  ${CMAKE_BINARY_DIR}/E/${EME}
-  ${PROJECT_SOURCE_DIR}/E/${EME}
-
-  ${PROJECT_SOURCE_DIR}/E/${CE}
-  ${CMAKE_BINARY_DIR}/E/${CE}
-
-  ${PROJECT_SOURCE_DIR}/E/${CME}
-  ${CMAKE_BINARY_DIR}/E/${CME}
-
-  ${PROJECT_SOURCE_DIR}/C
-  ${PROJECT_SOURCE_DIR}/C/CManager
-  ${PROJECT_SOURCE_DIR}/E
-  ${PROJECT_SOURCE_DIR}/S)
+  ${CMAKE_BINARY_DIR}
+  ${PROJECT_SOURCE_DIR})
 
 add_library(${NAME} SHARED ${SRCS} ${HDRS})
 target_include_directories(${NAME} PUBLIC ${DIRS})
@@ -33,9 +16,10 @@ target_include_directories(${NAME} PUBLIC ${DIRS})
 target_link_libraries(${NAME} ${IDLIB_NAME}
   EManager
   CManager
-  ${EME}
-  ${CME}
-  ${CE}
+  EManagerEvent
+  CManagerEvent
+  CoreEvent
+  CLISystemEvent
   ${LIBS})
 set_target_properties(${NAME} PROPERTIES IMPORTED_LOCATION ${SYS_OUTPUT_LOCATION})
 generate_export_header(${NAME})

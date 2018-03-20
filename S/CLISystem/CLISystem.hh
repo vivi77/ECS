@@ -46,4 +46,5 @@ private:
   lel::CLIProducer _cliproducer;
   lel::CLIParser _cliparser;
   CmdManager _cmds;
+  bool _enabled = true;
 };

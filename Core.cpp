@@ -7,9 +7,17 @@
 #include "StartupLoader.hh"
 #include <iostream>
 #include <algorithm>
+#include <sstream>
 
 namespace
 {
+  std::string to_string(void *ptr)
+  {
+    std::stringstream ss;
+    ss << ptr;
+    return ss.str();
+  }
+
   bool trySystemRegistering(SystemData& data)
   {
     if (!data.loader.isValid())
@@ -54,7 +62,7 @@ namespace
       {
         l.emplace_back(data);
         EManager::fire<CoreEvent>(CoreEvent::Type::ADD_SYSTEM_SUCCESS,
-                                  data.path.u8string());
+                                  data.path.u8string(), to_string(data.sys.get()));
       }
     };
     startup.applyOnPaths(libFetcher);
@@ -66,7 +74,8 @@ namespace
     for (const auto& addSysPath : addRequest)
     {
       SystemData data;
-      data.path = static_cast<std::string>(Core::sysLibPath) + addSysPath;
+      data.path = Core::sysLibPath;
+      data.path += addSysPath;
 
       if (lel::OSLoader::isLibraryLoaded(addSysPath.c_str()))
       {
@@ -80,7 +89,7 @@ namespace
       {
         datalist.emplace_back(std::move(data));
         EManager::fire<CoreEvent>(CoreEvent::Type::ADD_SYSTEM_SUCCESS,
-                                  datalist.back().path.u8string());
+                                  datalist.back().path.u8string(), to_string(datalist.back().sys.get()));
       }
     }
     addRequest.clear();
@@ -109,10 +118,22 @@ namespace
       if (it->sys->isListener())
         EManager::deregisterListenerSystem(it->sys);
       EManager::fire<CoreEvent>(CoreEvent::Type::REM_SYSTEM_SUCCESS,
-                                it->path.u8string());
+                                it->path.u8string(), to_string(it->sys.get()));
       datalist.erase(it);
     }
     removeRequest.clear();
+  }
+
+  void reverseClear(std::list<SystemData>& container)
+  {
+    while (!container.empty())
+    {
+      if (container.back().sys->isListener())
+        EManager::deregisterListenerSystem(container.back().sys);
+      EManager::fire<CoreEvent>(CoreEvent::Type::REM_SYSTEM_SUCCESS,
+                                container.back().path.u8string(), to_string(container.back().sys.get()));
+      container.pop_back();
+    }
   }
 } /* ! */
 
@@ -135,11 +156,14 @@ void Core::run()
   while (!shouldQuit() && !_data.empty())
   {
     for (auto& data : _data)
+    {
       data.sys->exec();
+    }
     delayedEventUpdate();
   }
-  EManager::fire<CoreEvent>(CoreEvent::Type::CLOSING);
   EManager::deregisterListener(shared_from_this());
+  reverseClear(_data);
+  EManager::fire<CoreEvent>(CoreEvent::Type::CLOSING);
 }
 
 void Core::update(const IEListener::EPtr& e)

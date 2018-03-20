@@ -1,8 +1,7 @@
 #include "DebugSystem.hh"
-#include "debugsystem_export.h"
-#include "SIDGenerator.hh"
-#include "S_lib.hh"
-#include "CManager.hh"
+#include "S/DebugSystem/debugsystem_export.h"
+#include "S/SIDGenerator.hh"
+#include "S/S_lib.hh"
 
 extern "C"
 {
