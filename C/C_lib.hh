@@ -1,6 +1,6 @@
 #pragma once
 
-static void assignID();
+static void setup();
 
 #ifdef __linux__
 
@@ -19,7 +19,7 @@ struct EntryPointWrapper
   __attribute__((constructor))
   static void entrypoint()
   {
-    assignID();
+    setup();
   }
 };
 
@@ -36,7 +36,7 @@ BOOL WINAPI DllMain(IN HINSTANCE handle, IN DWORD reason, IN LPVOID reserved)
   switch (reason)
   {
   case DLL_PROCESS_ATTACH:
-    assignID();
+    setup();
     break;
   case DLL_PROCESS_DETACH:
   case DLL_THREAD_ATTACH:

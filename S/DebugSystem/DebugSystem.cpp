@@ -62,7 +62,7 @@ namespace
         break;
       case CoreEvent::Type::INVALID_SYSTEM:
         badEvent(log, {"System from library '" + event->getData()[0]
-                 + "' is not valid" + "\033[1;31mReason: " + event->getData()[1]});
+                 + "' is not valid" + "\033[1;31m\nReason: " + event->getData()[1]});
         break;
       case CoreEvent::Type::REM_SYSTEM:
         requestEvent(log, "Remove system '" + event->getData()[0] + "' requested");

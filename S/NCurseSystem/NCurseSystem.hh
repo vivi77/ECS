@@ -1,25 +1,25 @@
 #pragma once
 
-#include "CRTPS.hpp"
-#include "ncursesystem_export.h"
-//#include "C/CompDrawable.hh"
+#include "S/CRTPS.hpp"
+#include "S/NCurseSystem/ncursesystem_export.h"
+#include "C/CompTerminalDrawable/CompTerminalDrawable.hh"
 #include <vector>
 
 class NCURSESYSTEM_EXPORT NCurseSystem : public CRTPS<NCurseSystem>
 {
 public:
-  //using CompDrawablePtr = std::shared_ptr<CompDrawable>;
-  //
-  //private:
-  //  struct NCurseData
-  //  {
-  //    CompDrawablePtr drawableComp;
-  //
-  //    bool isValid()
-  //    {
-  //      return drawableComp != nullptr;
-  //    }
-  //  };
+  using DrawablePtr = std::shared_ptr<CompTerminalDrawable>;
+
+private:
+  struct NCurseData
+  {
+    DrawablePtr drawableComp;
+
+    bool isValid() const
+    {
+      return drawableComp != nullptr;
+    }
+  };
 
 public:
   virtual ~NCurseSystem() = default;
@@ -28,5 +28,5 @@ public:
   void registerEntity(const EntityPtr&) override;
 
 private:
-  //std::vector<NCurseData> _drawableComp;
+  std::vector<NCurseData> _drawableComp;
 };

@@ -4,7 +4,8 @@ set(IDLIB_NAME "EIDGen")
 set(SRCS "EIDGenerator.cpp")
 set(HDRS "EIDGenerator.hh")
 add_library(${IDLIB_NAME} SHARED ${SRCS} ${HDRS})
-target_include_directories(${IDLIB_NAME} PUBLIC ${CMAKE_BINARY_DIR}/E)
+target_include_directories(${IDLIB_NAME} PUBLIC
+  ${CMAKE_BINARY_DIR})
 set_target_properties(${IDLIB_NAME} PROPERTIES IMPORTED_LOCATION ${OUTPUT_LOCATION})
 generate_export_header(${IDLIB_NAME})
 string(TOLOWER ${IDLIB_NAME} IDLIB_NAME_LOW)
@@ -20,14 +21,8 @@ set(SRCS EManager.cpp ${CMAKE_SOURCE_DIR}/../log/Log.cpp)
 set(HDRS EManager.hh ${CMAKE_SOURCE_DIR}/../log/Log.hh)
 add_library(${MANAGER_NAME} SHARED ${SRCS} ${HDRS})
 target_include_directories(${MANAGER_NAME} PUBLIC
-  ${CMAKE_BINARY_DIR}/E
-  ${CMAKE_BINARY_DIR}/Entity
-  ${CMAKE_BINARY_DIR}/E/EManagerEvent
+  ${CMAKE_BINARY_DIR}
   ${PROJECT_SOURCE_DIR}
-  ${PROJECT_SOURCE_DIR}/Entity
-  ${PROJECT_SOURCE_DIR}/E/
-  ${PROJECT_SOURCE_DIR}/E/EManagerEvent
-  ${PROJECT_SOURCE_DIR}/S
   ${PROJECT_SOURCE_DIR}/..)
 set_target_properties(${MANAGER_NAME} PROPERTIES IMPORTED_LOCATION ${OUTPUT_LOCATION})
 generate_export_header(${MANAGER_NAME})

@@ -4,6 +4,7 @@ file(GLOB SRCS *.cpp)
 file(GLOB HDRS *.hh *.hpp)
 add_library(${MANAGER_NAME} SHARED ${SRCS} ${HDRS})
 target_include_directories(${MANAGER_NAME} PUBLIC
+  ${CMAKE_BINARY_DIR}
   ${CMAKE_BINARY_DIR}/E
   ${CMAKE_BINARY_DIR}/E/EManagerEvent
   ${CMAKE_BINARY_DIR}/E/CManagerEvent

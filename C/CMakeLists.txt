@@ -4,7 +4,8 @@ set(IDLIB_NAME "CIDGen")
 set(SRCS "CIDGenerator.cpp")
 set(HDRS "CIDGenerator.hh")
 add_library(${IDLIB_NAME} SHARED ${SRCS} ${HDRS})
-target_include_directories(${IDLIB_NAME} PUBLIC ${CMAKE_BINARY_DIR}/C)
+target_include_directories(${IDLIB_NAME} PUBLIC
+  ${CMAKE_BINARY_DIR})
 set_target_properties(${IDLIB_NAME} PROPERTIES IMPORTED_LOCATION ${OUTPUT_LOCATION})
 
 generate_export_header(${IDLIB_NAME})

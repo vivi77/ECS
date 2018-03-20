@@ -1,6 +1,6 @@
 #pragma once
 
-#include "IC.hh"
+#include "C/IC.hh"
 
 template <class D>
 class CRTPC : public IC

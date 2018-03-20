@@ -13,7 +13,7 @@ file(GLOB HDRS
   *.hh
   *.hpp)
 set(DIRS
-  ${CMAKE_BINARY_DIR}/Entity
+  ${CMAKE_BINARY_DIR}
   ${PROJECT_SOURCE_DIR}
   )
 

@@ -1,8 +1,10 @@
 #pragma once
 
-#include "compterminaldrawable_export.h"
+#include "C/CompTerminalDrawable/compterminaldrawable_export.h"
+#include "C/CRTPC.hpp"
 
-struct CompTerminalDrawable
+struct COMPTERMINALDRAWABLE_EXPORT CompTerminalDrawable :
+  public CRTPC<CompTerminalDrawable>
 {
   struct Pos
   {
@@ -24,6 +26,7 @@ struct CompTerminalDrawable
 
 public:
   CompTerminalDrawable(const int, const int, const char*, const Color);
+  virtual ~CompTerminalDrawable() = default;
 
   Pos pos;
   const char* sym = "";

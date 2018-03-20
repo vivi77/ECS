@@ -3,7 +3,7 @@
 #include "CoreEvent.hh"
 #include "EManager.hh"
 #include "CManager.hh"
-#include "EntityManager.hh"
+#include "Entity/EntityManager.hh"
 #include "StartupLoader.hh"
 #include <iostream>
 #include <algorithm>

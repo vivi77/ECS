@@ -1,8 +1,8 @@
 #pragma once
 
-#include "CRTPE.hpp"
-#include "cmanagerevent_export.h"
-#include "IC.hh"
+#include "E/CRTPE.hpp"
+#include "E/CManagerEvent/cmanagerevent_export.h"
+#include "C/IC.hh"
 #include <memory>
 #include <variant>
 

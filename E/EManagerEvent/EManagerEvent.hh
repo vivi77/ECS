@@ -1,7 +1,7 @@
 #pragma once
 
-#include "CRTPE.hpp"
-#include "emanagerevent_export.h"
+#include "E/CRTPE.hpp"
+#include "E/EManagerEvent/emanagerevent_export.h"
 #include <variant>
 #include <string>
 

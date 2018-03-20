@@ -1,5 +1,5 @@
 #include "EManager.hh"
-#include "IS.hh"
+#include "S/IS.hh"
 #include <algorithm>
 #include <sstream>
 

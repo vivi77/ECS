@@ -4,6 +4,7 @@ file(GLOB SRCS *.cpp)
 file(GLOB HDRS *.hh *.hpp)
 set(HDRS ${HDRS} ../E_lib.hh)
 set(DIRS
+  ${CMAKE_BINARY_DIR}
   ${CMAKE_BINARY_DIR}/E/${NAME}
   ${PROJECT_SOURCE_DIR}/E)
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "cidgen_export.h"
+#include "C/cidgen_export.h"
 
 class CIDGEN_EXPORT CIDGenerator
 {

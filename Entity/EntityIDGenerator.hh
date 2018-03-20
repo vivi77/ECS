@@ -1,6 +1,6 @@
 #pragma once
 
-#include "entitylogic_export.h"
+#include "Entity/entitylogic_export.h"
 
 class ENTITYLOGIC_EXPORT EntityIDGenerator
 {

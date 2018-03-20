@@ -1,6 +1,6 @@
 #pragma once
 
-#include "eidgen_export.h"
+#include "E/eidgen_export.h"
 
 class EIDGEN_EXPORT EIDGenerator
 {

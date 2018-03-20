@@ -1,6 +1,6 @@
 #pragma once
 
-#include "entitylogic_export.h"
+#include "Entity/entitylogic_export.h"
 #include "Entity.hh"
 #include "EntityIDGenerator.hh"
 #include "S/IS.hh"

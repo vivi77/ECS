@@ -1,8 +1,8 @@
 #pragma once
 
-#include "emanager_export.h"
+#include "E/emanager_export.h"
 #include "IEListener.hh"
-#include "EManagerEvent.hh"
+#include "E/EManagerEvent/EManagerEvent.hh"
 #include <vector>
 #include <unordered_map>
 

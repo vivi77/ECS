@@ -14,12 +14,12 @@ void NCurseSystem::registerEntity(const EntityPtr& entity)
 {
   //NCurseData data;
 
-  auto comps = entity->getComponents();
-  for (auto& comp : comps)
-  {
-    //if (comp->getID() == CompDrawable::getCompID())
-    //  data.drawableComp = std::static_pointer_cast<CompDrawable>(comp);
-  }
+  //auto comps = entity->getComponents();
+  //for (auto& comp : comps)
+  //{
+    //if (comp->getID() == CompTerminalDrawable::getComponentID())
+      //data.drawableComp = std::static_pointer_cast<CompTerminalDrawable>(comp);
+  //}
   //if (data.isValid())
-  //  _drawableComp.emplace_back(comp);
+    //_drawableComp.emplace_back(data);
 }
