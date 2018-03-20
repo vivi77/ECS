@@ -13,7 +13,6 @@ public:
 public:
   enum class Type : char
   {
-    UNKNOWN,
     // OK
     LISTENER_ADDED,
     LISTENER_REMOVED,
@@ -28,7 +27,7 @@ public:
   };
 
 public:
-  EManagerEvent(const Type t = Type::UNKNOWN);
+  EManagerEvent(const Type t);
   template <typename T>
   EManagerEvent(const Type t, T&& data)
     : _t{t}
@@ -40,6 +39,6 @@ public:
   Data getData() const;
 
 private:
-  Type _t = Type::UNKNOWN;
+  Type _t;
   Data _data;
 };

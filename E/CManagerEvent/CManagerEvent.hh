@@ -16,7 +16,6 @@ public:
 public:
   enum class Type : char
   {
-    UNKNOWN,
     // EVENT
     COMP_CREATED,
 
@@ -29,7 +28,7 @@ public:
   };
 
 public:
-  CManagerEvent(const Type t = Type::UNKNOWN);
+  CManagerEvent(const Type t);
   template <typename T>
   CManagerEvent(const Type t, const T& data)
     : _t{t}

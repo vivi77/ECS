@@ -3,18 +3,13 @@
 #include "EManager.hh"
 #include "E_lib.hh"
 
-extern "C"
+namespace
 {
-  CLISYSTEMEVENT_EXPORT IE* create()
-  {
-    return new CLISystemEvent;
-  }
-
-  CLISYSTEMEVENT_EXPORT void destroy(IE* ptr)
+  void destroy(CLISystemEvent* ptr)
   {
     delete ptr;
   }
-}
+} /* ! */
 
 static void setup()
 {

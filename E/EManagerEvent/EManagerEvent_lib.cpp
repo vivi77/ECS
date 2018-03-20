@@ -3,18 +3,13 @@
 #include "EManager.hh"
 #include "E_lib.hh"
 
-extern "C"
+namespace
 {
-  EMANAGEREVENT_EXPORT IE* create()
-  {
-    return new EManagerEvent;
-  }
-
-  EMANAGEREVENT_EXPORT void destroy(IE* ptr)
+  void destroy(EManagerEvent* ptr)
   {
     delete ptr;
   }
-}
+} /* ! */
 
 static void setup()
 {

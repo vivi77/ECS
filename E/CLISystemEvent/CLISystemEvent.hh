@@ -8,15 +8,13 @@ class CLISYSTEMEVENT_EXPORT CLISystemEvent : public CRTPE<CLISystemEvent>
 public:
   enum class Type : char
   {
-    UNKNOWN,
-
     //Commands
     DISABLE,
     ENABLE,
   };
 
 public:
-  CLISystemEvent(Type t = Type::UNKNOWN);
+  CLISystemEvent(Type t);
   virtual ~CLISystemEvent() = default;
 
   Type getType() const;

@@ -4,18 +4,13 @@
 #include "EIDGenerator.hh"
 #include "E_lib.hh"
 
-extern "C"
+namespace
 {
-  COREEVENT_EXPORT IE* create()
-  {
-    return new CoreEvent;
-  }
-
-  COREEVENT_EXPORT void destroy(IE* ptr)
+  void destroy(CoreEvent* ptr)
   {
     delete ptr;
   }
-}
+} /* ! */
 
 static void setup()
 {
