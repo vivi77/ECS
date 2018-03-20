@@ -18,7 +18,7 @@ public:
   Entity(const ID, std::initializer_list<CPtr>);
 
   ID getID() const;
-  CContainer& accessComponents();
+  CContainer getComponents() const;
 
   void addComponent(const CPtr& comp);
   void removeComponent(const IC::ID);

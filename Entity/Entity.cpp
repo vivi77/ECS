@@ -11,7 +11,7 @@ Entity::ID Entity::getID() const
   return _id;
 }
 
-Entity::CContainer& Entity::accessComponents()
+Entity::CContainer Entity::getComponents() const
 {
   return _components;
 }
