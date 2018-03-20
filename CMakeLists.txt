@@ -39,6 +39,7 @@ if(UNIX)
   set(CMAKE_CXX_FLAGS_DEBUG "-g3 -DDEBUG -fsanitize=address,undefined")
 endif(UNIX)
 
+add_subdirectory(./Entity)
 add_subdirectory(./C)
 add_subdirectory(./E)
 add_subdirectory(./S)
@@ -47,7 +48,6 @@ set(SRCS
   main.cpp
   Core.cpp
   FileSearcher.cpp
-  Entity.cpp
   ../dlloader/LinuxDLLoader.cpp
   ../dlloader/WindowsDLLoader.cpp
   ../log/Log.cpp
@@ -56,7 +56,6 @@ set(SRCS
 set(HDRS
   Core.hh
   FileSearcher.hh
-  Entity.hh
   ../dlloader/DLLoader.hpp
   ../dlloader/LinuxDLLoader.hh
   ../dlloader/OSLoader.hpp
@@ -79,8 +78,17 @@ if (CMAKE_COMPILER_IS_GNUCXX)
 endif()
 
 add_executable(${NAME} ${SRCS} ${HDRS})
-target_link_libraries(${NAME} PUBLIC EManager CoreEvent)
-target_include_directories(${NAME} PUBLIC C S E E/CoreEvent ${CMAKE_BINARY_DIR}/E/CoreEvent ..)
+target_link_libraries(${NAME} PUBLIC
+  EntityLogic
+  EManager
+  CoreEvent)
+target_include_directories(${NAME} PUBLIC
+  C
+  S
+  E
+  E/CoreEvent
+  ${CMAKE_BINARY_DIR}/E/CoreEvent
+  ..)
 
 if(UNIX)
   if (CMAKE_COMPILER_IS_GNUCXX)

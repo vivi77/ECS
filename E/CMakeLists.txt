@@ -21,7 +21,10 @@ set(HDRS EManager.hh ${CMAKE_SOURCE_DIR}/../log/Log.hh)
 add_library(${MANAGER_NAME} SHARED ${SRCS} ${HDRS})
 target_include_directories(${MANAGER_NAME} PUBLIC
   ${CMAKE_BINARY_DIR}/E
+  ${CMAKE_BINARY_DIR}/Entity
   ${CMAKE_BINARY_DIR}/E/EManagerEvent
+  ${PROJECT_SOURCE_DIR}
+  ${PROJECT_SOURCE_DIR}/Entity
   ${PROJECT_SOURCE_DIR}/E/
   ${PROJECT_SOURCE_DIR}/E/EManagerEvent
   ${PROJECT_SOURCE_DIR}/S

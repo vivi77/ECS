@@ -1,11 +1,13 @@
 #pragma once
 
 #include "C/IC.hh"
+#include "entitylogic_export.h"
 #include <vector>
 #include <memory>
 
-class Entity
+class ENTITYLOGIC_EXPORT Entity
 {
+public:
   using CPtr = std::shared_ptr<IC>;
   using CContainer = std::vector<CPtr>;
 

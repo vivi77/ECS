@@ -35,7 +35,7 @@ void Entity::removeComponent(const IC::ID id)
   auto endIt = std::end(_components);
   auto pred = [&id](const auto& it) -> bool
         {
-          it->getID() == id;
+          return it->getID() == id;
         };
   auto it = std::find_if(beginIt, endIt, pred);
   if (it != endIt)
