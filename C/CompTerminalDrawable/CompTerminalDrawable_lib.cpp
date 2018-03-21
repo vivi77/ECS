@@ -13,7 +13,6 @@ static void setup()
 {
   CompTerminalDrawable::assignID(CIDGenerator::getSingleton().generateID());
   CManager::registerCompDtor(CompTerminalDrawable::getComponentID(), (CManager::Dtor)&destroy);
-  EManager::fire<CManagerEvent>(CManagerEvent::Type::COMP_ADDED, CompTerminalDrawable::getComponentID());
 }
 
 template struct EntryPointWrapper<CompTerminalDrawable>;

@@ -10,31 +10,38 @@
 
 void NCurseSystem::exec()
 {
-  //for (auto& comp : _drawableComp)
-  //{
-  //  attron();
-  //  mvprintw(comp->pos.y, comp->pos.x, comp->str);
-  //  attroff();
-  //}
   char c = getch();
   if (c == 'q')
     EManager::fire<CoreEvent>(CoreEvent::Type::EXIT);
   else if (c == 'c')
+  {
+    mvprintw(2, 2, "lol");
     EntityManager::createEntity({std::make_shared<CompTerminalDrawable>("c")});
+  }
+
+  int x = 0;
+  for (auto& comp : _drawableComp)
+  {
+    mvprintw(comp.drawableComp->pos.y, comp.drawableComp->pos.x + x, comp.drawableComp->sym);
+    ++x;
+  }
+  refresh();
 }
 
-void NCurseSystem::registerEntity(const EntityPtr&)
+void NCurseSystem::registerEntity(const EntityPtr& entity)
 {
-  //NCurseData data;
+  NCurseData data;
 
-  //auto comps = entity->getComponents();
-  //for (auto& comp : comps)
-  //{
-    //if (comp->getID() == CompTerminalDrawable::getComponentID())
-      //data.drawableComp = std::static_pointer_cast<CompTerminalDrawable>(comp);
-  //}
-  //if (data.isValid())
-    //_drawableComp.emplace_back(data);
+  auto comps = entity->getComponents();
+  for (auto& comp : comps)
+  {
+    if (comp->getID() == CompTerminalDrawable::getComponentID())
+      data.drawableComp = std::static_pointer_cast<CompTerminalDrawable>(comp);
+  }
+  if (data.isValid())
+    _drawableComp.emplace_back(data);
+  mvprintw(2, 2, "lol");
+  refresh();
 }
 
 void NCurseSystem::setup()

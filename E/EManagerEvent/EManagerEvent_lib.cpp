@@ -15,7 +15,6 @@ static void setup()
 {
   EManagerEvent::assignID(EIDGenerator::getSingleton().generateID());
   EManager::registerEventDtor(EManagerEvent::getEventID(), (EManager::Dtor)&destroy);
-  EManager::fire<EManagerEvent>(EManagerEvent::Type::EVENT_ADDED, EManagerEvent::getEventID());
 }
 
 template struct EntryPointWrapper<EManagerEvent>;
