@@ -3,6 +3,7 @@
 #include "E/EManagerEvent/EManagerEvent.hh"
 #include "E/CManagerEvent/CManagerEvent.hh"
 #include "E/CLISystemEvent/CLISystemEvent.hh"
+#include "E/EntityManagerEvent/EntityManagerEvent.hh"
 #include <sstream>
 
 namespace
@@ -155,6 +156,26 @@ namespace
         requestEvent(log, "Request CLISystem to be enabled. There will be no confirmation response");
         break;
       default:
+        infoEvent(log, "Unknown component event");
+        break;
+    }
+  }
+
+  void debugEvent(const std::shared_ptr<EntityManagerEvent>& event, lel::Log& log)
+  {
+    switch (event->getType())
+    {
+      case EntityManagerEvent::Type::ENTITY_CREATED:
+        okEvent(log, "Entity CREATED with ID#" + std::to_string(event->getID()));
+        break;
+      case EntityManagerEvent::Type::ENTITY_DESTROYED:
+        okEvent(log, "Entity DESTROYED with ID#" + std::to_string(event->getID()));
+        break;
+      case EntityManagerEvent::Type::ENTITY_NOT_FOUND:
+        badEvent(log, "Entity ID#" + std::to_string(event->getID()) + " not found");
+        break;
+      default:
+        infoEvent(log, "Unknown component event");
         break;
     }
   }
@@ -225,7 +246,7 @@ void DebugSystem::exec()
 
 void DebugSystem::update(const EPtr& event)
 {
-  using TypeList = std::tuple<CoreEvent, EManagerEvent, CManagerEvent, CLISystemEvent>;
+  using TypeList = std::tuple<CoreEvent, EManagerEvent, CManagerEvent, CLISystemEvent, EntityManagerEvent>;
 
   updateCtor<TypeList>::partialDebugEvent(event, _log);
   _log << "\033[0m\n";
