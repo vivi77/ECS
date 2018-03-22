@@ -15,8 +15,7 @@ void NCurseSystem::exec()
     EManager::fire<CoreEvent>(CoreEvent::Type::EXIT);
   else if (c == 'c')
   {
-    mvprintw(2, 2, "lol");
-    EntityManager::createEntity({std::make_shared<CompTerminalDrawable>("c")});
+    EntityManager::createEntity({std::make_shared<CompTerminalDrawable>("c\na")});
   }
 
   int x = 0;
@@ -40,7 +39,6 @@ void NCurseSystem::registerEntity(const EntityPtr& entity)
   }
   if (data.isValid())
     _drawableComp.emplace_back(data);
-  mvprintw(2, 2, "lol");
   refresh();
 }
 

@@ -9,10 +9,11 @@ std::vector<EntityManager::EntityPtr> EntityManager::_entities;
 
 EntityManager::EntityPtr EntityManager::createEntity(std::initializer_list<ComponentPtr> comps)
 {
-  _entities.emplace_back(std::make_shared<Entity>(EntityIDGenerator::generateID(), comps));
-  EManager::fire<EntityManagerEvent>(EntityManagerEvent::Type::ENTITY_CREATED, _entities.back()->getID());
-  CoreSystemProxy::registerEntityInSystems(_entities.back());
-  return _entities.back();
+  auto ent = std::make_shared<Entity>(EntityIDGenerator::generateID(), comps);
+  _entities.emplace_back(ent);
+  EManager::fire<EntityManagerEvent>(EntityManagerEvent::Type::ENTITY_CREATED, ent->getID());
+  CoreSystemProxy::registerEntityInSystems(ent);
+  return ent;
 }
 
 void EntityManager::destroyEntity(const ID id)
@@ -28,6 +29,7 @@ void EntityManager::destroyEntity(const ID id)
     EManager::fire<EntityManagerEvent>(EntityManagerEvent::Type::ENTITY_NOT_FOUND, id);
   else
   {
+    // TODO: Remove Entitty from systems
     _entities.erase(it);
     EManager::fire<EntityManagerEvent>(EntityManagerEvent::Type::ENTITY_DESTROYED, id);
   }

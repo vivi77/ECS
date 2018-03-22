@@ -166,13 +166,13 @@ namespace
     switch (event->getType())
     {
       case EntityManagerEvent::Type::ENTITY_CREATED:
-        okEvent(log, "Entity CREATED with ID#" + std::to_string(event->getID()));
+        okEvent(log, "Entity CREATED with ID#" + std::to_string(event->getEntityID()));
         break;
       case EntityManagerEvent::Type::ENTITY_DESTROYED:
-        okEvent(log, "Entity DESTROYED with ID#" + std::to_string(event->getID()));
+        okEvent(log, "Entity DESTROYED with ID#" + std::to_string(event->getEntityID()));
         break;
       case EntityManagerEvent::Type::ENTITY_NOT_FOUND:
-        badEvent(log, "Entity ID#" + std::to_string(event->getID()) + " not found");
+        badEvent(log, "Entity ID#" + std::to_string(event->getEntityID()) + " not found");
         break;
       default:
         infoEvent(log, "Unknown component event");
@@ -239,6 +239,15 @@ namespace
     }
   };
 } /* ! */
+
+DebugSystem::DebugSystem()
+  : _logFile{"debug_ecs.log"}
+  , _log{_logFile}
+{
+  // Fallback in case of error
+  if (!_logFile)
+    _log.setStream(std::cout);
+}
 
 void DebugSystem::exec()
 {

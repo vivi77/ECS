@@ -22,6 +22,7 @@ public:
   virtual ~EntityManagerEvent() = default;
 
   Type getType() const;
+  EntityID getEntityID() const;
 
 private:
   Type _t;

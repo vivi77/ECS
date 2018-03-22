@@ -13,3 +13,8 @@ EntityManagerEvent::Type EntityManagerEvent::getType() const
 {
   return _t;
 }
+
+EntityManagerEvent::EntityID EntityManagerEvent::getEntityID() const
+{
+  return _id;
+}
