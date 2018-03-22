@@ -1,5 +1,6 @@
 #include "EntityManager.hh"
 #include "EntityIDGenerator.hh"
+#include "S/CoreSystemProxy/CoreSystemProxy.hh"
 #include <algorithm>
 
 std::vector<EntityManager::EntityPtr> EntityManager::_entities;
@@ -7,6 +8,7 @@ std::vector<EntityManager::EntityPtr> EntityManager::_entities;
 EntityManager::EntityPtr EntityManager::createEntity(std::initializer_list<ComponentPtr> comps)
 {
   _entities.emplace_back(std::make_shared<Entity>(EntityIDGenerator::generateID(), comps));
+  CoreSystemProxy::registerEntityInSystems(_entities.back());
   return _entities.back();
 }
 

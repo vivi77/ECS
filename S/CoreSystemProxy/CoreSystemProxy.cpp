@@ -1,5 +1,7 @@
 #include "CoreSystemProxy.hh"
 
+CoreSystemProxy::SystemContainer* CoreSystemProxy::_systems;
+
 void CoreSystemProxy::setSystemsList(SystemContainer& systems)
 {
   static bool accessed = false;

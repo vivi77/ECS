@@ -3,6 +3,7 @@ set(NAME CoreSystemProxy)
 file(GLOB SRCS *.cpp)
 file(GLOB HDRS *.hh *.hpp)
 set(DIRS
+  ${CMAKE_BINARY_DIR}
   ${PROJECT_SOURCE_DIR}
   )
 

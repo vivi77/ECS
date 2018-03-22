@@ -19,6 +19,9 @@ set(DIRS
 
 add_library(${NAME} SHARED ${SRCS} ${HDRS})
 target_include_directories(${NAME} PUBLIC ${DIRS})
+target_link_libraries(${NAME} PUBLIC
+  CoreSystemProxy
+  )
 set_target_properties(${NAME} PROPERTIES IMPORTED_LOCATION ${ENTITY_OUTPUT_LOCATION})
 generate_export_header(${NAME})
 
