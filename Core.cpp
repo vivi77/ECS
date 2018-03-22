@@ -5,6 +5,7 @@
 #include "CManager.hh"
 #include "Entity/EntityManager.hh"
 #include "StartupLoader.hh"
+#include "S/CoreSystemProxy/CoreSystemProxy.hh"
 #include <iostream>
 #include <algorithm>
 #include <sstream>
@@ -154,6 +155,7 @@ void Core::run()
     return ;
   }
 
+  CoreSystemProxy::setSystemsList(_data);
   EManager::registerListener(shared_from_this());
   while (!shouldQuit() && !_data.empty())
   {
