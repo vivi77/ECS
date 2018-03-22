@@ -17,6 +17,6 @@ void CoreSystemProxy::registerEntityInSystems(const std::shared_ptr<Entity>& ent
   if (!_systems)
     return ;
 
-  for (auto& sys : *_systems)
-    sys->registerEntity(entity);
+  for (auto& data : *_systems)
+    data.sys->registerEntity(entity);
 }

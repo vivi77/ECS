@@ -5,6 +5,7 @@ file(GLOB HDRS *.hh *.hpp)
 set(DIRS
   ${CMAKE_BINARY_DIR}
   ${PROJECT_SOURCE_DIR}
+  ${PROJECT_SOURCE_DIR}/..
   )
 
 add_library(${NAME} SHARED ${SRCS} ${DIRS})

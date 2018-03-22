@@ -1,7 +1,8 @@
 #pragma once
 
 #include "S/IS.hh"
-#include <vector>
+#include "CoreSystemData.hh"
+#include <list>
 
 class Core;
 
@@ -11,8 +12,7 @@ class Core;
 class CoreSystemProxy
 {
 public:
-  using SPtr = std::shared_ptr<IS>;
-  using SystemContainer = std::vector<SPtr>; //Core::'Container of the systems'
+  using SystemContainer = std::list<CoreSystemData>; //Core::'Container of the systems'
 
 public:
   static void registerEntityInSystems(const std::shared_ptr<Entity>& entity);
