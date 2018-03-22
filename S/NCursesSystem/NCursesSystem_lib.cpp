@@ -1,4 +1,4 @@
-#include "NCurseSystem.hh"
+#include "NCursesSystem.hh"
 #include "S/IS.hh"
 #include "S/S_lib.hh"
 #include "S/SIDGenerator.hh"
@@ -7,7 +7,7 @@ extern "C"
 {
   IS* create()
   {
-    return new NCurseSystem();
+    return new NCursesSystem();
   }
 
   void destroy(IS* ptr)
@@ -18,7 +18,7 @@ extern "C"
 
 void assignID()
 {
-  NCurseSystem::assignID(SIDGenerator::getSingleton().generateID());
+  NCursesSystem::assignID(SIDGenerator::getSingleton().generateID());
 }
 
-template struct EntryPointWrapper<NCurseSystem>;
+template struct EntryPointWrapper<NCursesSystem>;

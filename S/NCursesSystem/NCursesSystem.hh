@@ -1,17 +1,17 @@
 #pragma once
 
 #include "S/CRTPS.hpp"
-#include "S/NCurseSystem/ncursesystem_export.h"
+#include "S/NCursesSystem/ncursessystem_export.h"
 #include "C/CompTerminalDrawable/CompTerminalDrawable.hh"
 #include <vector>
 
-class NCURSESYSTEM_EXPORT NCurseSystem : public CRTPS<NCurseSystem>
+class NCURSESSYSTEM_EXPORT NCursesSystem : public CRTPS<NCursesSystem>
 {
 public:
   using DrawablePtr = std::shared_ptr<CompTerminalDrawable>;
 
 private:
-  struct NCurseData
+  struct NCursesData
   {
     DrawablePtr drawableComp;
 
@@ -22,7 +22,7 @@ private:
   };
 
 public:
-  virtual ~NCurseSystem() = default;
+  virtual ~NCursesSystem() = default;
 
   void exec() override;
   void registerEntity(const EntityPtr&) override;
@@ -30,5 +30,5 @@ public:
   void atRemove() override;
 
 private:
-  std::vector<NCurseData> _drawableComp;
+  std::vector<NCursesData> _drawableComp;
 };

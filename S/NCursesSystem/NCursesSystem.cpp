@@ -1,4 +1,4 @@
-#include "NCurseSystem.hh"
+#include "NCursesSystem.hh"
 #include "E/CLISystemEvent/CLISystemEvent.hh"
 #include "E/EManager.hh"
 #include "C/CompTerminalDrawable/CompTerminalDrawable.hh"
@@ -8,7 +8,7 @@
 #include "Entity/EntityManager.hh"
 //#include "C/CManager/CManager.hh"
 
-void NCurseSystem::exec()
+void NCursesSystem::exec()
 {
   char c = getch();
   if (c == 'q')
@@ -27,9 +27,9 @@ void NCurseSystem::exec()
   refresh();
 }
 
-void NCurseSystem::registerEntity(const EntityPtr& entity)
+void NCursesSystem::registerEntity(const EntityPtr& entity)
 {
-  NCurseData data;
+  NCursesData data;
 
   auto comps = entity->getComponents();
   for (auto& comp : comps)
@@ -42,7 +42,7 @@ void NCurseSystem::registerEntity(const EntityPtr& entity)
   refresh();
 }
 
-void NCurseSystem::setup()
+void NCursesSystem::setup()
 {
   EManager::fire<CLISystemEvent>(CLISystemEvent::Type::DISABLE);
   initscr();
@@ -50,7 +50,7 @@ void NCurseSystem::setup()
   noecho();
 }
 
-void NCurseSystem::atRemove()
+void NCursesSystem::atRemove()
 {
   endwin();
   EManager::fire<CLISystemEvent>(CLISystemEvent::Type::ENABLE);

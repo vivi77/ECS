@@ -1,4 +1,4 @@
-set(NAME NCurseSystem)
+set(NAME NCursesSystem)
 
 file(GLOB SRCS
   *.cpp)
@@ -23,7 +23,7 @@ target_link_libraries(${NAME}
   CLISystemEvent
   CoreEvent
   CompTerminalDrawable)
-  
+
 set_target_properties(${NAME} PROPERTIES IMPORTED_LOCATION ${SYS_OUTPUT_LOCATION})
 generate_export_header(${NAME})
 
