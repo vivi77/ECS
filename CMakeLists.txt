@@ -49,6 +49,7 @@ set(SRCS
   main.cpp
   Core.cpp
   FileSearcher.cpp
+  ./CoreSystemData.hh
   ./StartupLoader.cpp
   ../dlloader/LinuxDLLoader.cpp
   ../dlloader/WindowsDLLoader.cpp

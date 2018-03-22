@@ -1,18 +1,9 @@
 #pragma once
 
-#include "IS.hh"
 #include "IEListener.hh"
-#include "dlloader/OSLoader.hpp"
-#include <experimental/filesystem>
+#include "CoreSystemData.hh"
 #include <memory>
 #include <list>
-
-struct SystemData
-{
-  std::experimental::filesystem::path path;
-  lel::OSLoader loader;
-  std::shared_ptr<IS> sys;
-};
 
 class Core : public IEListener, public std::enable_shared_from_this<Core>
 {
@@ -32,7 +23,7 @@ private:
 
 private:
   bool _quit = false;
-  std::list<SystemData> _data;
+  std::list<CoreSystemData> _data;
   std::list<std::string> _addRequest;
   std::list<std::string> _remRequest;
 

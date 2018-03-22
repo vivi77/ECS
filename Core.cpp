@@ -18,7 +18,7 @@ namespace
     return ss.str();
   }
 
-  bool trySystemRegistering(SystemData& data)
+  bool trySystemRegistering(CoreSystemData& data)
   {
     if (!data.loader.isValid())
     {
@@ -47,14 +47,14 @@ namespace
     return true;
   }
 
-  std::list<SystemData> setupData()
+  std::list<CoreSystemData> setupData()
   {
-    std::list<SystemData> l;
+    std::list<CoreSystemData> l;
     StartupLoader startup{"startup.ecs"};
 
     auto libFetcher = [&l](const std::experimental::filesystem::path& path)
     {
-      SystemData data;
+      CoreSystemData data;
       data.path = Core::sysLibPath;
       data.path += path;
       data.loader.loadLibrary(data.path.u8string().c_str());
@@ -69,11 +69,11 @@ namespace
     return l;
   }
 
-  void updateAddRequest(std::list<std::string>& addRequest, std::list<SystemData>& datalist)
+  void updateAddRequest(std::list<std::string>& addRequest, std::list<CoreSystemData>& datalist)
   {
     for (const auto& addSysPath : addRequest)
     {
-      SystemData data;
+      CoreSystemData data;
       data.path = Core::sysLibPath;
       data.path += addSysPath;
 
@@ -95,7 +95,7 @@ namespace
     addRequest.clear();
   }
 
-  void updateRemoveRequest(std::list<std::string>& removeRequest, std::list<SystemData>& datalist)
+  void updateRemoveRequest(std::list<std::string>& removeRequest, std::list<CoreSystemData>& datalist)
   {
     for (const auto& removeSysPath : removeRequest)
     {
@@ -103,7 +103,7 @@ namespace
 
       auto beginIt = std::begin(datalist);
       auto endIt = std::end(datalist);
-      auto pred = [&systemPath](const SystemData& data) -> bool
+      auto pred = [&systemPath](const CoreSystemData& data) -> bool
       {
         return data.path.filename() == systemPath;
       };
@@ -125,7 +125,7 @@ namespace
     removeRequest.clear();
   }
 
-  void reverseClear(std::list<SystemData>& container)
+  void reverseClear(std::list<CoreSystemData>& container)
   {
     while (!container.empty())
     {
