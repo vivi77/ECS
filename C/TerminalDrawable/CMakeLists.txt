@@ -1,4 +1,4 @@
-set(NAME CompTerminalDrawable)
+set(NAME TerminalDrawable)
 
 file(GLOB SRCS *.cpp)
 file(GLOB HDRS *.hh *.hpp)

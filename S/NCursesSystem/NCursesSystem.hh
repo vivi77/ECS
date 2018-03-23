@@ -2,13 +2,13 @@
 
 #include "S/CRTPS.hpp"
 #include "S/NCursesSystem/ncursessystem_export.h"
-#include "C/CompTerminalDrawable/CompTerminalDrawable.hh"
+#include "C/TerminalDrawable/TerminalDrawable.hh"
 #include <vector>
 
 class NCURSESSYSTEM_EXPORT NCursesSystem : public CRTPS<NCursesSystem>
 {
 public:
-  using DrawablePtr = std::shared_ptr<CompTerminalDrawable>;
+  using DrawablePtr = std::shared_ptr<TerminalDrawable>;
 
 private:
   struct NCursesData
