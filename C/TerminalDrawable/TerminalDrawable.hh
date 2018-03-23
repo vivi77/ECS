@@ -5,12 +5,6 @@
 
 struct TERMINALDRAWABLE_EXPORT TerminalDrawable : public CRTPC<TerminalDrawable>
 {
-  struct Pos
-  {
-    int x = 0;
-    int y = 0;
-  };
-
   enum class Color
   {
     BLACK,
@@ -25,11 +19,9 @@ struct TERMINALDRAWABLE_EXPORT TerminalDrawable : public CRTPC<TerminalDrawable>
 
 public:
   TerminalDrawable(const char*);
-  TerminalDrawable(const int, const int, const char*);
-  TerminalDrawable(const int, const int, const char*, const Color);
+  TerminalDrawable(const char*, const Color);
   virtual ~TerminalDrawable() = default;
 
-  Pos pos;
   const char* sym = "";
   Color color = Color::WHITE;
 };
