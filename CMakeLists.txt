@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.0)
+
 project(dll_test)
 
 #https://stackoverflow.com/questions/7787823/cmake-how-to-get-the-name-of-all-subdirectories-of-a-directory
@@ -40,6 +41,8 @@ if(UNIX)
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wl,--no-undefined")
 endif(UNIX)
 
+include(GenerateExportHeader)
+add_subdirectory(./Utility)
 add_subdirectory(./Entity)
 add_subdirectory(./C)
 add_subdirectory(./E)
