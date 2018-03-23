@@ -15,6 +15,14 @@ public:
   Transform(const Position&, const Rotation&, const Scale&);
   virtual ~Transform() = default;
 
+  Position getPosition() const;
+  Rotation getRotation() const;
+  Scale getScale() const;
+
+  void setPosition(const Position&);
+  void setRotation(const Rotation&);
+  void setScale(const Scale&);
+
 private:
   Position _position;
   Rotation _rotation;

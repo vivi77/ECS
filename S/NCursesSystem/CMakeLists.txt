@@ -22,6 +22,7 @@ target_link_libraries(${NAME}
   EManager
   CLISystemEvent
   CoreEvent
+  Transform
   TerminalDrawable)
 
 set_target_properties(${NAME} PROPERTIES IMPORTED_LOCATION ${SYS_OUTPUT_LOCATION})
