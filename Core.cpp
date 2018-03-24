@@ -78,7 +78,7 @@ namespace
       data.path = Core::sysLibPath;
       data.path += addSysPath;
 
-      if (lel::OSLoader::isLibraryLoaded(addSysPath.c_str()))
+      if (lel::OSDLLoader::isLibraryLoaded(addSysPath.c_str()))
       {
         EManager::fire<CoreEvent>(CoreEvent::Type::ALREADY_ADDED_SYSTEM,
                                   data.path.u8string());

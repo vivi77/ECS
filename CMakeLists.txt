@@ -65,7 +65,7 @@ set(HDRS
   ./StartupLoader.hh
   ../dlloader/DLLoader.hpp
   ../dlloader/LinuxDLLoader.hh
-  ../dlloader/OSLoader.hpp
+  ../dlloader/OSDLLoader.hpp
   ../dlloader/WindowsDLLoader.hh
   ../log/Log.hh
   ../meta/conditional_os.hpp
