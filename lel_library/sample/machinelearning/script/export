@@ -1,0 +1,31 @@
+#!/bin/sh
+
+function help() {
+  echo "To export to your current directory"
+  echo -e "\t$0"
+  echo
+  echo "To export to an other directory"
+  echo -e "\t$0 <path_to_directory>"
+}
+
+arr=(`ls ../dev`)
+
+if [[ $# -eq 0 ]]; then
+  for i in "${arr[@]}"
+  do
+    cp -v $i `pwd`
+  done
+elif [[ $# -eq 1 ]]; then
+  if [[ $1 = "-h" ]] || [[ $1 = "--help" ]]; then
+    help
+  else
+    if [[ -d $1 ]]; then
+      for i in "${arr[@]}"
+      do
+        cp -v $i $1
+      done
+    else
+      echo "$0: $1 is not a directory"
+    fi
+  fi
+fi
