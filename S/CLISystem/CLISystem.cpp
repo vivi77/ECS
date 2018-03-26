@@ -5,8 +5,7 @@
 #include <experimental/source_location>
 
 CLISystem::CLISystem()
-  : _cliproducer{}
-  , _cliparser{_cliproducer}
+  : _cliparser{}
   , _cmds{
     {
       "quit",

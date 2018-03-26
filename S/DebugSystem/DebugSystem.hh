@@ -2,7 +2,7 @@
 
 #include "CRTPS.hpp"
 #include "IEListener.hh"
-#include "log/Log.hh"
+#include "Log.hh"
 #include <fstream>
 
 class DebugSystem : public CRTPS<DebugSystem>, public IEListener

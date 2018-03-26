@@ -5,9 +5,8 @@ file(GLOB HDRS *.hh *.hpp)
 set(DIRS
   ${CMAKE_BINARY_DIR}
   ${PROJECT_SOURCE_DIR}
-  ${PROJECT_SOURCE_DIR}/..
   )
 
 add_library(${NAME} SHARED ${SRCS} ${DIRS})
 target_include_directories(${NAME} PUBLIC ${DIRS})
-target_link_libraries(${NAME} PUBLIC)
+target_link_libraries(${NAME} PUBLIC lel_utils)

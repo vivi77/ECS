@@ -17,8 +17,8 @@ install(FILES
 
 
 set(MANAGER_NAME "EManager")
-set(SRCS EManager.cpp ${CMAKE_SOURCE_DIR}/../log/Log.cpp)
-set(HDRS EManager.hh ${CMAKE_SOURCE_DIR}/../log/Log.hh)
+set(SRCS EManager.cpp)
+set(HDRS EManager.hh)
 add_library(${MANAGER_NAME} SHARED ${SRCS} ${HDRS})
 target_include_directories(${MANAGER_NAME} PUBLIC
   ${CMAKE_BINARY_DIR}

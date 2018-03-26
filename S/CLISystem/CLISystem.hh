@@ -1,8 +1,8 @@
 #pragma once
 
 #include "S/CRTPS.hpp"
-#include "parsing/CLIParser.hh"
-#include "parsing/CLIParserOutputs.hh"
+#include "CLIParser/CLIParser.hh"
+#include "CLIParser/CLIParserOutputs.hh"
 #include "E/IEListener.hh"
 #include <functional>
 
@@ -43,7 +43,6 @@ public:
   void update(const EPtr&) override;
 
 private:
-  lel::CLIProducer _cliproducer;
   lel::CLIParser _cliparser;
   CmdManager _cmds;
   bool _enabled = true;

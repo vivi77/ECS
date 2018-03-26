@@ -41,6 +41,8 @@ if(UNIX)
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wl,--no-undefined")
 endif(UNIX)
 
+add_subdirectory(./lel_library)
+
 include(GenerateExportHeader)
 add_subdirectory(./Utility)
 add_subdirectory(./Entity)
@@ -52,26 +54,17 @@ set(SRCS
   main.cpp
   Core.cpp
   FileSearcher.cpp
-  ./CoreSystemData.hh
-  ./StartupLoader.cpp
-  ../dlloader/LinuxDLLoader.cpp
-  ../dlloader/WindowsDLLoader.cpp
-  ../log/Log.cpp
+  StartupLoader.cpp
   )
 
 set(HDRS
   Core.hh
   FileSearcher.hh
-  ./StartupLoader.hh
-  ../dlloader/DLLoader.hpp
-  ../dlloader/LinuxDLLoader.hh
-  ../dlloader/OSDLLoader.hpp
-  ../dlloader/WindowsDLLoader.hh
-  ../log/Log.hh
-  ../meta/conditional_os.hpp
+  StartupLoader.hh
+  CoreSystemData.hh
   )
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/../CMakeModules)
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/CMakeModules)
 if (CMAKE_COMPILER_IS_GNUCXX)
   include(CodeCoverage)
   append_coverage_compiler_flags()
@@ -86,19 +79,15 @@ endif()
 
 add_executable(${NAME} ${SRCS} ${HDRS})
 target_link_libraries(${NAME} PUBLIC
+  lel_lib
   EntityLogic
   EManager
   CManager
   CoreEvent
   CManagerEvent)
 target_include_directories(${NAME} PUBLIC
-  ${CMAKE_BINARY_DIR}/E/CoreEvent
-  C
-  C/CManager
-  S
-  E
-  E/CoreEvent
-  ..)
+  ${CMAKE_BINARY_DIR}
+  ${CMAKE_CURRENT_SOURCE_DIR})
 
 if(UNIX)
   if (CMAKE_COMPILER_IS_GNUCXX)

@@ -4,16 +4,17 @@ file(GLOB SRCS
   *.cpp)
 file(GLOB HDRS
   *.hh
-  *.hpp)
-set(HDRS ${HDRS} ../S_lib.hh)
-set(DIRS ${DIRS}
+  *.hpp
+  ../S_lib.hh)
+set(DIRS
   ${CMAKE_BINARY_DIR}
   ${PROJECT_SOURCE_DIR})
 
 add_library(${NAME} SHARED ${SRCS} ${HDRS})
 target_include_directories(${NAME} PUBLIC ${DIRS})
 # IDLIB_NAME variable available from ECS/S/CMakeLists.txt
-target_link_libraries(${NAME} ${IDLIB_NAME}
+target_link_libraries(${NAME} PUBLIC
+  Log
   EManager
   CManager
   EManagerEvent
@@ -21,7 +22,7 @@ target_link_libraries(${NAME} ${IDLIB_NAME}
   CoreEvent
   CLISystemEvent
   EntityManagerEvent
-  ${LIBS})
+  ${IDLIB_NAME})
 set_target_properties(${NAME} PROPERTIES IMPORTED_LOCATION ${SYS_OUTPUT_LOCATION})
 generate_export_header(${NAME})
 

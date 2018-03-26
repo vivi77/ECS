@@ -1,6 +1,6 @@
 #pragma once
 
-#include "dlloader/OSDLLoader.hpp"
+#include "OSDLLoader/OSDLLoader.hh"
 #include "S/IS.hh"
 #include <experimental/filesystem>
 
