@@ -1,0 +1,22 @@
+#!/bin/sh
+
+cd `dirname $0`
+
+mkdir -vp ../build
+cd ../build
+
+echo -e "\033[7mCompiling with cmake\033[0m"
+sleep 1
+cmake ..
+
+if [ $? -eq 0 ]; then
+  echo -e "\033[7mCompiling with make\033[0m"
+  sleep 1
+  make -j4
+
+  if [ $? -eq 0 ]; then
+    echo -e "\033[7mTesting\033[0m"
+    sleep 1
+    ./../build/machineLearning
+  fi
+fi

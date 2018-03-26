@@ -1,0 +1,8 @@
+.ycm_extra_conf.py
+build
+linux
+windows
+googletest
+
+# Use it to ignore something
+*.ignore
