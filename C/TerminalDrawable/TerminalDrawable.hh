@@ -22,11 +22,11 @@ struct TERMINALDRAWABLE_EXPORT TerminalDrawable : public CRTPC<TerminalDrawable>
   {
     NORMAL = 0,
     BOLD = 1,
-    DIM = BOLD >> 1,
-    UNDERLINED = DIM >> 1,
-    BLINK = UNDERLINED >> 1,
-    REVERSE = BLINK >> 1,
-    HIDDEN = REVERSE >> 1,
+    DIM = BOLD << 1,
+    UNDERLINED = DIM << 1,
+    BLINK = UNDERLINED << 1,
+    REVERSE = BLINK << 1,
+    HIDDEN = REVERSE << 1,
   };
 
   using Attr = unsigned long long;

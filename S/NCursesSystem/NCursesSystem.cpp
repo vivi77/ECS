@@ -9,7 +9,7 @@
 
 namespace
 {
-  static constexpr TerminalDrawable::Color realColor[]{
+  constexpr TerminalDrawable::Color realColor[]{
     TerminalDrawable::Color::BLACK,
     TerminalDrawable::Color::RED,
     TerminalDrawable::Color::GREEN,
@@ -19,7 +19,7 @@ namespace
     TerminalDrawable::Color::CYAN,
     TerminalDrawable::Color::WHITE,
   };
-  static constexpr int requestColor[]{
+  constexpr int requestColor[]{
     static_cast<int>(TerminalDrawable::Color::BLACK),
     static_cast<int>(TerminalDrawable::Color::RED),
     static_cast<int>(TerminalDrawable::Color::GREEN),
@@ -29,7 +29,7 @@ namespace
     static_cast<int>(TerminalDrawable::Color::CYAN),
     static_cast<int>(TerminalDrawable::Color::WHITE),
   };
-  static constexpr int colorValue[]{
+  constexpr int colorValue[]{
     COLOR_BLACK,
     COLOR_RED,
     COLOR_GREEN,
@@ -38,6 +38,22 @@ namespace
     COLOR_MAGENTA,
     COLOR_CYAN,
     COLOR_WHITE,
+  };
+  constexpr int realAttr[]{
+    A_BOLD,
+    A_DIM,
+    A_UNDERLINE,
+    A_BLINK,
+    A_REVERSE,
+    A_INVIS,
+  };
+  constexpr TerminalDrawable::Attributes termattr[]{
+    TerminalDrawable::Attributes::BOLD,
+    TerminalDrawable::Attributes::DIM,
+    TerminalDrawable::Attributes::UNDERLINED,
+    TerminalDrawable::Attributes::BLINK,
+    TerminalDrawable::Attributes::REVERSE,
+    TerminalDrawable::Attributes::HIDDEN,
   };
 
   int getColorValue(const TerminalDrawable::Color color)
@@ -75,6 +91,21 @@ namespace
     }
   }
 
+  template <typename Fct>
+  void execOnColorsAndAttr(Fct&& fct)
+  {
+    constexpr auto nbColor = sizeof(requestColor) / sizeof(*requestColor);
+    constexpr auto nbAttr = sizeof(termattr) / sizeof(*termattr);
+    for (auto fg = 0ul; fg < nbColor; ++fg)
+    {
+      for (auto bg = 0ul; bg < nbColor; ++bg)
+      {
+        for (auto attr = 0ul; attr < nbAttr; ++attr)
+          std::forward<Fct>(fct)(fg, bg, attr);
+      }
+    }
+  }
+
   void initNCursesColor()
   {
     if (has_colors() == FALSE)
@@ -91,6 +122,21 @@ namespace
     };
     ::execOnAllColor(callback);
   }
+
+  template <size_t N>
+  void toggleOnAttributes(const std::bitset<N>& attr)
+  {
+    for (auto i = 0ul; i < N; ++i)
+    {
+      if (attr.test(i))
+        attron(realAttr[i]);
+    }
+  }
+
+  void toggleOffAttributes()
+  {
+    attrset(A_NORMAL);
+  }
 } /* ! */
 
 void NCursesSystem::exec()
@@ -104,9 +150,11 @@ void NCursesSystem::exec()
     auto index = ::getIndexColorPair(comp.drawableComp->fgColor,
                                      comp.drawableComp->bgColor);
     attron(COLOR_PAIR(index));
+    toggleOnAttributes(comp.drawableComp->attributes);
     mvprintw(comp.transform->getPosition().y,
              comp.transform->getPosition().x,
              comp.drawableComp->sym);
+    toggleOffAttributes();
     attroff(COLOR_PAIR(index));
   }
   refresh();
@@ -138,12 +186,12 @@ void NCursesSystem::setup()
   nodelay(stdscr, TRUE);
   start_color();
 
-  auto callback = [](const auto fg, const auto bg)
+  auto callback = [](const auto fg, const auto bg, const auto attr)
   {
-    EntityManager::createEntity({std::make_shared<TerminalDrawable>("a", realColor[fg], realColor[bg]),
-                                std::make_shared<Transform>(fg, bg, 0)});
+    EntityManager::createEntity({std::make_shared<TerminalDrawable>("a", realColor[fg], realColor[bg], termattr[attr]),
+                                std::make_shared<Transform>(fg * 8 + attr, bg, 0)});
   };
-  ::execOnAllColor(callback);
+  ::execOnColorsAndAttr(callback);
 
   ::initNCursesColor();
 }
