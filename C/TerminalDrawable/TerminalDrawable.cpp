@@ -4,7 +4,13 @@ TerminalDrawable::TerminalDrawable(const char* c)
   : sym{c}
 {}
 
-TerminalDrawable::TerminalDrawable(const char* c, const Color clr)
+TerminalDrawable::TerminalDrawable(const char* c, const Color fg)
   : sym{c}
-  , color{clr}
+  , fgColor{fg}
+{}
+
+TerminalDrawable::TerminalDrawable(const char* c, const Color fg, const Color bg)
+  : sym{c}
+  , fgColor{fg}
+  , bgColor{bg}
 {}

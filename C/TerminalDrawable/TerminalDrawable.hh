@@ -20,8 +20,10 @@ struct TERMINALDRAWABLE_EXPORT TerminalDrawable : public CRTPC<TerminalDrawable>
 public:
   TerminalDrawable(const char*);
   TerminalDrawable(const char*, const Color);
+  TerminalDrawable(const char*, const Color, const Color);
   virtual ~TerminalDrawable() = default;
 
   const char* sym = "";
-  Color color = Color::WHITE;
+  Color fgColor = Color::WHITE;
+  Color bgColor = Color::WHITE;
 };
