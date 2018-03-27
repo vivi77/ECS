@@ -20,7 +20,7 @@ private:
 
     bool isValid() const
     {
-      return drawableComp != nullptr;
+      return drawableComp != nullptr && transform != nullptr;
     }
   };
 
