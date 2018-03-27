@@ -16,13 +16,13 @@ void NCursesSystem::exec()
     EntityManager::createEntity({std::make_shared<TerminalDrawable>("c\na"), std::make_shared<Transform>(0, 0, 0)});
   }
 
-  int x = 0;
   for (auto& comp : _data)
   {
+    attron(COLOR_PAIR(static_cast<int>(comp.drawableComp->color)));
     mvprintw(comp.transform->getPosition().y,
-             comp.transform->getPosition().x + x,
+             comp.transform->getPosition().x,
              comp.drawableComp->sym);
-    ++x;
+    attroff(COLOR_PAIR(static_cast<int>(comp.drawableComp->color)));
   }
   refresh();
 }
@@ -34,9 +34,10 @@ void NCursesSystem::registerEntity(const EntityPtr& entity)
   auto comps = entity->getComponents();
   for (auto& comp : comps)
   {
-    if (comp->getID() == TerminalDrawable::getComponentID())
+    auto compID = comp->getID();
+    if (compID == TerminalDrawable::getComponentID())
       data.drawableComp = std::static_pointer_cast<TerminalDrawable>(comp);
-    else if (comp->getID() == Transform::getComponentID())
+    else if (compID == Transform::getComponentID())
       data.transform = std::static_pointer_cast<Transform>(comp);
   }
   if (data.isValid())
@@ -49,6 +50,22 @@ void NCursesSystem::setup()
   initscr();
   cbreak();
   noecho();
+
+
+  if (has_colors() == FALSE)
+  {
+    // Fire event to warn about the error OR create a component with information ?
+    mvprintw(0, 0, "No colors");
+    return;
+  }
+  init_pair(static_cast<int>(TerminalDrawable::Color::BLACK), COLOR_BLACK, 0);
+  init_pair(static_cast<int>(TerminalDrawable::Color::RED), COLOR_RED, 0);
+  init_pair(static_cast<int>(TerminalDrawable::Color::GREEN), COLOR_GREEN, 0);
+  init_pair(static_cast<int>(TerminalDrawable::Color::YELLOW), COLOR_YELLOW, 0);
+  init_pair(static_cast<int>(TerminalDrawable::Color::BLUE), COLOR_BLUE, 0);
+  init_pair(static_cast<int>(TerminalDrawable::Color::MAGENTA), COLOR_MAGENTA, 0);
+  init_pair(static_cast<int>(TerminalDrawable::Color::CYAN), COLOR_CYAN, 0);
+  init_pair(static_cast<int>(TerminalDrawable::Color::WHITE), COLOR_WHITE, 0);
 }
 
 void NCursesSystem::atRemove()
