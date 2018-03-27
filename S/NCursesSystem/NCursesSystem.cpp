@@ -13,16 +13,17 @@ void NCursesSystem::exec()
     EManager::fire<CoreEvent>(CoreEvent::Type::EXIT);
   else if (c == 'c')
   {
-    EntityManager::createEntity({std::make_shared<TerminalDrawable>("c\na"), std::make_shared<Transform>(0, 0, 0)});
+    EntityManager::createEntity({std::make_shared<TerminalDrawable>("c\na"),
+                                std::make_shared<Transform>(0, 0, 0)});
   }
 
   for (auto& comp : _data)
   {
-    attron(COLOR_PAIR(static_cast<int>(comp.drawableComp->color)));
+    attron(COLOR_PAIR(static_cast<int>(comp.drawableComp->fgColor)));
     mvprintw(comp.transform->getPosition().y,
              comp.transform->getPosition().x,
              comp.drawableComp->sym);
-    attroff(COLOR_PAIR(static_cast<int>(comp.drawableComp->color)));
+    attroff(COLOR_PAIR(static_cast<int>(comp.drawableComp->fgColor)));
   }
   refresh();
 }
