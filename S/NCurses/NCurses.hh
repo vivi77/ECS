@@ -2,7 +2,7 @@
 
 #include "S/CRTPS.hpp"
 #include "S/NCurses/ncursessystem_export.h"
-#include "C/TerminalDrawable/TerminalDrawable.hh"
+#include "C/TerminalText/TerminalText.hh"
 #include "C/Transform/Transform.hh"
 #include <vector>
 
@@ -15,7 +15,7 @@ namespace lel
       class NCURSESSYSTEM_EXPORT NCurses : public CRTPS<NCurses>
       {
       public:
-        using DrawablePtr = std::shared_ptr<component::TerminalDrawable>;
+        using DrawablePtr = std::shared_ptr<component::TerminalText>;
         using TransformPtr = std::shared_ptr<component::Transform>;
 
       private:
