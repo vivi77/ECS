@@ -2,7 +2,7 @@
 
 #include "C/TerminalText/terminaltext_export.h"
 #include "C/CRTPC.hpp"
-#include "C/TemplateText/TemplateText.hpp"
+#include "C/TemplateComp/Text.hpp"
 #include <bitset>
 
 namespace lel
@@ -48,7 +48,7 @@ namespace lel
       };
 
       // Should use type-alias but there cannot export the class
-      struct TERMINALTEXT_EXPORT TerminalText : public TemplateText<TerminalColor>
+      struct TERMINALTEXT_EXPORT TerminalText : public templateComponent::TemplateText<TerminalColor>
       {
       public:
         template <typename ... Args>
