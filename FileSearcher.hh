@@ -5,9 +5,9 @@
 #include <vector>
 #include <regex>
 
-namespace ECS
+namespace lel
 {
-  namespace Utility
+  namespace utility
   {
     class FileSearcher
     {
@@ -48,5 +48,5 @@ namespace ECS
     private:
       ResultContainer _result;
     };
-  } /* !Utility */
-} /* !ECS */
+  } /* !utility */
+} /* !lel */

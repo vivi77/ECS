@@ -29,7 +29,7 @@ void Entity::addComponent(const CPtr& comp)
     _components.emplace_back(comp);
 }
 
-void Entity::removeComponent(const IC::ID id)
+void Entity::removeComponent(const lel::ecs::component::IC::ID id)
 {
   auto beginIt = std::begin(_components);
   auto endIt = std::end(_components);

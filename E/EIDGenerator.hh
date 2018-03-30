@@ -2,18 +2,27 @@
 
 #include "E/eidgen_export.h"
 
-class EIDGEN_EXPORT EIDGenerator
+namespace lel
 {
-public:
-  using ID = unsigned;
+  namespace ecs
+  {
+    namespace event
+    {
+      class EIDGEN_EXPORT EIDGenerator
+      {
+      public:
+        using ID = unsigned;
 
-public:
-  static EIDGenerator& getSingleton();
-  ID generateID();
+      public:
+        static EIDGenerator& getSingleton();
+        ID generateID();
 
-private:
-  EIDGenerator();
+      private:
+        EIDGenerator();
 
-private:
-  ID _idGenerator;
-};
+      private:
+        ID _idGenerator;
+      };
+    } /* !event */
+  } /* !ecs */
+} /* !lel */

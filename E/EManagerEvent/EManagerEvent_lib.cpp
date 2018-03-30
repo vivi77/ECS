@@ -5,7 +5,7 @@
 
 namespace
 {
-  void destroy(EManagerEvent* ptr)
+  void destroy(lel::ecs::event::EManagerEvent* ptr)
   {
     delete ptr;
   }
@@ -13,8 +13,10 @@ namespace
 
 static void setup()
 {
-  EManagerEvent::assignID(EIDGenerator::getSingleton().generateID());
-  EManager::registerEventDtor(EManagerEvent::getEventID(), (EManager::Dtor)&destroy);
+  using EManagerEvent = lel::ecs::event::EManagerEvent;
+
+  EManagerEvent::assignID(lel::ecs::event::EIDGenerator::getSingleton().generateID());
+  lel::ecs::event::EManager::registerEventDtor(EManagerEvent::getEventID(), (lel::ecs::event::EManager::Dtor)&destroy);
 }
 
-template struct EntryPointWrapper<EManagerEvent>;
+template struct EntryPointWrapper<lel::ecs::event::EManagerEvent>;

@@ -5,21 +5,27 @@
 #include <vector>
 #include <experimental/filesystem>
 
-class StartupLoader
+namespace lel
 {
-public:
-  using Path = std::string;
-  using PathContainer = std::vector<Path>;
-
-public:
-  StartupLoader(const std::string& filename);
-  template <typename Fct>
-  void applyOnPaths(Fct&& fct)
+  namespace ecs
   {
-    for (std::experimental::filesystem::path p : _paths)
-      std::forward<Fct>(fct)(p);
-  }
+    class StartupLoader
+    {
+    public:
+      using Path = std::string;
+      using PathContainer = std::vector<Path>;
 
-private:
-  PathContainer _paths;
-};
+    public:
+      StartupLoader(const std::string& filename);
+      template <typename Fct>
+      void applyOnPaths(Fct&& fct)
+      {
+        for (std::experimental::filesystem::path p : _paths)
+          std::forward<Fct>(fct)(p);
+      }
+
+    private:
+      PathContainer _paths;
+    };
+  } /* !ecs */
+} /* !lel */

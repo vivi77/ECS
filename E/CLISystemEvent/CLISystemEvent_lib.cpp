@@ -5,7 +5,7 @@
 
 namespace
 {
-  void destroy(CLISystemEvent* ptr)
+  void destroy(lel::ecs::event::CLISystemEvent* ptr)
   {
     delete ptr;
   }
@@ -13,8 +13,10 @@ namespace
 
 static void setup()
 {
-  CLISystemEvent::assignID(EIDGenerator::getSingleton().generateID());
-  EManager::registerEventDtor(CLISystemEvent::getEventID(), (EManager::Dtor)&destroy);
+  using CLISystemEvent = lel::ecs::event::CLISystemEvent;
+
+  CLISystemEvent::assignID(lel::ecs::event::EIDGenerator::getSingleton().generateID());
+  lel::ecs::event::EManager::registerEventDtor(CLISystemEvent::getEventID(), (lel::ecs::event::EManager::Dtor)&destroy);
 }
 
-template struct EntryPointWrapper<CLISystemEvent>;
+template struct EntryPointWrapper<lel::ecs::event::CLISystemEvent>;

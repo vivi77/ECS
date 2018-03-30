@@ -2,46 +2,55 @@
 
 #include "IE.hh"
 
-template <class D>
-class CRTPE : public IE
+namespace lel
 {
-public:
-  using ID = IE::ID;
-
-public:
-  virtual ~CRTPE() = default;
-
-  ID getID() const final
+  namespace ecs
   {
-    return getEventID();
-  }
-
-  static ID getEventID()
-  {
-    return _id;
-  }
-
-  static void assignID(const ID id)
-  {
-    if (!isIDAssigned())
+    namespace event
     {
-      _id = id;
-      _idAssigned = true;
-    }
-  }
+      template <class D>
+      class CRTPE : public IE
+      {
+      public:
+        using ID = IE::ID;
 
-  static bool isIDAssigned()
-  {
-    return _idAssigned;
-  }
+      public:
+        virtual ~CRTPE() = default;
 
-private:
-  static ID _id;
-  static bool _idAssigned;
-};
+        ID getID() const final
+        {
+          return getEventID();
+        }
 
-template <class D>
-typename CRTPE<D>::ID CRTPE<D>::_id = 0;
+        static ID getEventID()
+        {
+          return _id;
+        }
 
-template <class D>
-bool CRTPE<D>::_idAssigned = false;
+        static void assignID(const ID id)
+        {
+          if (!isIDAssigned())
+          {
+            _id = id;
+            _idAssigned = true;
+          }
+        }
+
+        static bool isIDAssigned()
+        {
+          return _idAssigned;
+        }
+
+      private:
+        static ID _id;
+        static bool _idAssigned;
+      };
+
+      template <class D>
+      typename CRTPE<D>::ID CRTPE<D>::_id = 0;
+
+      template <class D>
+      bool CRTPE<D>::_idAssigned = false;
+    } /* !event */
+  } /* !ecs */
+} /* !lel */

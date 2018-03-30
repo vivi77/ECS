@@ -1,18 +1,27 @@
 #include "SIDGenerator.hh"
 
-SIDGenerator::SIDGenerator()
-  : _idGenerator{0}
+namespace lel
 {
-  ;
-}
+  namespace ecs
+  {
+    namespace system
+    {
+      SIDGenerator::SIDGenerator()
+        : _idGenerator{0}
+      {
+        ;
+      }
 
-SIDGenerator::ID SIDGenerator::generateID()
-{
-  return _idGenerator++;
-}
+      SIDGenerator::ID SIDGenerator::generateID()
+      {
+        return _idGenerator++;
+      }
 
-SIDGenerator& SIDGenerator::getSingleton()
-{
-  static SIDGenerator singleton;
-  return singleton;
+      SIDGenerator& SIDGenerator::getSingleton()
+      {
+        static SIDGenerator singleton;
+        return singleton;
+      }
+    }
+  }
 }

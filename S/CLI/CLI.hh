@@ -30,20 +30,29 @@ private:
   std::unordered_map<Command, Callback> _actions;
 };
 
-class CLISystem : public CRTPS<CLISystem>, public IEListener
+namespace lel
 {
-public:
-  CLISystem();
-  virtual ~CLISystem() = default;
-  void exec() override;
-  void registerEntity(const EntityPtr&) override;
-  void setup() override;
-  void atRemove() override;
+  namespace ecs
+  {
+    namespace system
+    {
+      class CLI : public CRTPS<CLI>, public event::IEListener
+      {
+      public:
+        CLI();
+        virtual ~CLI() = default;
+        void exec() override;
+        void registerEntity(const EntityPtr&) override;
+        void setup() override;
+        void atRemove() override;
 
-  void update(const EPtr&) override;
+        void update(const EPtr&) override;
 
-private:
-  lel::CLIParser _cliparser;
-  CmdManager _cmds;
-  bool _enabled = true;
-};
+      private:
+        lel::CLIParser _cliparser;
+        CmdManager _cmds;
+        bool _enabled = true;
+      };
+    } /* !system */
+  } /* !ecs */
+} /* !lel */

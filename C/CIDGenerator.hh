@@ -2,17 +2,26 @@
 
 #include "C/cidgen_export.h"
 
-class CIDGEN_EXPORT CIDGenerator
+namespace lel
 {
-  using ID = unsigned;
+  namespace ecs
+  {
+    namespace component
+    {
+      class CIDGEN_EXPORT CIDGenerator
+      {
+        using ID = unsigned;
 
-public:
-  static CIDGenerator& getSingleton();
-  ID generateID();
+      public:
+        static CIDGenerator& getSingleton();
+        ID generateID();
 
-private:
-  CIDGenerator();
+      private:
+        CIDGenerator();
 
-private:
-  ID _idGenerator;
-};
+      private:
+        ID _idGenerator;
+      };
+    } /* !component */
+  } /* !ecs */
+} /* !lel */

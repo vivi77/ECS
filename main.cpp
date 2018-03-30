@@ -5,7 +5,7 @@ int main()
 {
   try
     {
-      auto core = std::make_shared<Core>();
+      auto core = std::make_shared<lel::ecs::Core>();
 
       core->run();
     }

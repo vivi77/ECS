@@ -5,40 +5,49 @@
 #include <variant>
 #include <string>
 
-class EMANAGEREVENT_EXPORT EManagerEvent : public CRTPE<EManagerEvent>
+namespace lel
 {
-public:
-  using Data = std::variant<ID, std::string>;
-
-public:
-  enum class Type : char
+  namespace ecs
   {
-    // OK
-    LISTENER_ADDED,
-    LISTENER_REMOVED,
-    EVENT_ADDED,
+    namespace event
+    {
+      class EMANAGEREVENT_EXPORT EManagerEvent : public CRTPE<EManagerEvent>
+      {
+      public:
+        using Data = std::variant<ID, std::string>;
 
-    // ERROR
-    NOT_LISTENER,
-    LISTENER_NOT_FOUND,
-    LISTENER_ALREADY_ADDED,
-    EVENT_ALREADY_ADDED,
-    EVENT_DTOR_NOT_FOUND,
-  };
+      public:
+        enum class Type : char
+        {
+          // OK
+          LISTENER_ADDED,
+          LISTENER_REMOVED,
+          EVENT_ADDED,
 
-public:
-  EManagerEvent(const Type t);
-  template <typename T>
-  EManagerEvent(const Type t, T&& data)
-    : _t{t}
-    , _data{std::forward<T>(data)}
-  {}
-  virtual ~EManagerEvent() = default;
+          // ERROR
+          NOT_LISTENER,
+          LISTENER_NOT_FOUND,
+          LISTENER_ALREADY_ADDED,
+          EVENT_ALREADY_ADDED,
+          EVENT_DTOR_NOT_FOUND,
+        };
 
-  Type getType() const;
-  Data getData() const;
+      public:
+        EManagerEvent(const Type t);
+        template <typename T>
+        EManagerEvent(const Type t, T&& data)
+          : _t{t}
+          , _data{std::forward<T>(data)}
+        {}
+        virtual ~EManagerEvent() = default;
 
-private:
-  Type _t;
-  Data _data;
-};
+        Type getType() const;
+        Data getData() const;
+
+      private:
+        Type _t;
+        Data _data;
+      };
+    } /* !event */
+  } /* !ecs */
+} /* !lel */

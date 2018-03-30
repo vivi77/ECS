@@ -1,41 +1,50 @@
 #include "Transform.hh"
 
-Transform::Transform(const float x, const float y, const float z)
-  : _position{x, y, z}
-{}
-
-Transform::Transform(const Position& pos, const Rotation& rotation, const Scale& scale)
-  : _position{pos}
-  , _rotation{rotation}
-  , _scale{scale}
-{}
-
-Position Transform::getPosition() const
+namespace lel
 {
-  return _position;
-}
+  namespace ecs
+  {
+    namespace component
+    {
+      Transform::Transform(const float x, const float y, const float z)
+        : _position{x, y, z}
+      {}
 
-Rotation Transform::getRotation() const
-{
-  return _rotation;
-}
+      Transform::Transform(const Position& pos, const Rotation& rotation, const Scale& scale)
+        : _position{pos}
+        , _rotation{rotation}
+        , _scale{scale}
+      {}
 
-Scale Transform::getScale() const
-{
-  return _scale;
-}
+      Position Transform::getPosition() const
+      {
+        return _position;
+      }
 
-void Transform::setPosition(const Position& position)
-{
-  _position = position;
-}
+      Rotation Transform::getRotation() const
+      {
+        return _rotation;
+      }
 
-void Transform::setRotation(const Rotation& rotation)
-{
-  _rotation = rotation;
-}
+      Scale Transform::getScale() const
+      {
+        return _scale;
+      }
 
-void Transform::setScale(const Scale& scale)
-{
-  _scale = scale;
-}
+      void Transform::setPosition(const Position& position)
+      {
+        _position = position;
+      }
+
+      void Transform::setRotation(const Rotation& rotation)
+      {
+        _rotation = rotation;
+      }
+
+      void Transform::setScale(const Scale& scale)
+      {
+        _scale = scale;
+      }
+    } /* !component */
+  } /* !ecs */
+} /* !lel */

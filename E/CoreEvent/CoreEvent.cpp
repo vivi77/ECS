@@ -1,21 +1,30 @@
 #include "CoreEvent.hh"
 
-CoreEvent::CoreEvent(Type t)
-  : _type{t}
-  , _data{}
-{}
-
-CoreEvent::CoreEvent(Type t, const std::string& data)
-  : _type{t}
-  , _data{data}
-{}
-
-CoreEvent::Type CoreEvent::getType() const
+namespace lel
 {
-  return _type;
-}
+  namespace ecs
+  {
+    namespace event
+    {
+      CoreEvent::CoreEvent(Type t)
+        : _type{t}
+        , _data{}
+      {}
 
-std::vector<std::string> CoreEvent::getData() const
-{
-  return _data;
-}
+      CoreEvent::CoreEvent(Type t, const std::string& data)
+        : _type{t}
+        , _data{data}
+      {}
+
+      CoreEvent::Type CoreEvent::getType() const
+      {
+        return _type;
+      }
+
+      std::vector<std::string> CoreEvent::getData() const
+      {
+        return _data;
+      }
+    } /* !event */
+  } /* !ecs */
+} /* !lel */

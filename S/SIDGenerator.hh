@@ -2,17 +2,26 @@
 
 #include "sidgen_export.h"
 
-class SIDGEN_EXPORT SIDGenerator
+namespace lel
 {
-  using ID = unsigned;
+  namespace ecs
+  {
+    namespace system
+    {
+      class SIDGEN_EXPORT SIDGenerator
+      {
+        using ID = unsigned;
 
-public:
-  static SIDGenerator& getSingleton();
-  ID generateID();
+      public:
+        static SIDGenerator& getSingleton();
+        ID generateID();
 
-private:
-  SIDGenerator();
+      private:
+        SIDGenerator();
 
-private:
-  ID _idGenerator;
-};
+      private:
+        ID _idGenerator;
+      };
+    } /* !system */
+  } /* !ecs */
+} /* !lel */

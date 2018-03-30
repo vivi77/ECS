@@ -5,7 +5,7 @@
 
 namespace
 {
-  void destroy(IC* ptr)
+  void destroy(lel::ecs::component::IC* ptr)
   {
     delete ptr;
   }
@@ -13,8 +13,11 @@ namespace
 
 static void setup()
 {
-  Transform::assignID(CIDGenerator::getSingleton().generateID());
+  using Transform = lel::ecs::component::Transform;
+  using CManager = lel::ecs::component::CManager;
+
+  Transform::assignID(lel::ecs::component::CIDGenerator::getSingleton().generateID());
   CManager::registerCompDtor(Transform::getComponentID(), (CManager::Dtor)&::destroy);
 }
 
-template struct EntryPointWrapper<Transform>;
+template struct EntryPointWrapper<lel::ecs::component::Transform>;

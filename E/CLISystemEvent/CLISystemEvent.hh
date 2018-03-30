@@ -3,22 +3,31 @@
 #include "E/CRTPE.hpp"
 #include "E/CLISystemEvent/clisystemevent_export.h"
 
-class CLISYSTEMEVENT_EXPORT CLISystemEvent : public CRTPE<CLISystemEvent>
+namespace lel
 {
-public:
-  enum class Type : char
+  namespace ecs
   {
-    //Commands
-    DISABLE,
-    ENABLE,
-  };
+    namespace event
+    {
+      class CLISYSTEMEVENT_EXPORT CLISystemEvent : public CRTPE<CLISystemEvent>
+      {
+      public:
+        enum class Type : char
+        {
+          //Commands
+          DISABLE,
+          ENABLE,
+        };
 
-public:
-  CLISystemEvent(Type t);
-  virtual ~CLISystemEvent() = default;
+      public:
+        CLISystemEvent(Type t);
+        virtual ~CLISystemEvent() = default;
 
-  Type getType() const;
+        Type getType() const;
 
-private:
-  Type _t;
-};
+      private:
+        Type _t;
+      };
+    } /* !event */
+  } /* !ecs */
+} /* !lel */

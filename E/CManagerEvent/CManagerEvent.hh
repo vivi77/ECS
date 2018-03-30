@@ -6,40 +6,49 @@
 #include <memory>
 #include <variant>
 
-class CMANAGEREVENT_EXPORT CManagerEvent : public CRTPE<CManagerEvent>
+namespace lel
 {
-public:
-  using CPtr = std::shared_ptr<IC>;
-  using CID = unsigned; // CGenerator::ID
-  using Data = std::variant<CPtr, CID>;
-
-public:
-  enum class Type : char
+  namespace ecs
   {
-    // EVENT
-    COMP_CREATED,
+    namespace event
+    {
+      class CMANAGEREVENT_EXPORT CManagerEvent : public CRTPE<CManagerEvent>
+      {
+      public:
+        using CPtr = std::shared_ptr<lel::ecs::component::IC>;
+        using CID = unsigned; // CGenerator::ID
+        using Data = std::variant<CPtr, CID>;
 
-    // OK
-    COMP_ADDED,
+      public:
+        enum class Type : char
+        {
+          // EVENT
+          COMP_CREATED,
 
-    // ERROR
-    COMP_ALREADY_ADDED,
-    COMP_DTOR_NOT_FOUND,
-  };
+          // OK
+          COMP_ADDED,
 
-public:
-  CManagerEvent(const Type t);
-  template <typename T>
-  CManagerEvent(const Type t, const T& data)
-    : _t{t}
-    , _data{data}
-  {}
-  virtual ~CManagerEvent() = default;
+          // ERROR
+          COMP_ALREADY_ADDED,
+          COMP_DTOR_NOT_FOUND,
+        };
 
-  Type getType() const;
-  Data getData() const;
+      public:
+        CManagerEvent(const Type t);
+        template <typename T>
+        CManagerEvent(const Type t, const T& data)
+          : _t{t}
+          , _data{data}
+        {}
+        virtual ~CManagerEvent() = default;
 
-private:
-  Type _t;
-  Data _data;
-};
+        Type getType() const;
+        Data getData() const;
+
+      private:
+        Type _t;
+        Data _data;
+      };
+    } /* !event */
+  } /* !ecs */
+} /* !lel */

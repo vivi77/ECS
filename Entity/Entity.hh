@@ -8,7 +8,7 @@
 class ENTITYLOGIC_EXPORT Entity
 {
 public:
-  using CPtr = std::shared_ptr<IC>;
+  using CPtr = std::shared_ptr<lel::ecs::component::IC>;
   using CContainer = std::vector<CPtr>;
 
 public:
@@ -21,7 +21,7 @@ public:
   CContainer getComponents() const;
 
   void addComponent(const CPtr& comp);
-  void removeComponent(const IC::ID);
+  void removeComponent(const lel::ecs::component::IC::ID);
 
 private:
   ID _id;

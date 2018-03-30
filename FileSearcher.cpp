@@ -1,8 +1,8 @@
 #include "FileSearcher.hh"
 
-namespace ECS
+namespace lel
 {
-  namespace Utility
+  namespace utility
   {
 #ifdef __linux__
     const char* FileSearcher::DYNAMIC_LIBRARY_EXTENSION = ".so";
@@ -33,5 +33,5 @@ namespace ECS
         }
       }
     }
-  } /* !Utility */
-} /* !ECS */
+  } /* !utility */
+} /* !lel */

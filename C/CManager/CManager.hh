@@ -8,34 +8,43 @@
 #include <memory>
 #include <unordered_map>
 
-class CMANAGER_EXPORT CManager
+namespace lel
 {
-public:
-  using CPtr = std::shared_ptr<IC>;
-  using CID = unsigned; //CIDGenerator::ID
-  using Dtor = void(*)(IC*);
-  using SPtr = std::shared_ptr<IS>;
-
-public:
-  template <class C, typename ... Args>
-  static std::unique_ptr<C> createComp(Args&& ... args)
+  namespace ecs
   {
-    auto it = _registerComponentDtor.find(C::getCompID());
-    if (it == std::end(_registerComponentDtor))
+    namespace component
     {
-      EManager::fire<CManagerEvent>(CManagerEvent::Type::COMP_DTOR_NOT_FOUND, C::getCompID());
-      return nullptr;
-    }
+      class CMANAGER_EXPORT CManager
+      {
+      public:
+        using CPtr = std::shared_ptr<component::IC>;
+        using CID = unsigned; //CIDGenerator::ID
+        using Dtor = void(*)(component::IC*);
+        using SPtr = std::shared_ptr<system::IS>;
 
-    std::shared_ptr<C> comp{new C{std::forward<Args>(args)...,}, it->second};
-    EManager::fire<CManagerEvent>(CManagerEvent::Type::COMP_CREATED, comp->getId());
-    _components.emplace_back(comp);
-    return comp;
-  }
+      public:
+        template <class C, typename ... Args>
+        static std::unique_ptr<C> createComp(Args&& ... args)
+        {
+          auto it = _registerComponentDtor.find(C::getCompID());
+          if (it == std::end(_registerComponentDtor))
+          {
+            event::EManager::fire<event::CManagerEvent>(event::CManagerEvent::Type::COMP_DTOR_NOT_FOUND, C::getCompID());
+            return nullptr;
+          }
 
-  static void registerCompDtor(const CID, Dtor);
+          std::shared_ptr<C> comp{new C{std::forward<Args>(args)...,}, it->second};
+          event::EManager::fire<event::CManagerEvent>(event::CManagerEvent::Type::COMP_CREATED, comp->getId());
+          _components.emplace_back(comp);
+          return comp;
+        }
 
-private:
-  static std::unordered_map<CID, Dtor> _registerComponentDtor;
-  static std::vector<CPtr> _components;
-};
+        static void registerCompDtor(const CID, Dtor);
+
+      private:
+        static std::unordered_map<CID, Dtor> _registerComponentDtor;
+        static std::vector<CPtr> _components;
+      };
+    } /* !compeonent */
+  } /* !ecs */
+} /* !lel */

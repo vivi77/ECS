@@ -6,7 +6,7 @@
 
 namespace
 {
-  void destroy(IC* ptr)
+  void destroy(lel::ecs::component::IC* ptr)
   {
     delete ptr;
   }
@@ -14,8 +14,11 @@ namespace
 
 static void setup()
 {
-  TerminalDrawable::assignID(CIDGenerator::getSingleton().generateID());
+  using TerminalDrawable = lel::ecs::component::TerminalDrawable;
+  using CManager = lel::ecs::component::CManager;
+
+  TerminalDrawable::assignID(lel::ecs::component::CIDGenerator::getSingleton().generateID());
   CManager::registerCompDtor(TerminalDrawable::getComponentID(), (CManager::Dtor)&::destroy);
 }
 
-template struct EntryPointWrapper<TerminalDrawable>;
+template struct EntryPointWrapper<lel::ecs::component::TerminalDrawable>;

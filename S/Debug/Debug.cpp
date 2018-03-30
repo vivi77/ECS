@@ -1,4 +1,4 @@
-#include "DebugSystem.hh"
+#include "Debug.hh"
 #include "E/CoreEvent/CoreEvent.hh"
 #include "E/EManagerEvent/EManagerEvent.hh"
 #include "E/CManagerEvent/CManagerEvent.hh"
@@ -40,8 +40,10 @@ namespace
     return ss.str();
   }
 
-  void debugEvent(const std::shared_ptr<CoreEvent>& event, lel::Log& log)
+  void debugEvent(const std::shared_ptr<lel::ecs::event::CoreEvent>& event, lel::Log& log)
   {
+    using CoreEvent = lel::ecs::event::CoreEvent;
+
     switch (event->getType())
     {
       case CoreEvent::Type::ADD_SYSTEM:
@@ -84,8 +86,9 @@ namespace
     }
   }
 
-  void debugEvent(const std::shared_ptr<EManagerEvent>& event, lel::Log& log)
+  void debugEvent(const std::shared_ptr<lel::ecs::event::EManagerEvent>& event, lel::Log& log)
   {
+    using EManagerEvent = lel::ecs::event::EManagerEvent;
     switch (event->getType())
     {
       case EManagerEvent::Type::EVENT_ADDED:
@@ -123,8 +126,10 @@ namespace
     }
   }
 
-  void debugEvent(const std::shared_ptr<CManagerEvent>& event, lel::Log& log)
+  void debugEvent(const std::shared_ptr<lel::ecs::event::CManagerEvent>& event, lel::Log& log)
   {
+    using CManagerEvent = lel::ecs::event::CManagerEvent;
+
     switch (event->getType())
     {
       case CManagerEvent::Type::COMP_ADDED:
@@ -145,8 +150,10 @@ namespace
     }
   }
 
-  void debugEvent(const std::shared_ptr<CLISystemEvent>& event, lel::Log& log)
+  void debugEvent(const std::shared_ptr<lel::ecs::event::CLISystemEvent>& event, lel::Log& log)
   {
+    using CLISystemEvent = lel::ecs::event::CLISystemEvent;
+
     switch (event->getType())
     {
       case CLISystemEvent::Type::DISABLE:
@@ -161,8 +168,10 @@ namespace
     }
   }
 
-  void debugEvent(const std::shared_ptr<EntityManagerEvent>& event, lel::Log& log)
+  void debugEvent(const std::shared_ptr<lel::ecs::event::EntityManagerEvent>& event, lel::Log& log)
   {
+    using EntityManagerEvent = lel::ecs::event::EntityManagerEvent;
+
     switch (event->getType())
     {
       case EntityManagerEvent::Type::ENTITY_CREATED:
@@ -181,7 +190,7 @@ namespace
   }
 
   [[maybe_unused]]
-  void debugEventFallback(const DebugSystem::EPtr& event, lel::Log& log)
+  void debugEventFallback(const lel::ecs::system::Debug::EPtr& event, lel::Log& log)
   {
     log << "Unknwon event with ID#" << event->getID() << " fired";
   }
@@ -206,7 +215,7 @@ namespace
   template <typename T>
   struct updateCtor<std::tuple<T>>
   {
-    inline static void partialDebugEvent(const DebugSystem::EPtr& event, lel::Log& log)
+    inline static void partialDebugEvent(const lel::ecs::system::Debug::EPtr& event, lel::Log& log)
     {
       if (event->getID() == T::getEventID())
       {
@@ -224,7 +233,7 @@ namespace
   template <typename Head, typename ... Tail>
   struct updateCtor<std::tuple<Head, Tail...>>
   {
-    inline static void partialDebugEvent(const DebugSystem::EPtr& event, lel::Log& log)
+    inline static void partialDebugEvent(const lel::ecs::system::Debug::EPtr& event, lel::Log& log)
     {
       if (event->getID() == Head::getEventID())
       {
@@ -240,34 +249,45 @@ namespace
   };
 } /* ! */
 
-DebugSystem::DebugSystem()
-  : _logFile{"debug_ecs.log"}
-  , _log{_logFile}
+namespace lel
 {
-  // Fallback in case of error
-  if (!_logFile)
-    _log.setStream(std::cout);
-}
+  namespace ecs
+  {
+    namespace system
+    {
+      Debug::Debug()
+        : _logFile{"debug_ecs.log"}
+        , _log{_logFile}
+      {
+        // Fallback in case of error
+        if (!_logFile)
+          _log.setStream(std::cout);
+      }
 
-void DebugSystem::exec()
-{
-}
+      void Debug::exec()
+      {
+      }
 
-void DebugSystem::update(const EPtr& event)
-{
-  using TypeList = std::tuple<CoreEvent, EManagerEvent, CManagerEvent, CLISystemEvent, EntityManagerEvent>;
+      void Debug::update(const EPtr& event)
+      {
+        using namespace lel::ecs::event;
 
-  updateCtor<TypeList>::partialDebugEvent(event, _log);
-  _log << "\033[0m\n";
-}
+        using TypeList = std::tuple<CoreEvent, EManagerEvent, CManagerEvent, CLISystemEvent, EntityManagerEvent>;
 
-void DebugSystem::registerEntity(const EntityPtr&)
-{}
+        updateCtor<TypeList>::partialDebugEvent(event, _log);
+        _log << "\033[0m\n";
+      }
 
-void DebugSystem::setup()
-{}
+      void Debug::registerEntity(const EntityPtr&)
+      {}
 
-void DebugSystem::atRemove()
-{
-  okEvent(_log, "DebugSystem unloaded (" + to_string(this) + ")\n");
-}
+      void Debug::setup()
+      {}
+
+      void Debug::atRemove()
+      {
+        okEvent(_log, "DebugSystem unloaded (" + to_string(this) + ")\n");
+      }
+    } /* !system */
+  } /* !ecs */
+} /* !lel */

@@ -5,38 +5,47 @@
 #include "E/EManager.hh"
 #include <algorithm>
 
-std::vector<EntityManager::EntityPtr> EntityManager::_entities;
-
-EntityManager::EntityPtr EntityManager::createEntity(std::initializer_list<ComponentPtr> comps)
+namespace lel
 {
-  auto ent = std::make_shared<Entity>(EntityIDGenerator::generateID(), comps);
-  _entities.emplace_back(ent);
-  EManager::fire<EntityManagerEvent>(EntityManagerEvent::Type::ENTITY_CREATED, ent->getID());
-  CoreSystemProxy::registerEntityInSystems(ent);
-  return ent;
-}
-
-void EntityManager::destroyEntity(const ID id)
-{
-  auto beginIt = std::begin(_entities);
-  auto endIt = std::end(_entities);
-  auto pred = [&id](const auto& it) -> bool
-        {
-          return it->getID() == id;
-        };
-  auto it = std::find_if(beginIt, endIt, pred);
-  if (it == endIt)
-    EManager::fire<EntityManagerEvent>(EntityManagerEvent::Type::ENTITY_NOT_FOUND, id);
-  else
+  namespace ecs
   {
-    // TODO: Remove Entitty from systems
-    _entities.erase(it);
-    EManager::fire<EntityManagerEvent>(EntityManagerEvent::Type::ENTITY_DESTROYED, id);
-  }
-}
+    namespace entity
+    {
+      std::vector<EntityManager::EntityPtr> EntityManager::_entities;
 
-void EntityManager::updateSysComponent(const SPtr& sys)
-{
-  for (const auto& e : _entities)
-    sys->registerEntity(e);
-}
+      EntityManager::EntityPtr EntityManager::createEntity(std::initializer_list<ComponentPtr> comps)
+      {
+        auto ent = std::make_shared<Entity>(EntityIDGenerator::generateID(), comps);
+        _entities.emplace_back(ent);
+        lel::ecs::event::EManager::fire<event::EntityManagerEvent>(event::EntityManagerEvent::Type::ENTITY_CREATED, ent->getID());
+        CoreSystemProxy::registerEntityInSystems(ent);
+        return ent;
+      }
+
+      void EntityManager::destroyEntity(const ID id)
+      {
+        auto beginIt = std::begin(_entities);
+        auto endIt = std::end(_entities);
+        auto pred = [&id](const auto& it) -> bool
+              {
+                return it->getID() == id;
+              };
+        auto it = std::find_if(beginIt, endIt, pred);
+        if (it == endIt)
+          lel::ecs::event::EManager::fire<event::EntityManagerEvent>(event::EntityManagerEvent::Type::ENTITY_NOT_FOUND, id);
+        else
+        {
+          // TODO: Remove Entitty from systems
+          _entities.erase(it);
+          lel::ecs::event::EManager::fire<event::EntityManagerEvent>(event::EntityManagerEvent::Type::ENTITY_DESTROYED, id);
+        }
+      }
+
+      void EntityManager::updateSysComponent(const SPtr& sys)
+      {
+        for (const auto& e : _entities)
+          sys->registerEntity(e);
+      }
+    } /* !event */
+  } /* !ecs */
+} /* !lel */

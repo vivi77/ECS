@@ -1,11 +1,20 @@
 #pragma once
 
-class IC
+namespace lel
 {
-public:
-  using ID = unsigned;
+  namespace ecs
+  {
+    namespace component
+    {
+      class IC
+      {
+      public:
+        using ID = unsigned;
 
-public:
-  virtual ~IC() = default;
-  virtual ID getID() const = 0;
-};
+      public:
+        virtual ~IC() = default;
+        virtual ID getID() const = 0;
+      };
+    } /* !component */
+  } /* !ecs */
+} /* !lel */
