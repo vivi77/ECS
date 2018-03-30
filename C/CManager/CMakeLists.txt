@@ -15,7 +15,7 @@ target_include_directories(${MANAGER_NAME} PUBLIC
   ${PROJECT_SOURCE_DIR}/C
   ${PROJECT_SOURCE_DIR}/S
   )
-target_link_libraries(${MANAGER_NAME}
+target_link_libraries(${MANAGER_NAME} PUBLIC
   EManager
   CManagerEvent
   )

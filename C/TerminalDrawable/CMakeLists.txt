@@ -7,7 +7,7 @@ target_include_directories(${NAME} PUBLIC
   ${CMAKE_BINARY_DIR}
   ${PROJECT_SOURCE_DIR}
   )
-target_link_libraries(${NAME}
+target_link_libraries(${NAME} PUBLIC
   CIDGen
   CManager
   )
