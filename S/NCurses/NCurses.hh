@@ -21,8 +21,8 @@ namespace lel
       private:
         struct NCursesData
         {
-          DrawablePtr drawableComp;
           TransformPtr transform;
+          DrawablePtr drawableComp;
 
           bool isValid() const
           {
