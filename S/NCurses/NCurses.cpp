@@ -9,27 +9,28 @@
 
 namespace
 {
-  using TerminalDrawable = lel::ecs::component::TerminalDrawable;
+  using TerminalDrawable = lel::ecs::component::TerminalText;
+  using TerminalColor = lel::ecs::component::TerminalColor;
 
-  constexpr TerminalDrawable::Color realColor[]{
-    TerminalDrawable::Color::BLACK,
-    TerminalDrawable::Color::RED,
-    TerminalDrawable::Color::GREEN,
-    TerminalDrawable::Color::YELLOW,
-    TerminalDrawable::Color::BLUE,
-    TerminalDrawable::Color::MAGENTA,
-    TerminalDrawable::Color::CYAN,
-    TerminalDrawable::Color::WHITE,
+  constexpr TerminalColor::Color realColor[]{
+    TerminalColor::Color::BLACK,
+    TerminalColor::Color::RED,
+    TerminalColor::Color::GREEN,
+    TerminalColor::Color::YELLOW,
+    TerminalColor::Color::BLUE,
+    TerminalColor::Color::MAGENTA,
+    TerminalColor::Color::CYAN,
+    TerminalColor::Color::WHITE,
   };
   constexpr int requestColor[]{
-    static_cast<int>(TerminalDrawable::Color::BLACK),
-    static_cast<int>(TerminalDrawable::Color::RED),
-    static_cast<int>(TerminalDrawable::Color::GREEN),
-    static_cast<int>(TerminalDrawable::Color::YELLOW),
-    static_cast<int>(TerminalDrawable::Color::BLUE),
-    static_cast<int>(TerminalDrawable::Color::MAGENTA),
-    static_cast<int>(TerminalDrawable::Color::CYAN),
-    static_cast<int>(TerminalDrawable::Color::WHITE),
+    static_cast<int>(TerminalColor::Color::BLACK),
+    static_cast<int>(TerminalColor::Color::RED),
+    static_cast<int>(TerminalColor::Color::GREEN),
+    static_cast<int>(TerminalColor::Color::YELLOW),
+    static_cast<int>(TerminalColor::Color::BLUE),
+    static_cast<int>(TerminalColor::Color::MAGENTA),
+    static_cast<int>(TerminalColor::Color::CYAN),
+    static_cast<int>(TerminalColor::Color::WHITE),
   };
   constexpr int colorValue[]{
     COLOR_BLACK,
@@ -49,13 +50,13 @@ namespace
     A_REVERSE,
     A_INVIS,
   };
-  constexpr TerminalDrawable::Attributes termattr[]{
-    TerminalDrawable::Attributes::BOLD,
-    TerminalDrawable::Attributes::DIM,
-    TerminalDrawable::Attributes::UNDERLINED,
-    TerminalDrawable::Attributes::BLINK,
-    TerminalDrawable::Attributes::REVERSE,
-    TerminalDrawable::Attributes::HIDDEN,
+  constexpr TerminalColor::Attributes termattr[]{
+    TerminalColor::Attributes::BOLD,
+    TerminalColor::Attributes::DIM,
+    TerminalColor::Attributes::UNDERLINED,
+    TerminalColor::Attributes::BLINK,
+    TerminalColor::Attributes::REVERSE,
+    TerminalColor::Attributes::HIDDEN,
   };
 
   int getColorValue(const TerminalDrawable::Color color)
@@ -161,7 +162,7 @@ namespace lel
           toggleOnAttributes(comp.drawableComp->attributes);
           mvprintw(comp.transform->getPosition().y,
                    comp.transform->getPosition().x,
-                   comp.drawableComp->sym);
+                   comp.drawableComp->text);
           toggleOffAttributes();
           attroff(COLOR_PAIR(index));
         }
@@ -176,10 +177,10 @@ namespace lel
         for (auto& comp : comps)
         {
           auto compID = comp->getID();
-          if (compID == lel::ecs::component::TerminalDrawable::getComponentID())
-            data.drawableComp = std::static_pointer_cast<lel::ecs::component::TerminalDrawable>(comp);
+          if (compID == component::TerminalText::getComponentID())
+            data.drawableComp = std::static_pointer_cast<component::TerminalText>(comp);
           else if (compID == lel::ecs::component::Transform::getComponentID())
-            data.transform = std::static_pointer_cast<lel::ecs::component::Transform>(comp);
+            data.transform = std::static_pointer_cast<component::Transform>(comp);
         }
         if (data.isValid())
           _data.emplace_back(data);
@@ -196,7 +197,7 @@ namespace lel
 
         auto callback = [](const auto fg, const auto bg, const auto attr)
         {
-          auto draw = std::make_shared<component::TerminalDrawable>("a", realColor[fg], realColor[bg], termattr[attr]);
+          auto draw = std::make_shared<component::TerminalText>("a", realColor[fg], realColor[bg], termattr[attr]);
           auto transform = std::make_shared<component::Transform>(fg * 8 + attr, bg, 0);
           entity::EntityManager::createEntity({draw, transform});
         };
