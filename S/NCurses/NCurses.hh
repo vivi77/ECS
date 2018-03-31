@@ -2,45 +2,57 @@
 
 #include "S/CRTPS.hpp"
 #include "S/NCurses/ncursessystem_export.h"
-#include "C/TerminalText/TerminalText.hh"
-#include "C/Transform/Transform.hh"
+#include "C/TerminalComponents/Text.hh"
+#include "C/TerminalComponents/Polygon.hh"
+#include "C/Transform/Transform.hpp"
 #include <vector>
 
-namespace lel
+namespace lel::ecs::system
 {
-  namespace ecs
+  class NCURSESSYSTEM_EXPORT NCurses : public CRTPS<NCurses>
   {
-    namespace system
+  public:
+    template <typename T> using Container = std::vector<T>;
+    using NCTransform = component::Transform<int>;
+
+  public:
+    using TextPtr = std::shared_ptr<component::TerminalText>;
+    using TransformPtr = std::shared_ptr<NCTransform>;
+    using PolygonPtr = std::shared_ptr<component::TerminalPolygon>;
+
+  private:
+    struct NCursesData
     {
-      class NCURSESSYSTEM_EXPORT NCurses : public CRTPS<NCurses>
+      TransformPtr transform = nullptr;
+      TextPtr text = nullptr;
+      PolygonPtr polygon = nullptr;
+
+      bool isValidPolygon() const
       {
-      public:
-        using DrawablePtr = std::shared_ptr<component::TerminalText>;
-        using TransformPtr = std::shared_ptr<component::Transform>;
+        return polygon != nullptr && transform != nullptr;
+      }
 
-      private:
-        struct NCursesData
-        {
-          TransformPtr transform;
-          DrawablePtr drawableComp;
+      bool isValidText() const
+      {
+        return text != nullptr && transform != nullptr;
+      }
 
-          bool isValid() const
-          {
-            return drawableComp != nullptr && transform != nullptr;
-          }
-        };
+      bool isValid() const
+      {
+        return (text != nullptr || polygon != nullptr) && transform != nullptr;
+      }
+    };
 
-      public:
-        virtual ~NCurses() = default;
+  public:
+    virtual ~NCurses() = default;
 
-        void exec() override;
-        void registerEntity(const EntityPtr&) override;
-        void setup() override;
-        void atRemove() override;
+    void exec() override;
+    void registerEntity(const EntityPtr&) override;
+    void setup() override;
+    void atRemove() override;
 
-      private:
-        std::vector<NCursesData> _data;
-      };
-    } /* !system */
-  } /* !ecs */
-} /* !lel */
+  private:
+    Container<NCursesData> _text;
+    Container<NCursesData> _polygon;
+  };
+} /* !lel::ecs::system */

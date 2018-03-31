@@ -1,6 +1,7 @@
 #include "NCurses.hh"
 #include "E/CLISystemEvent/CLISystemEvent.hh"
 #include "E/EManager.hh"
+#include "Utility/Bresenham.hpp"
 #include <curses.h>
 #include <algorithm>
 
@@ -142,74 +143,127 @@ namespace
   }
 } /* ! */
 
-namespace lel
+namespace lel::ecs::system
 {
-  namespace ecs
+  void NCurses::exec()
   {
-    namespace system
+    char c = getch();
+    if (c == 'q')
+      event::EManager::fire<event::CoreEvent>(event::CoreEvent::Type::EXIT);
+
+    for (const auto& comp : _text)
     {
-      void NCurses::exec()
-      {
-        char c = getch();
-        if (c == 'q')
-          event::EManager::fire<event::CoreEvent>(event::CoreEvent::Type::EXIT);
+      auto index = ::getIndexColorPair(comp.text->fgColor, comp.text->bgColor);
+      attron(COLOR_PAIR(index));
+      toggleOnAttributes(comp.text->attributes);
+      mvprintw(comp.transform->position.y,
+               comp.transform->position.x,
+               comp.text->text);
+      toggleOffAttributes();
+      attroff(COLOR_PAIR(index));
+    }
 
-        for (auto& comp : _data)
-        {
-          auto index = ::getIndexColorPair(comp.drawableComp->fgColor,
-                                           comp.drawableComp->bgColor);
-          attron(COLOR_PAIR(index));
-          toggleOnAttributes(comp.drawableComp->attributes);
-          mvprintw(comp.transform->getPosition().y,
-                   comp.transform->getPosition().x,
-                   comp.drawableComp->text);
-          toggleOffAttributes();
-          attroff(COLOR_PAIR(index));
-        }
-        refresh();
+    for (const auto& comp : _polygon)
+    {
+      auto index = ::getIndexColorPair(comp.polygon->fgColor, comp.polygon->bgColor);
+      attron(COLOR_PAIR(index));
+      toggleOnAttributes(comp.polygon->attributes);
+
+      const auto nbSegment = comp.polygon->points.size();
+      if (nbSegment <= 1)
+        continue;
+
+      auto drawCallback =
+      [&comp](const int x, const int y, const lel::graphic::CircleLocation)
+      {
+        mvprintw(y + comp.transform->position.y,
+                 x + comp.transform->position.x,
+                 "*");
+      };
+      for (auto i = 0ul; i < nbSegment - 1; ++i)
+      {
+        const auto& p1 = comp.polygon->points[i];
+        const auto& p2 = comp.polygon->points[i + 1];
+        lel::graphic::drawLine(p1.x, p1.y, p2.x, p2.y, drawCallback);
+      }
+      if (nbSegment > 2)
+      {
+        const auto& p1 = comp.polygon->points[nbSegment - 1];
+        const auto& p2 = comp.polygon->points[0];
+        lel::graphic::drawLine(p1.x, p1.y, p2.x, p2.y, drawCallback);
       }
 
-      void NCurses::registerEntity(const EntityPtr& entity)
-      {
-        NCursesData data;
+      toggleOffAttributes();
+      attroff(COLOR_PAIR(index));
+    }
 
-        auto comps = entity->getComponents();
-        for (auto& comp : comps)
-        {
-          auto compID = comp->getID();
-          if (compID == component::TerminalText::getComponentID())
-            data.drawableComp = std::static_pointer_cast<component::TerminalText>(comp);
-          else if (compID == lel::ecs::component::Transform::getComponentID())
-            data.transform = std::static_pointer_cast<component::Transform>(comp);
-        }
-        if (data.isValid())
-          _data.emplace_back(data);
-      }
+    refresh();
+  }
 
-      void NCurses::setup()
-      {
-        event::EManager::fire<event::CLISystemEvent>(event::CLISystemEvent::Type::DISABLE);
-        initscr();
-        cbreak();
-        noecho();
-        nodelay(stdscr, TRUE);
-        start_color();
+  void NCurses::registerEntity(const EntityPtr& entity)
+  {
+    NCursesData data;
 
-        auto callback = [](const auto fg, const auto bg, const auto attr)
-        {
-          auto draw = std::make_shared<component::TerminalText>("a", realColor[fg], realColor[bg], termattr[attr]);
-          auto transform = std::make_shared<component::Transform>(fg * 8 + attr, bg, 0);
-          entity::EntityManager::createEntity({draw, transform});
-        };
-        ::execOnColorsAndAttr(callback);
-        ::initNCursesColor();
-      }
+    auto comps = entity->getComponents();
+    for (auto& comp : comps)
+    {
+      auto compID = comp->getID();
+      if (compID == component::TerminalText::getComponentID())
+        data.text = std::static_pointer_cast<component::TerminalText>(comp);
+      else if (compID == NCTransform::getComponentID())
+        data.transform = std::static_pointer_cast<NCTransform>(comp);
+      else if (compID == component::TerminalPolygon::getComponentID())
+        data.polygon = std::static_pointer_cast<component::TerminalPolygon>(comp);
+    }
 
-      void NCurses::atRemove()
-      {
-        endwin();
-        event::EManager::fire<event::CLISystemEvent>(event::CLISystemEvent::Type::ENABLE);
-      }
-    } /* !system */
-  } /* !ecs */
-} /* !lel */
+    if (data.isValidText())
+      _text.emplace_back(data);
+
+    if (data.isValidPolygon())
+      _polygon.emplace_back(data);
+  }
+
+  void NCurses::setup()
+  {
+    event::EManager::fire<event::CLISystemEvent>(event::CLISystemEvent::Type::DISABLE);
+    initscr();
+    cbreak();
+    noecho();
+    nodelay(stdscr, TRUE);
+    // TODO: IN A SINGLE COMMIT AS HOTFIX: Checking return value of 'start_color'
+    start_color();
+
+    auto callback = [](const auto fg, const auto bg, const auto attr)
+    {
+      auto draw = std::make_shared<component::TerminalText>("a", realColor[fg], realColor[bg], termattr[attr]);
+      auto transform = std::make_shared<NCTransform>(fg * 8 + attr, bg, 0);
+      entity::EntityManager::createEntity({draw, transform});
+    };
+    ::execOnColorsAndAttr(callback);
+    ::initNCursesColor();
+
+    // Straight line test
+    std::vector<Vector2<int>> pts{{0, 0}, {0, 3}, {3, 3}, {3, 0}};
+    auto poly = std::make_shared<component::TerminalPolygon>(pts);
+    auto transform = std::make_shared<NCTransform>(20, 20, 0);
+    entity::EntityManager::createEntity({poly, transform});
+
+    //'Perfect' Diagonale line test
+    pts = {{0, -2}, {2, 0}, {0, 2}, {-2, 0}};
+    poly = std::make_shared<component::TerminalPolygon>(pts);
+    transform = std::make_shared<NCTransform>(28, 20, 0);
+    entity::EntityManager::createEntity({poly, transform});
+
+    // Slight rotation line test
+    pts = {{3, 0}, {0, 1}, {1, 4}, {4, 3}};
+    poly = std::make_shared<component::TerminalPolygon>(pts, TerminalColor::Color::RED);
+    transform = std::make_shared<NCTransform>(36, 20, 0);
+    entity::EntityManager::createEntity({poly, transform});
+  }
+
+  void NCurses::atRemove()
+  {
+    endwin();
+    event::EManager::fire<event::CLISystemEvent>(event::CLISystemEvent::Type::ENABLE);
+  }
+} /* !lel::ecs::system */
