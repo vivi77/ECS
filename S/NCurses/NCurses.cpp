@@ -230,17 +230,18 @@ namespace lel::ecs::system
     cbreak();
     noecho();
     nodelay(stdscr, TRUE);
-    // TODO: IN A SINGLE COMMIT AS HOTFIX: Checking return value of 'start_color'
-    start_color();
-
-    auto callback = [](const auto fg, const auto bg, const auto attr)
+    if (start_color() == TRUE)
     {
-      auto draw = std::make_shared<component::TerminalText>("a", realColor[fg], realColor[bg], termattr[attr]);
-      auto transform = std::make_shared<NCTransform>(fg * 8 + attr, bg, 0);
-      entity::EntityManager::createEntity({draw, transform});
-    };
-    ::execOnColorsAndAttr(callback);
-    ::initNCursesColor();
+      auto callback = [](const auto fg, const auto bg, const auto attr)
+      {
+        auto draw = std::make_shared<component::TerminalText>(
+          "a", realColor[fg], realColor[bg], termattr[attr]);
+        auto transform = std::make_shared<NCTransform>(fg * 8 + attr, bg, 0);
+        entity::EntityManager::createEntity({draw, transform});
+      };
+      ::execOnColorsAndAttr(callback);
+      ::initNCursesColor();
+    }
 
     // Straight line test
     std::vector<Vector2<int>> pts{{0, 0}, {0, 3}, {3, 3}, {3, 0}};
