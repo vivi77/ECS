@@ -1,6 +1,7 @@
 #include "NCurses.hh"
 #include "E/CLISystemEvent/CLISystemEvent.hh"
 #include "E/EManager.hh"
+#include "Utility/Bresenham.hpp"
 #include <curses.h>
 #include <algorithm>
 
@@ -9,25 +10,28 @@
 
 namespace
 {
-  constexpr lel::ecs::component::TerminalDrawable::Color realColor[]{
-    lel::ecs::component::TerminalDrawable::Color::BLACK,
-    lel::ecs::component::TerminalDrawable::Color::RED,
-    lel::ecs::component::TerminalDrawable::Color::GREEN,
-    lel::ecs::component::TerminalDrawable::Color::YELLOW,
-    lel::ecs::component::TerminalDrawable::Color::BLUE,
-    lel::ecs::component::TerminalDrawable::Color::MAGENTA,
-    lel::ecs::component::TerminalDrawable::Color::CYAN,
-    lel::ecs::component::TerminalDrawable::Color::WHITE,
+  using TerminalDrawable = lel::ecs::component::TerminalText;
+  using TerminalColor = lel::ecs::component::TerminalColor;
+
+  constexpr TerminalColor::Color realColor[]{
+    TerminalColor::Color::BLACK,
+    TerminalColor::Color::RED,
+    TerminalColor::Color::GREEN,
+    TerminalColor::Color::YELLOW,
+    TerminalColor::Color::BLUE,
+    TerminalColor::Color::MAGENTA,
+    TerminalColor::Color::CYAN,
+    TerminalColor::Color::WHITE,
   };
   constexpr int requestColor[]{
-    static_cast<int>(lel::ecs::component::TerminalDrawable::Color::BLACK),
-    static_cast<int>(lel::ecs::component::TerminalDrawable::Color::RED),
-    static_cast<int>(lel::ecs::component::TerminalDrawable::Color::GREEN),
-    static_cast<int>(lel::ecs::component::TerminalDrawable::Color::YELLOW),
-    static_cast<int>(lel::ecs::component::TerminalDrawable::Color::BLUE),
-    static_cast<int>(lel::ecs::component::TerminalDrawable::Color::MAGENTA),
-    static_cast<int>(lel::ecs::component::TerminalDrawable::Color::CYAN),
-    static_cast<int>(lel::ecs::component::TerminalDrawable::Color::WHITE),
+    static_cast<int>(TerminalColor::Color::BLACK),
+    static_cast<int>(TerminalColor::Color::RED),
+    static_cast<int>(TerminalColor::Color::GREEN),
+    static_cast<int>(TerminalColor::Color::YELLOW),
+    static_cast<int>(TerminalColor::Color::BLUE),
+    static_cast<int>(TerminalColor::Color::MAGENTA),
+    static_cast<int>(TerminalColor::Color::CYAN),
+    static_cast<int>(TerminalColor::Color::WHITE),
   };
   constexpr int colorValue[]{
     COLOR_BLACK,
@@ -47,16 +51,16 @@ namespace
     A_REVERSE,
     A_INVIS,
   };
-  constexpr lel::ecs::component::TerminalDrawable::Attributes termattr[]{
-    lel::ecs::component::TerminalDrawable::Attributes::BOLD,
-    lel::ecs::component::TerminalDrawable::Attributes::DIM,
-    lel::ecs::component::TerminalDrawable::Attributes::UNDERLINED,
-    lel::ecs::component::TerminalDrawable::Attributes::BLINK,
-    lel::ecs::component::TerminalDrawable::Attributes::REVERSE,
-    lel::ecs::component::TerminalDrawable::Attributes::HIDDEN,
+  constexpr TerminalColor::Attributes termattr[]{
+    TerminalColor::Attributes::BOLD,
+    TerminalColor::Attributes::DIM,
+    TerminalColor::Attributes::UNDERLINED,
+    TerminalColor::Attributes::BLINK,
+    TerminalColor::Attributes::REVERSE,
+    TerminalColor::Attributes::HIDDEN,
   };
 
-  int getColorValue(const lel::ecs::component::TerminalDrawable::Color color)
+  int getColorValue(const TerminalDrawable::Color color)
   {
     auto i = -1;
     auto pred = [&i, &color](const auto it) -> bool
@@ -75,7 +79,7 @@ namespace
     return 1 + fg * (sizeof(requestColor) / sizeof(*requestColor)) + bg;
   }
 
-  int getIndexColorPair(const lel::ecs::component::TerminalDrawable::Color fg, const lel::ecs::component::TerminalDrawable::Color bg)
+  int getIndexColorPair(const TerminalDrawable::Color fg, const TerminalDrawable::Color bg)
   {
     return ::generateIndexColorPair(::getColorValue(fg), ::getColorValue(bg));
   }
@@ -139,74 +143,127 @@ namespace
   }
 } /* ! */
 
-namespace lel
+namespace lel::ecs::system
 {
-  namespace ecs
+  void NCurses::exec()
   {
-    namespace system
+    char c = getch();
+    if (c == 'q')
+      event::EManager::fire<event::CoreEvent>(event::CoreEvent::Type::EXIT);
+
+    for (const auto& comp : _text)
     {
-      void NCurses::exec()
-      {
-        char c = getch();
-        if (c == 'q')
-          event::EManager::fire<event::CoreEvent>(event::CoreEvent::Type::EXIT);
+      auto index = ::getIndexColorPair(comp.text->fgColor, comp.text->bgColor);
+      attron(COLOR_PAIR(index));
+      toggleOnAttributes(comp.text->attributes);
+      mvprintw(comp.transform->position.y,
+               comp.transform->position.x,
+               comp.text->text);
+      toggleOffAttributes();
+      attroff(COLOR_PAIR(index));
+    }
 
-        for (auto& comp : _data)
-        {
-          auto index = ::getIndexColorPair(comp.drawableComp->fgColor,
-                                           comp.drawableComp->bgColor);
-          attron(COLOR_PAIR(index));
-          toggleOnAttributes(comp.drawableComp->attributes);
-          mvprintw(comp.transform->getPosition().y,
-                   comp.transform->getPosition().x,
-                   comp.drawableComp->sym);
-          toggleOffAttributes();
-          attroff(COLOR_PAIR(index));
-        }
-        refresh();
+    for (const auto& comp : _polygon)
+    {
+      auto index = ::getIndexColorPair(comp.polygon->fgColor, comp.polygon->bgColor);
+      attron(COLOR_PAIR(index));
+      toggleOnAttributes(comp.polygon->attributes);
+
+      const auto nbSegment = comp.polygon->points.size();
+      if (nbSegment <= 1)
+        continue;
+
+      auto drawCallback =
+      [&comp](const int x, const int y, const lel::graphic::CircleLocation)
+      {
+        mvprintw(y + comp.transform->position.y,
+                 x + comp.transform->position.x,
+                 "*");
+      };
+      for (auto i = 0ul; i < nbSegment - 1; ++i)
+      {
+        const auto& p1 = comp.polygon->points[i];
+        const auto& p2 = comp.polygon->points[i + 1];
+        lel::graphic::drawLine(p1.x, p1.y, p2.x, p2.y, drawCallback);
+      }
+      if (nbSegment > 2)
+      {
+        const auto& p1 = comp.polygon->points[nbSegment - 1];
+        const auto& p2 = comp.polygon->points[0];
+        lel::graphic::drawLine(p1.x, p1.y, p2.x, p2.y, drawCallback);
       }
 
-      void NCurses::registerEntity(const EntityPtr& entity)
-      {
-        NCursesData data;
+      toggleOffAttributes();
+      attroff(COLOR_PAIR(index));
+    }
 
-        auto comps = entity->getComponents();
-        for (auto& comp : comps)
-        {
-          auto compID = comp->getID();
-          if (compID == lel::ecs::component::TerminalDrawable::getComponentID())
-            data.drawableComp = std::static_pointer_cast<lel::ecs::component::TerminalDrawable>(comp);
-          else if (compID == lel::ecs::component::Transform::getComponentID())
-            data.transform = std::static_pointer_cast<lel::ecs::component::Transform>(comp);
-        }
-        if (data.isValid())
-          _data.emplace_back(data);
-      }
+    refresh();
+  }
 
-      void NCurses::setup()
-      {
-        event::EManager::fire<event::CLISystemEvent>(event::CLISystemEvent::Type::DISABLE);
-        initscr();
-        cbreak();
-        noecho();
-        nodelay(stdscr, TRUE);
-        start_color();
+  void NCurses::registerEntity(const EntityPtr& entity)
+  {
+    NCursesData data;
 
-        auto callback = [](const auto fg, const auto bg, const auto attr)
-        {
-          entity::EntityManager::createEntity({std::make_shared<component::TerminalDrawable>("a", realColor[fg], realColor[bg], termattr[attr]),
-                                              std::make_shared<component::Transform>(fg * 8 + attr, bg, 0)});
-        };
-        ::execOnColorsAndAttr(callback);
+    auto comps = entity->getComponents();
+    for (auto& comp : comps)
+    {
+      auto compID = comp->getID();
+      if (compID == component::TerminalText::getComponentID())
+        data.text = std::static_pointer_cast<component::TerminalText>(comp);
+      else if (compID == NCTransform::getComponentID())
+        data.transform = std::static_pointer_cast<NCTransform>(comp);
+      else if (compID == component::TerminalPolygon::getComponentID())
+        data.polygon = std::static_pointer_cast<component::TerminalPolygon>(comp);
+    }
 
-        ::initNCursesColor();
-      }
+    if (data.isValidText())
+      _text.emplace_back(data);
 
-      void NCurses::atRemove()
-      {
-        endwin();
-        event::EManager::fire<event::CLISystemEvent>(event::CLISystemEvent::Type::ENABLE);
-      }
-    } /* !system */
-  } /* !ecs */
-} /* !lel */
+    if (data.isValidPolygon())
+      _polygon.emplace_back(data);
+  }
+
+  void NCurses::setup()
+  {
+    event::EManager::fire<event::CLISystemEvent>(event::CLISystemEvent::Type::DISABLE);
+    initscr();
+    cbreak();
+    noecho();
+    nodelay(stdscr, TRUE);
+    // TODO: IN A SINGLE COMMIT AS HOTFIX: Checking return value of 'start_color'
+    start_color();
+
+    auto callback = [](const auto fg, const auto bg, const auto attr)
+    {
+      auto draw = std::make_shared<component::TerminalText>("a", realColor[fg], realColor[bg], termattr[attr]);
+      auto transform = std::make_shared<NCTransform>(fg * 8 + attr, bg, 0);
+      entity::EntityManager::createEntity({draw, transform});
+    };
+    ::execOnColorsAndAttr(callback);
+    ::initNCursesColor();
+
+    // Straight line test
+    std::vector<Vector2<int>> pts{{0, 0}, {0, 3}, {3, 3}, {3, 0}};
+    auto poly = std::make_shared<component::TerminalPolygon>(pts);
+    auto transform = std::make_shared<NCTransform>(20, 20, 0);
+    entity::EntityManager::createEntity({poly, transform});
+
+    //'Perfect' Diagonale line test
+    pts = {{0, -2}, {2, 0}, {0, 2}, {-2, 0}};
+    poly = std::make_shared<component::TerminalPolygon>(pts);
+    transform = std::make_shared<NCTransform>(28, 20, 0);
+    entity::EntityManager::createEntity({poly, transform});
+
+    // Slight rotation line test
+    pts = {{3, 0}, {0, 1}, {1, 4}, {4, 3}};
+    poly = std::make_shared<component::TerminalPolygon>(pts, TerminalColor::Color::RED);
+    transform = std::make_shared<NCTransform>(36, 20, 0);
+    entity::EntityManager::createEntity({poly, transform});
+  }
+
+  void NCurses::atRemove()
+  {
+    endwin();
+    event::EManager::fire<event::CLISystemEvent>(event::CLISystemEvent::Type::ENABLE);
+  }
+} /* !lel::ecs::system */

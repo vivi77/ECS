@@ -1,7 +1,5 @@
 #pragma once
 
-#include "C/TerminalDrawable/terminaldrawable_export.h"
-#include "C/CRTPC.hpp"
 #include <bitset>
 
 namespace lel
@@ -10,7 +8,7 @@ namespace lel
   {
     namespace component
     {
-      struct TERMINALDRAWABLE_EXPORT TerminalDrawable : public CRTPC<TerminalDrawable>
+      struct TerminalColor
       {
         enum class Color
         {
@@ -38,15 +36,11 @@ namespace lel
         using Attr = unsigned long long;
 
       public:
-        TerminalDrawable(const char* = "");
-        TerminalDrawable(const char*, const Color);
-        TerminalDrawable(const char*, const Color, const Color);
-        TerminalDrawable(const char*, const Color, const Color, const Attr);
-        virtual ~TerminalDrawable() = default;
+        TerminalColor(const Color fg = Color::WHITE, const Color bg = Color::BLACK, const Attr attr = 0);
 
-        const char* sym = "";
+      public:
         Color fgColor = Color::WHITE;
-        Color bgColor = Color::WHITE;
+        Color bgColor = Color::BLACK;
         std::bitset<6> attributes;
       };
     } /* !component */

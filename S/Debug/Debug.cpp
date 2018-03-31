@@ -136,7 +136,7 @@ namespace
         okEvent(log, "Component ID#" + std::to_string(std::get<CManagerEvent::CID>(event->getData())) + " added");
         break;
       case CManagerEvent::Type::COMP_ALREADY_ADDED:
-        badEvent(log, "Component ID#" + std::to_string(std::get<CManagerEvent::CID>(event->getData())) + " added");
+        badEvent(log, "Component ID#" + std::to_string(std::get<CManagerEvent::CID>(event->getData())) + " already added");
         break;
       case CManagerEvent::Type::COMP_CREATED:
         okEvent(log, "Component created (address:" + to_string(std::get<CManagerEvent::CPtr>(event->getData()).get()) + ")");

@@ -1,4 +1,4 @@
-set(NAME TerminalDrawable)
+set(NAME TerminalComponents)
 
 file(GLOB SRCS *.cpp)
 file(GLOB HDRS *.hh *.hpp)
@@ -7,9 +7,10 @@ target_include_directories(${NAME} PUBLIC
   ${CMAKE_BINARY_DIR}
   ${PROJECT_SOURCE_DIR}
   )
-target_link_libraries(${NAME}
+target_link_libraries(${NAME} PUBLIC
   CIDGen
   CManager
+  TemplateComp
   )
 
 set_target_properties(${NAME} PROPERTIES IMPORTED_LOCATION ${OUTPUT_LOCATION})

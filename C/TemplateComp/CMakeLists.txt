@@ -1,4 +1,4 @@
-set(NAME Transform)
+set(NAME TemplateComp)
 
 file(GLOB SRCS *.hpp)
 add_library(${NAME} INTERFACE)
@@ -11,4 +11,4 @@ target_link_libraries(${NAME} INTERFACE
   CManager
   ecs_utils
   )
-target_sources(${NAME} INTERFACE ${SRCS} ${HDRS})
+target_sources(${NAME} INTERFACE ${SRCS})
