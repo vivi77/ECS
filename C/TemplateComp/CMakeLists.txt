@@ -9,5 +9,6 @@ target_include_directories(${NAME} INTERFACE
 target_link_libraries(${NAME} INTERFACE
   CIDGen
   CManager
+  ecs_utils
   )
 target_sources(${NAME} INTERFACE ${SRCS})

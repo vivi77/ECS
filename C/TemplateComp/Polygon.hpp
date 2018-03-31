@@ -1,7 +1,7 @@
 #pragma once
 
 #include "C/CRTPC.hpp"
-#include "Utility/Vector/Vector.hh"
+#include "Utility/Vector.hpp"
 #include <vector>
 
 namespace lel
@@ -12,18 +12,23 @@ namespace lel
     {
       namespace templateComponent
       {
-        template <class Color>
-        struct Polygon : public CRTPC<Polygon<Color>>, public Color
+        template <class _Vector, class _Color>
+        struct Polygon : public CRTPC<Polygon<_Vector, _Color>>, public _Color
         {
         public:
+          using Color = _Color;
+          using Vector = _Vector;
+
+        public:
           template <typename ... Args>
-          Polygon(Args&& ... args)
-            : CRTPC<Polygon<Color>>{}
+          Polygon(const std::vector<Vector>& pts, Args&& ... args)
+            : CRTPC<Polygon<Vector, Color>>{}
             , Color{std::forward<Args>(args)...}
+            , points{pts}
           {}
           virtual ~Polygon() = default;
 
-          std::vector<Vector2> points;
+          std::vector<Vector> points;
         };
       } /* !templateComponent */
     } /* !component */
