@@ -230,7 +230,7 @@ namespace lel::ecs::system
     cbreak();
     noecho();
     nodelay(stdscr, TRUE);
-    if (start_color() == TRUE)
+    if (start_color() == OK)
     {
       auto callback = [](const auto fg, const auto bg, const auto attr)
       {
