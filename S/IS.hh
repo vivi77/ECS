@@ -9,7 +9,7 @@ namespace lel::ecs::system
   {
   public:
     using ID = unsigned;
-    using EntityPtr = std::shared_ptr<Entity>;
+    using EntityPtr = std::shared_ptr<entity::Entity>;
 
   public:
     virtual ~IS() = default;

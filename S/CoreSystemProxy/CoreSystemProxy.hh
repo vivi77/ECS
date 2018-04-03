@@ -17,7 +17,7 @@ namespace lel::ecs
     using SystemContainer = std::list<CoreSystemData>; //Core::'Container of the systems'
 
   public:
-    static void registerEntityInSystems(const std::shared_ptr<Entity>& entity);
+    static void registerEntityInSystems(const std::shared_ptr<entity::Entity>& entity);
 
   private:
     static void setSystemsList(SystemContainer& systems);

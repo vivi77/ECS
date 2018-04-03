@@ -14,7 +14,7 @@ namespace lel::ecs
     }
   }
 
-  void CoreSystemProxy::registerEntityInSystems(const std::shared_ptr<Entity>& entity)
+  void CoreSystemProxy::registerEntityInSystems(const std::shared_ptr<entity::Entity>& entity)
   {
     if (!_systems)
       return ;
