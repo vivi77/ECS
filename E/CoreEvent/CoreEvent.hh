@@ -5,50 +5,44 @@
 #include <string>
 #include <vector>
 
-namespace lel
+namespace lel::ecs::event
 {
-  namespace ecs
+  class COREEVENT_EXPORT CoreEvent : public CRTPE<CoreEvent>
   {
-    namespace event
+  public:
+    enum class Type : char
     {
-      class COREEVENT_EXPORT CoreEvent : public CRTPE<CoreEvent>
-      {
-      public:
-        enum class Type : char
-        {
-          EXIT,
-          ADD_SYSTEM,
-          REM_SYSTEM,
+      EXIT,
+      ADD_SYSTEM,
+      REM_SYSTEM,
 
-          CLOSING,
-          ADD_SYSTEM_SUCCESS,
-          REM_SYSTEM_SUCCESS,
+      CLOSING,
+      ADD_SYSTEM_SUCCESS,
+      REM_SYSTEM_SUCCESS,
 
-          ALREADY_ADDED_SYSTEM,
+      ALREADY_ADDED_SYSTEM,
 
-          INVALID_SYSTEM,
-          SYSTEM_NOT_FOUND,
-          ADD_SYSTEM_FAILURE,
-          REM_SYSTEM_FAILURE,
-        };
+      INVALID_SYSTEM,
+      SYSTEM_NOT_FOUND,
+      ADD_SYSTEM_FAILURE,
+      REM_SYSTEM_FAILURE,
+    };
 
-      public:
-        CoreEvent(Type t);
-        CoreEvent(Type t, const std::string& data);
-        template <typename ... Args>
-        CoreEvent(Type t, Args&& ... args)
-          : _type{t}
-          , _data{std::forward<Args>(args)...}
-        {}
-        virtual ~CoreEvent() = default;
+  public:
+    CoreEvent(Type t);
+    CoreEvent(Type t, const std::string& data);
+    template <typename ... Args>
+    CoreEvent(Type t, Args&& ... args)
+      : _type{t}
+      , _data{std::forward<Args>(args)...}
+    {}
+    virtual ~CoreEvent() = default;
 
-        Type getType() const;
-        std::vector<std::string> getData() const;
+    Type getType() const;
+    std::vector<std::string> getData() const;
 
-      private:
-        Type _type;
-        std::vector<std::string> _data;
-      };
-    } /* !event */
-  } /* !ecs */
-} /* !lel */
+  private:
+    Type _type;
+    std::vector<std::string> _data;
+  };
+} /* !lel::ecs::event */

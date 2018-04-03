@@ -2,55 +2,49 @@
 
 #include "C/IC.hh"
 
-namespace lel
+namespace lel::ecs::component
 {
-  namespace ecs
+  template <class D>
+  class CRTPC : public IC
   {
-    namespace component
+  public:
+    using ID = IC::ID;
+
+  public:
+    virtual ~CRTPC() = default;
+
+    ID getID() const final
     {
-      template <class D>
-      class CRTPC : public IC
+      return getComponentID();
+    }
+
+    static void assignID(const ID id)
+    {
+      if (!isIDAssigned())
       {
-      public:
-        using ID = IC::ID;
+        _id = id;
+        _idAssigned = true;
+      }
+    }
 
-      public:
-        virtual ~CRTPC() = default;
+    static ID getComponentID()
+    {
+      return _id;
+    }
 
-        ID getID() const final
-        {
-          return getComponentID();
-        }
+    static bool isIDAssigned()
+    {
+      return _idAssigned;
+    }
 
-        static void assignID(const ID id)
-        {
-          if (!isIDAssigned())
-          {
-            _id = id;
-            _idAssigned = true;
-          }
-        }
+  private:
+    static ID _id;
+    static bool _idAssigned;
+  };
 
-        static ID getComponentID()
-        {
-          return _id;
-        }
+  template <class D>
+  typename CRTPC<D>::ID CRTPC<D>::_id = 0;
 
-        static bool isIDAssigned()
-        {
-          return _idAssigned;
-        }
-
-      private:
-        static ID _id;
-        static bool _idAssigned;
-      };
-
-      template <class D>
-      typename CRTPC<D>::ID CRTPC<D>::_id = 0;
-
-      template <class D>
-      bool CRTPC<D>::_idAssigned = false;
-    } /* !component */
-  } /* !ecs */
-} /* !lel */
+  template <class D>
+  bool CRTPC<D>::_idAssigned = false;
+} /* !lel::ecs::component */

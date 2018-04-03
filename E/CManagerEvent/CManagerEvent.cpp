@@ -1,24 +1,18 @@
 #include "CManagerEvent.hh"
 
-namespace lel
+namespace lel::ecs::event
 {
-  namespace ecs
+  CManagerEvent::CManagerEvent(const Type t)
+    : _t{t}
+  {}
+
+  CManagerEvent::Type CManagerEvent::getType() const
   {
-    namespace event
-    {
-      CManagerEvent::CManagerEvent(const Type t)
-        : _t{t}
-      {}
-
-      CManagerEvent::Type CManagerEvent::getType() const
-      {
-        return _t;
-      }
-
-      CManagerEvent::Data CManagerEvent::getData() const
-      {
-        return _data;
-      }
-    }
+    return _t;
   }
-}
+
+  CManagerEvent::Data CManagerEvent::getData() const
+  {
+    return _data;
+  }
+} /* !lel::ecs::event */

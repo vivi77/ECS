@@ -1,16 +1,10 @@
 #include "TerminalColor.hh"
 
-namespace lel
+namespace lel::ecs::component
 {
-  namespace ecs
-  {
-    namespace component
-    {
-      TerminalColor::TerminalColor(const Color fg, const Color bg, const Attr attr)
-        : fgColor{fg}
-        , bgColor{bg}
-        , attributes{attr}
-      {}
-    } /* !component */
-  } /* !ecs */
-} /* !lel */
+  TerminalColor::TerminalColor(const Color fg, const Color bg, const Attr attr)
+    : fgColor{fg}
+    , bgColor{bg}
+    , attributes{attr}
+  {}
+} /* !lel::ecs::component */

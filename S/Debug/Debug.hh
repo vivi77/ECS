@@ -5,27 +5,21 @@
 #include "Log.hh"
 #include <fstream>
 
-namespace lel
+namespace lel::ecs::system
 {
-  namespace ecs
+  class Debug : public CRTPS<Debug>, public event::IEListener
   {
-    namespace system
-    {
-      class Debug : public CRTPS<Debug>, public event::IEListener
-      {
-      public:
-        Debug();
-        virtual ~Debug() = default;
-        void exec() override;
-        void update(const EPtr&) override;
-        void registerEntity(const EntityPtr&) override;
-        void setup() override;
-        void atRemove() override;
+  public:
+    Debug();
+    virtual ~Debug() = default;
+    void exec() override;
+    void update(const EPtr&) override;
+    void registerEntity(const EntityPtr&) override;
+    void setup() override;
+    void atRemove() override;
 
-      private:
-        std::ofstream _logFile;
-        lel::Log _log;
-      };
-    } /* !system */
-  } /* !ecs */
-} /* !lel */
+  private:
+    std::ofstream _logFile;
+    lel::Log _log;
+  };
+} /* !lel::ecs::system */

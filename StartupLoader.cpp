@@ -16,12 +16,9 @@ namespace
   }
 } /* ! */
 
-namespace lel
+namespace lel::ecs
 {
-  namespace ecs
-  {
-    StartupLoader::StartupLoader(const std::string& filename)
-      : _paths{retrieveSystemPaths(filename)}
-    {}
-  } /* !ecs */
-} /* !lel */
+  StartupLoader::StartupLoader(const std::string& filename)
+    : _paths{retrieveSystemPaths(filename)}
+  {}
+} /* !lel::ecs */

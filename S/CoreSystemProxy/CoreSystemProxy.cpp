@@ -1,28 +1,25 @@
 #include "CoreSystemProxy.hh"
 
-namespace lel
+namespace lel::ecs
 {
-  namespace ecs
+  CoreSystemProxy::SystemContainer* CoreSystemProxy::_systems;
+
+  void CoreSystemProxy::setSystemsList(SystemContainer& systems)
   {
-    CoreSystemProxy::SystemContainer* CoreSystemProxy::_systems;
-
-    void CoreSystemProxy::setSystemsList(SystemContainer& systems)
+    static bool accessed = false;
+    if (!accessed)
     {
-      static bool accessed = false;
-      if (!accessed)
-      {
-        _systems = &systems;
-        accessed = true;
-      }
+      _systems = &systems;
+      accessed = true;
     }
+  }
 
-    void CoreSystemProxy::registerEntityInSystems(const std::shared_ptr<Entity>& entity)
-    {
-      if (!_systems)
-        return ;
+  void CoreSystemProxy::registerEntityInSystems(const std::shared_ptr<Entity>& entity)
+  {
+    if (!_systems)
+      return ;
 
-      for (auto& data : *_systems)
-        data.sys->registerEntity(entity);
-    }
-  } /* !ecs */
-} /* !lel */
+    for (auto& data : *_systems)
+      data.sys->registerEntity(entity);
+  }
+} /* !lel::ecs */

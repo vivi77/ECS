@@ -1,20 +1,14 @@
 #pragma once
 
-namespace lel
+namespace lel::ecs::event
 {
-  namespace ecs
+  class IE
   {
-    namespace event
-    {
-      class IE
-      {
-      public:
-        using ID = unsigned;
+  public:
+    using ID = unsigned;
 
-      public:
-        virtual ~IE() = default;
-        virtual ID getID() const = 0;
-      };
-    } /* !event */
-  } /* !ecs */
-} /* !lel */
+  public:
+    virtual ~IE() = default;
+    virtual ID getID() const = 0;
+  };
+} /* !lel::ecs::event */

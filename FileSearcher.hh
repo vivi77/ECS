@@ -5,48 +5,45 @@
 #include <vector>
 #include <regex>
 
-namespace lel
+namespace lel::utility
 {
-  namespace utility
+  class FileSearcher
   {
-    class FileSearcher
+  public:
+    using Result = std::experimental::filesystem::path;
+    using ResultContainer = std::vector<Result>;
+
+  public:
+    void searchFile(const char* path, const std::regex&);
+    void searchExtension(const char* path, const char* extension);
+
+    template <typename Fct>
+    void applyOnResult(Fct&& fct)
     {
-    public:
-      using Result = std::experimental::filesystem::path;
-      using ResultContainer = std::vector<Result>;
+      for (auto& path : _result)
+        std::forward<Fct>(fct)(path);
+    }
 
-    public:
-      void searchFile(const char* path, const std::regex&);
-      void searchExtension(const char* path, const char* extension);
+    template <typename T, typename Fct>
+    std::vector<T> applyOnResult(Fct&& fct)
+    {
+      std::vector<T> result;
 
-      template <typename Fct>
-      void applyOnResult(Fct&& fct)
-      {
-        for (auto& path : _result)
-          std::forward<Fct>(fct)(path);
-      }
+      for (auto& path : _result)
+        result.emplace_back(std::forward<Fct>(fct)(path));
 
-      template <typename T, typename Fct>
-      std::vector<T> applyOnResult(Fct&& fct)
-      {
-        std::vector<T> result;
+      return result;
+    }
 
-        for (auto& path : _result)
-          result.emplace_back(std::forward<Fct>(fct)(path));
+    ResultContainer getResult() const
+    {
+      return _result;
+    }
 
-        return result;
-      }
+  public:
+    static const char* DYNAMIC_LIBRARY_EXTENSION;
 
-      ResultContainer getResult() const
-      {
-        return _result;
-      }
-
-    public:
-      static const char* DYNAMIC_LIBRARY_EXTENSION;
-
-    private:
-      ResultContainer _result;
-    };
-  } /* !utility */
-} /* !lel */
+  private:
+    ResultContainer _result;
+  };
+} /* !lel::utility */

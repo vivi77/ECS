@@ -5,25 +5,28 @@
 #include <vector>
 #include <memory>
 
-class ENTITYLOGIC_EXPORT Entity
+namespace lel::ecs::entity
 {
-public:
-  using CPtr = std::shared_ptr<lel::ecs::component::IC>;
-  using CContainer = std::vector<CPtr>;
+  class ENTITYLOGIC_EXPORT Entity
+  {
+  public:
+    using CPtr = std::shared_ptr<lel::ecs::component::IC>;
+    using CContainer = std::vector<CPtr>;
 
-public:
-  using ID = unsigned;
+  public:
+    using ID = unsigned;
 
-public:
-  Entity(const ID, std::initializer_list<CPtr>);
+  public:
+    Entity(const ID, std::initializer_list<CPtr>);
 
-  ID getID() const;
-  CContainer getComponents() const;
+    ID getID() const;
+    CContainer getComponents() const;
 
-  void addComponent(const CPtr& comp);
-  void removeComponent(const lel::ecs::component::IC::ID);
+    void addComponent(const CPtr& comp);
+    void removeComponent(const lel::ecs::component::IC::ID);
 
-private:
-  ID _id;
-  CContainer _components;
-};
+  private:
+    ID _id;
+    CContainer _components;
+  };
+} /* !lel::ecs::entity */

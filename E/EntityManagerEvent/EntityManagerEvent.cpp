@@ -1,29 +1,23 @@
 #include "EntityManagerEvent.hh"
 
-namespace lel
+namespace lel::ecs::event
 {
-  namespace ecs
+  EntityManagerEvent::EntityManagerEvent(const Type t)
+    : _t{t}
+  {}
+
+  EntityManagerEvent::EntityManagerEvent(const Type t, const EntityID id)
+    : _t{t}
+    , _id{id}
+  {}
+
+  EntityManagerEvent::Type EntityManagerEvent::getType() const
   {
-    namespace event
-    {
-      EntityManagerEvent::EntityManagerEvent(const Type t)
-        : _t{t}
-      {}
+    return _t;
+  }
 
-      EntityManagerEvent::EntityManagerEvent(const Type t, const EntityID id)
-        : _t{t}
-        , _id{id}
-      {}
-
-      EntityManagerEvent::Type EntityManagerEvent::getType() const
-      {
-        return _t;
-      }
-
-      EntityManagerEvent::EntityID EntityManagerEvent::getEntityID() const
-      {
-        return _id;
-      }
-    } /* !event */
-  } /* !ecs */
-} /* !lel */
+  EntityManagerEvent::EntityID EntityManagerEvent::getEntityID() const
+  {
+    return _id;
+  }
+} /* !lel::ecs::event */

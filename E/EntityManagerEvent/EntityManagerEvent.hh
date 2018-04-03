@@ -3,37 +3,31 @@
 #include "E/CRTPE.hpp"
 #include "E/EntityManagerEvent/entitymanagerevent_export.h"
 
-namespace lel
+namespace lel::ecs::event
 {
-  namespace ecs
+  class ENTITYMANAGEREVENT_EXPORT EntityManagerEvent : public CRTPE<EntityManagerEvent>
   {
-    namespace event
+  public:
+    using EntityID = unsigned; //EntityIDGenrator::ID
+
+  public:
+    enum class Type : char
     {
-      class ENTITYMANAGEREVENT_EXPORT EntityManagerEvent : public CRTPE<EntityManagerEvent>
-      {
-      public:
-        using EntityID = unsigned; //EntityIDGenrator::ID
+      ENTITY_CREATED,
+      ENTITY_DESTROYED,
+      ENTITY_NOT_FOUND,
+    };
 
-      public:
-        enum class Type : char
-        {
-          ENTITY_CREATED,
-          ENTITY_DESTROYED,
-          ENTITY_NOT_FOUND,
-        };
+  public:
+    EntityManagerEvent(const Type t);
+    EntityManagerEvent(const Type t, const EntityID);
+    virtual ~EntityManagerEvent() = default;
 
-      public:
-        EntityManagerEvent(const Type t);
-        EntityManagerEvent(const Type t, const EntityID);
-        virtual ~EntityManagerEvent() = default;
+    Type getType() const;
+    EntityID getEntityID() const;
 
-        Type getType() const;
-        EntityID getEntityID() const;
-
-      private:
-        Type _t;
-        EntityID _id;
-      };
-    } /* !event */
-  } /* !ecs */
-} /* !lel */
+  private:
+    Type _t;
+    EntityID _id;
+  };
+} /* !lel::ecs::event */

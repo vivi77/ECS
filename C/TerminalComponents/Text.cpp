@@ -1,11 +1,5 @@
 #include "Text.hh"
 
-namespace lel
+namespace lel::ecs::component
 {
-  namespace ecs
-  {
-    namespace component
-    {
-    } /* !component */
-  } /* !ecs */
-} /* !lel */
+} /* !lel::ecs::component */

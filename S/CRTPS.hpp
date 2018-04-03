@@ -5,59 +5,53 @@
 #include <type_traits>
 #include <iostream>
 
-namespace lel
+namespace lel::ecs::system
 {
-  namespace ecs
+  template <class D>
+  class CRTPS : public IS
   {
-    namespace system
+    using ID = typename IS::ID;
+
+  public:
+    virtual ~CRTPS() = default;
+
+    static void assignID(const ID id)
     {
-      template <class D>
-      class CRTPS : public IS
+      if (!isIDAssigned())
       {
-        using ID = typename IS::ID;
+        _id = id;
+        _idAssigned = true;
+      }
+    }
 
-      public:
-        virtual ~CRTPS() = default;
+    ID getID() const final
+    {
+      return getSystemID();
+    }
 
-        static void assignID(const ID id)
-        {
-          if (!isIDAssigned())
-          {
-            _id = id;
-            _idAssigned = true;
-          }
-        }
+    bool isListener() const final
+    {
+      return std::is_base_of_v<event::IEListener, D>;
+    }
 
-        ID getID() const final
-        {
-          return getSystemID();
-        }
+    static ID getSystemID()
+    {
+      return _id;
+    }
 
-        bool isListener() const final
-        {
-          return std::is_base_of_v<event::IEListener, D>;
-        }
+    static bool isIDAssigned()
+    {
+      return _idAssigned;
+    }
 
-        static ID getSystemID()
-        {
-          return _id;
-        }
+  private:
+    static ID _id;
+    static bool _idAssigned;
+  };
 
-        static bool isIDAssigned()
-        {
-          return _idAssigned;
-        }
+  template <class D>
+  typename CRTPS<D>::ID CRTPS<D>::_id = 0;
 
-      private:
-        static ID _id;
-        static bool _idAssigned;
-      };
-
-      template <class D>
-      typename CRTPS<D>::ID CRTPS<D>::_id = 0;
-
-      template <class D>
-      bool CRTPS<D>::_idAssigned = false;
-    } /* !system */
-  } /* !ecs */
-} /* !lel */
+  template <class D>
+  bool CRTPS<D>::_idAssigned = false;
+} /* !lel::ecs::system */

@@ -4,14 +4,14 @@
 int main()
 {
   try
-    {
-      auto core = std::make_shared<lel::ecs::Core>();
+  {
+    auto core = std::make_shared<lel::ecs::Core>();
 
-      core->run();
-    }
+    core->run();
+  }
   catch (const std::exception& e)
-    {
-      std::cout << e.what() << "\n";
-    }
+  {
+    std::cout << e.what() << "\n";
+  }
   return (0);
 }

@@ -23,71 +23,65 @@ namespace
   }
 } /* ! */
 
-namespace lel
+namespace lel::ecs::event
 {
-  namespace ecs
+  std::vector<EManager::IEListenerPtr> EManager::_listeners;
+  std::unordered_map<EManager::EventID, EManager::Dtor> EManager::_registeredEvents;
+
+  void EManager::registerListener(const IEListenerPtr& listener)
   {
-    namespace event
+    auto ev = EManagerEvent::Type::LISTENER_ALREADY_ADDED;
+
+    auto beginIt = std::begin(_listeners);
+    auto endIt = std::end(_listeners);
+    auto it = std::find(beginIt, endIt, listener);
+    if (it == endIt)
     {
-      std::vector<EManager::IEListenerPtr> EManager::_listeners;
-      std::unordered_map<EManager::EventID, EManager::Dtor> EManager::_registeredEvents;
+      _listeners.emplace_back(listener);
+      ev = EManagerEvent::Type::LISTENER_ADDED;
+    }
+    EManager::fire<EManagerEvent>(ev, to_string(listener.get()));
+  }
 
-      void EManager::registerListener(const IEListenerPtr& listener)
-      {
-        auto ev = EManagerEvent::Type::LISTENER_ALREADY_ADDED;
+  void EManager::deregisterListener(const IEListenerPtr& listener)
+  {
+    auto ev = EManagerEvent::Type::LISTENER_NOT_FOUND;
 
-        auto beginIt = std::begin(_listeners);
-        auto endIt = std::end(_listeners);
-        auto it = std::find(beginIt, endIt, listener);
-        if (it == endIt)
-        {
-          _listeners.emplace_back(listener);
-          ev = EManagerEvent::Type::LISTENER_ADDED;
-        }
-        EManager::fire<EManagerEvent>(ev, to_string(listener.get()));
-      }
+    auto beginIt = std::begin(_listeners);
+    auto endIt = std::end(_listeners);
+    auto it = std::find(beginIt, endIt, listener);
+    if (it != endIt)
+    {
+      _listeners.erase(it);
+      ev = EManagerEvent::Type::LISTENER_REMOVED;
+    }
+    EManager::fire<EManagerEvent>(ev, to_string(listener.get()));
+  }
 
-      void EManager::deregisterListener(const IEListenerPtr& listener)
-      {
-        auto ev = EManagerEvent::Type::LISTENER_NOT_FOUND;
+  void EManager::registerListenerSystem(const EManager::SPtr& s)
+  {
+    auto listener = castSystemToListener(s);
+    if (listener)
+      registerListener(listener);
+  }
 
-        auto beginIt = std::begin(_listeners);
-        auto endIt = std::end(_listeners);
-        auto it = std::find(beginIt, endIt, listener);
-        if (it != endIt)
-        {
-          _listeners.erase(it);
-          ev = EManagerEvent::Type::LISTENER_REMOVED;
-        }
-        EManager::fire<EManagerEvent>(ev, to_string(listener.get()));
-      }
+  void EManager::deregisterListenerSystem(const EManager::SPtr& s)
+  {
+    auto listener = castSystemToListener(s);
+    if (listener)
+      deregisterListener(listener);
+  }
 
-      void EManager::registerListenerSystem(const EManager::SPtr& s)
-      {
-        auto listener = castSystemToListener(s);
-        if (listener)
-          registerListener(listener);
-      }
+  void EManager::registerEventDtor(const EventID id, Dtor dtor)
+  {
+    auto ev = EManagerEvent::Type::EVENT_ALREADY_ADDED;
 
-      void EManager::deregisterListenerSystem(const EManager::SPtr& s)
-      {
-        auto listener = castSystemToListener(s);
-        if (listener)
-          deregisterListener(listener);
-      }
-
-      void EManager::registerEventDtor(const EventID id, Dtor dtor)
-      {
-        auto ev = EManagerEvent::Type::EVENT_ALREADY_ADDED;
-
-        auto it = _registeredEvents.find(id);
-        if (it == std::end(_registeredEvents))
-        {
-          _registeredEvents.emplace(std::make_pair(id, dtor));
-          ev = EManagerEvent::Type::EVENT_ADDED;
-        }
-        EManager::fire<EManagerEvent>(ev, id);
-      }
-    } /* ! */
-  } /* !ecs */
-} /* !lel */
+    auto it = _registeredEvents.find(id);
+    if (it == std::end(_registeredEvents))
+    {
+      _registeredEvents.emplace(std::make_pair(id, dtor));
+      ev = EManagerEvent::Type::EVENT_ADDED;
+    }
+    EManager::fire<EManagerEvent>(ev, id);
+  }
+} /* !lel::ecs::event */

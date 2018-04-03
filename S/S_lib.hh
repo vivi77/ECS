@@ -1,8 +1,5 @@
 #pragma once
 
-//For debug purpose
-#include <iostream>
-
 static void assignID();
 
 #ifdef __linux__

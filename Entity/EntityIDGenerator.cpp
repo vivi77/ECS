@@ -1,8 +1,11 @@
 #include "EntityIDGenerator.hh"
 
-EntityIDGenerator::ID EntityIDGenerator::_id = 0;
-
-EntityIDGenerator::ID EntityIDGenerator::generateID()
+namespace lel::ecs::entity
 {
-  return _id++;
-}
+  EntityIDGenerator::ID EntityIDGenerator::_id = 0;
+
+  EntityIDGenerator::ID EntityIDGenerator::generateID()
+  {
+    return _id++;
+  }
+} /* !lel::ecs::entity */

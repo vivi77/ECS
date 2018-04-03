@@ -196,18 +196,18 @@ namespace
   }
 
   template <class C, typename ... Args>
-    struct exist_debugEventFct
-    {
-      struct No {};
-      struct Yes {};
+  struct exist_debugEventFct
+  {
+    struct No {};
+    struct Yes {};
 
-      template <class LHS, typename ... A, typename = decltype(debugEvent(std::declval<A>()...))>
-        static Yes helper(int);
-      template <typename, typename ...>
-        static No helper(...);
+    template <class LHS, typename ... A, typename = decltype(debugEvent(std::declval<A>()...))>
+      static Yes helper(int);
+    template <typename, typename ...>
+      static No helper(...);
 
-      static constexpr bool value = std::is_same_v<decltype(helper<C, Args...>(0)), Yes>;
-    };
+    static constexpr bool value = std::is_same_v<decltype(helper<C, Args...>(0)), Yes>;
+  };
 
   template <typename T>
   struct updateCtor;
@@ -249,45 +249,39 @@ namespace
   };
 } /* ! */
 
-namespace lel
+namespace lel::ecs::system
 {
-  namespace ecs
+  Debug::Debug()
+    : _logFile{"debug_ecs.log"}
+    , _log{_logFile}
   {
-    namespace system
-    {
-      Debug::Debug()
-        : _logFile{"debug_ecs.log"}
-        , _log{_logFile}
-      {
-        // Fallback in case of error
-        if (!_logFile)
-          _log.setStream(std::cout);
-      }
+    // Fallback in case of error
+    if (!_logFile)
+      _log.setStream(std::cout);
+  }
 
-      void Debug::exec()
-      {
-      }
+  void Debug::exec()
+  {
+  }
 
-      void Debug::update(const EPtr& event)
-      {
-        using namespace lel::ecs::event;
+  void Debug::update(const EPtr& event)
+  {
+    using namespace lel::ecs::event;
 
-        using TypeList = std::tuple<CoreEvent, EManagerEvent, CManagerEvent, CLISystemEvent, EntityManagerEvent>;
+    using TypeList = std::tuple<CoreEvent, EManagerEvent, CManagerEvent, CLISystemEvent, EntityManagerEvent>;
 
-        updateCtor<TypeList>::partialDebugEvent(event, _log);
-        _log << "\033[0m\n";
-      }
+    updateCtor<TypeList>::partialDebugEvent(event, _log);
+    _log << "\033[0m\n";
+  }
 
-      void Debug::registerEntity(const EntityPtr&)
-      {}
+  void Debug::registerEntity(const EntityPtr&)
+  {}
 
-      void Debug::setup()
-      {}
+  void Debug::setup()
+  {}
 
-      void Debug::atRemove()
-      {
-        okEvent(_log, "DebugSystem unloaded (" + to_string(this) + ")\n");
-      }
-    } /* !system */
-  } /* !ecs */
-} /* !lel */
+  void Debug::atRemove()
+  {
+    okEvent(_log, "DebugSystem unloaded (" + to_string(this) + ")\n");
+  }
+} /* !lel::ecs::system */

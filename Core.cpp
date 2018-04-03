@@ -142,76 +142,73 @@ namespace
   }
 } /* ! */
 
-namespace lel
+namespace lel::ecs
 {
-  namespace ecs
+  std::string_view Core::sysLibPath = meta::conditional_os<std::string_view>("lib/S/", "./").value;
+  std::string_view Core::autoLoadedSysRegex = meta::conditional_os<std::string_view>("lib(CLISystem)[.]so", "S[0-9]*[.]dll").value;
+
+  Core::Core()
+    : _data{setupData()}
+  {}
+
+  void Core::run()
   {
-    std::string_view Core::sysLibPath = lel::meta::conditional_os<std::string_view>("lib/S/", "./").value;
-    std::string_view Core::autoLoadedSysRegex = lel::meta::conditional_os<std::string_view>("lib(CLISystem)[.]so", "S[0-9]*[.]dll").value;
-
-    Core::Core()
-      : _data{setupData()}
-    {}
-
-    void Core::run()
+    if (_data.empty())
     {
-      if (_data.empty())
-      {
-        event::EManager::fire<event::CoreEvent>(event::CoreEvent::Type::CLOSING);
-        return ;
-      }
-
-      CoreSystemProxy::setSystemsList(_data);
-      lel::ecs::event::EManager::registerListener(shared_from_this());
-      while (!shouldQuit() && !_data.empty())
-      {
-        for (auto& data : _data)
-        {
-          data.sys->exec();
-        }
-        delayedEventUpdate();
-      }
-      lel::ecs::event::EManager::deregisterListener(shared_from_this());
-      reverseClear(_data);
-      lel::ecs::event::EManager::fire<event::CoreEvent>(event::CoreEvent::Type::CLOSING);
+      event::EManager::fire<event::CoreEvent>(event::CoreEvent::Type::CLOSING);
+      return ;
     }
 
-    void Core::update(const IEListener::EPtr& e)
+    CoreSystemProxy::setSystemsList(_data);
+    event::EManager::registerListener(shared_from_this());
+    while (!shouldQuit() && !_data.empty())
     {
-      if (e->getID() == event::CoreEvent::getEventID())
+      for (auto& data : _data)
       {
-        const auto event = std::static_pointer_cast<event::CoreEvent>(e);
-        switch (event->getType())
-        {
-          case event::CoreEvent::Type::EXIT:
-            stopCore();
-            break;
-          case event::CoreEvent::Type::ADD_SYSTEM:
-            _addRequest.emplace_back(event->getData()[0]);
-            break;
-          case event::CoreEvent::Type::REM_SYSTEM:
-            _remRequest.emplace_back(event->getData()[0]);
-            break;
-          default:
-            break;
-        }
+        data.sys->exec();
+      }
+      delayedEventUpdate();
+    }
+    event::EManager::deregisterListener(shared_from_this());
+    reverseClear(_data);
+    event::EManager::fire<event::CoreEvent>(event::CoreEvent::Type::CLOSING);
+  }
+
+  void Core::update(const IEListener::EPtr& e)
+  {
+    if (e->getID() == event::CoreEvent::getEventID())
+    {
+      const auto event = std::static_pointer_cast<event::CoreEvent>(e);
+      switch (event->getType())
+      {
+        case event::CoreEvent::Type::EXIT:
+          stopCore();
+          break;
+        case event::CoreEvent::Type::ADD_SYSTEM:
+          _addRequest.emplace_back(event->getData()[0]);
+          break;
+        case event::CoreEvent::Type::REM_SYSTEM:
+          _remRequest.emplace_back(event->getData()[0]);
+          break;
+        default:
+          break;
       }
     }
+  }
 
-    bool Core::shouldQuit() const
-    {
-      return _quit;
-    }
+  bool Core::shouldQuit() const
+  {
+    return _quit;
+  }
 
-    void Core::stopCore()
-    {
-      _quit = true;
-    }
+  void Core::stopCore()
+  {
+    _quit = true;
+  }
 
-    void Core::delayedEventUpdate()
-    {
-      updateAddRequest(_addRequest, _data);
-      updateRemoveRequest(_remRequest, _data);
-    }
-  } /* !ecs */
-} /* !lel */
+  void Core::delayedEventUpdate()
+  {
+    updateAddRequest(_addRequest, _data);
+    updateRemoveRequest(_remRequest, _data);
+  }
+} /* !lel::ecs */

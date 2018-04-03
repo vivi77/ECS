@@ -2,14 +2,17 @@
 
 #include "Entity/entitylogic_export.h"
 
-class ENTITYLOGIC_EXPORT EntityIDGenerator
+namespace lel::ecs::entity
 {
-public:
-  using ID = unsigned;
+  class ENTITYLOGIC_EXPORT EntityIDGenerator
+  {
+  public:
+    using ID = unsigned;
 
-public:
-  static ID generateID();
+  public:
+    static ID generateID();
 
-private:
-  static ID _id;
-};
+  private:
+    static ID _id;
+  };
+} /* !lel::ecs::entity */

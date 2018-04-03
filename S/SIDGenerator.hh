@@ -2,26 +2,23 @@
 
 #include "sidgen_export.h"
 
-namespace lel
+namespace lel::ecs::system
 {
-  namespace ecs
+  // TODO: Rethink this.
+  //   Solution proposition:
+  //    1) Use of interface + abstract class between IS and CRTPS
+  class SIDGEN_EXPORT SIDGenerator
   {
-    namespace system
-    {
-      class SIDGEN_EXPORT SIDGenerator
-      {
-        using ID = unsigned;
+    using ID = unsigned;
 
-      public:
-        static SIDGenerator& getSingleton();
-        ID generateID();
+  public:
+    static SIDGenerator& getSingleton();
+    ID generateID();
 
-      private:
-        SIDGenerator();
+  private:
+    SIDGenerator();
 
-      private:
-        ID _idGenerator;
-      };
-    } /* !system */
-  } /* !ecs */
-} /* !lel */
+  private:
+    ID _idGenerator;
+  };
+} /* !lel::ecs::system */

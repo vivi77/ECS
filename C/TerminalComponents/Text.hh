@@ -5,22 +5,16 @@
 #include "C/TemplateComp/Text.hpp"
 #include "TerminalColor.hh"
 
-namespace lel
+namespace lel::ecs::component
 {
-  namespace ecs
+  // Should use type-alias but there cannot export the class
+  struct TERMINALCOMPONENTS_EXPORT TerminalText :
+    public templateComponent::Text<TerminalColor>
   {
-    namespace component
-    {
-      // Should use type-alias but there cannot export the class
-      struct TERMINALCOMPONENTS_EXPORT TerminalText :
-        public templateComponent::Text<TerminalColor>
-      {
-      public:
-        template <typename ... Args>
-        TerminalText(const char* text, Args&& ... args)
-          : Text{text, std::forward<Args>(args)...}
-        {}
-      };
-    } /* !component */
-  } /* !ecs */
-} /* !lel */
+  public:
+    template <typename ... Args>
+    TerminalText(const char* text, Args&& ... args)
+      : Text{text, std::forward<Args>(args)...}
+    {}
+  };
+} /* !lel::ecs::component */

@@ -5,7 +5,9 @@
 
 static void assignID()
 {
-  lel::ecs::system::CLI::assignID(lel::ecs::system::SIDGenerator::getSingleton().generateID());
+  using namespace lel::ecs::system;
+
+  CLI::assignID(SIDGenerator::getSingleton().generateID());
 }
 
 template struct EntryPointWrapper<lel::ecs::system::CLI>;

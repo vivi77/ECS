@@ -1,27 +1,21 @@
 #include "EIDGenerator.hh"
 
-namespace lel
+namespace lel::ecs::event
 {
-  namespace ecs
+  EIDGenerator::EIDGenerator()
+    : _idGenerator{0}
   {
-    namespace event
-    {
-      EIDGenerator::EIDGenerator()
-        : _idGenerator{0}
-      {
-        ;
-      }
+    ;
+  }
 
-      EIDGenerator::ID EIDGenerator::generateID()
-      {
-        return _idGenerator++;
-      }
+  EIDGenerator::ID EIDGenerator::generateID()
+  {
+    return _idGenerator++;
+  }
 
-      EIDGenerator& EIDGenerator::getSingleton()
-      {
-        static EIDGenerator singleton;
-        return singleton;
-      }
-    } /* !event */
-  } /* !ecs */
-} /* !lel */
+  EIDGenerator& EIDGenerator::getSingleton()
+  {
+    static EIDGenerator singleton;
+    return singleton;
+  }
+} /* !lel::ecs::event */

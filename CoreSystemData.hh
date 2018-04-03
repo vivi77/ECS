@@ -4,15 +4,12 @@
 #include "S/IS.hh"
 #include <experimental/filesystem>
 
-namespace lel
+namespace lel::ecs
 {
-  namespace ecs
+  struct CoreSystemData
   {
-    struct CoreSystemData
-    {
-      std::experimental::filesystem::path path;
-      lel::OSDLLoader loader;
-      std::shared_ptr<lel::ecs::system::IS> sys;
-    };
-  } /* !ecs */
-} /* !lel */
+    std::experimental::filesystem::path path;
+    lel::OSDLLoader loader;
+    std::shared_ptr<lel::ecs::system::IS> sys;
+  };
+} /* !lel::ecs */
