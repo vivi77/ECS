@@ -53,7 +53,9 @@ namespace
         badEvent(log, {"Cannot add system '" + event->getData()[0] + "'"});
         break;
       case CoreEvent::Type::ADD_SYSTEM_SUCCESS:
-        okEvent(log, {"System '" + event->getData()[0] + "' added to Core execution (" + event->getData()[1] + ")"});
+        okEvent(log, {"System '" + event->getData()[0] + "' (ID#"+
+                event->getData()[2] + ") added to Core execution (" +
+                event->getData()[1] + ")"});
         break;
       case CoreEvent::Type::ALREADY_ADDED_SYSTEM:
         warnEvent(log, {"System '" + event->getData()[0] + "' already added"});
@@ -75,7 +77,9 @@ namespace
         badEvent(log, {"Cannot remove system '" + event->getData()[0] + "'"});
         break;
       case CoreEvent::Type::REM_SYSTEM_SUCCESS:
-        okEvent(log, {"System '" + event->getData()[0] + "' removed to Core execution (" + event->getData()[1] + ")"});
+        okEvent(log, {"System '" + event->getData()[0] + "' (ID#" +
+                event->getData()[2] + ") removed to Core execution (" +
+                event->getData()[1] + ")"});
         break;
       case CoreEvent::Type::SYSTEM_NOT_FOUND:
         badEvent(log, {"System '" + event->getData()[0] + "' not found"});

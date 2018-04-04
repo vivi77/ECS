@@ -1,24 +1,38 @@
 #pragma once
 
-#include "sidgen_export.h"
+#include "S/sidgen_export.h"
+#include "Utility/IIDGenerator.hpp"
+#include "Utility/Fwd.hh"
 
 namespace lel::ecs::system
 {
-  // TODO: Rethink this.
-  //   Solution proposition:
-  //    1) Use of interface + abstract class between IS and CRTPS
-  class SIDGEN_EXPORT SIDGenerator
+  class SIDGEN_EXPORT SIDGenerator : public utility::IIDGenerator<IDSystem>
   {
-    using ID = unsigned;
-
   public:
-    static SIDGenerator& getSingleton();
-    ID generateID();
+    IDSystem generateID();
 
   private:
-    SIDGenerator();
-
-  private:
-    ID _idGenerator;
+    IDSystem _id;
   };
+
+  namespace old
+  {
+    // TODO: Rethink this.
+    //   Solution proposition:
+    //    1) Use of interface + abstract class between IS and CRTPS
+    class SIDGEN_EXPORT SIDGenerator
+    {
+      using ID = unsigned;
+
+    public:
+      static SIDGenerator& getSingleton();
+      ID generateID();
+
+    private:
+      SIDGenerator();
+
+    private:
+      ID _idGenerator;
+    };
+  } /* !old */
 } /* !lel::ecs::system */
