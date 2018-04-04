@@ -2,6 +2,7 @@
 
 #include "IIDGenerator.hpp"
 #include "Utility/Fwd.hh"
+#include <functional>
 
 namespace lel::ecs::meta
 {
@@ -24,16 +25,17 @@ namespace lel::ecs::meta
     class TemplateUniqueID_helper<Out<void>, ID>
     {
     public:
-      static ID generateID()
+      static ID generateID(const std::function<void(ID)>& callback = nullptr)
       {
         if (_generator == nullptr)
           _generator = ::createGenerator<ID>();
-        return _generator->generateID();
+        auto newID = _generator->generateID();
+        if (callback)
+          callback(newID);
+        return newID;
       }
 
     private:
-      // Users of this class has to instantiate their own generator
-      // TODO: Has a default generator ?
       static std::unique_ptr<utility::IIDGenerator<ID>> _generator;
     };
 
