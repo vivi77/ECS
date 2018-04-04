@@ -11,7 +11,7 @@ namespace lel::ecs
 
   namespace component
   {
-    using IDComponent = unsigned int;
+    using IDComponent = unsigned short;
   } /* !component */
 
   namespace event
