@@ -2,6 +2,7 @@
 
 #include "S/sidgen_export.h"
 #include "Utility/IIDGenerator.hpp"
+#include "Utility/Fwd.hh"
 
 namespace lel::ecs::system
 {

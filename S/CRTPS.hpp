@@ -3,13 +3,17 @@
 #include "S/IS.hh"
 #include "E/IEListener.hh"
 #include <type_traits>
-#include <iostream>
+
+#include "Utility/TemplateUniqueID.hpp"
+#include "S/SIDGenerator.hh"
 
 namespace lel::ecs::system
 {
   template <class D>
-  class CRTPS : public IS
+  class CRTPS : public IS, public meta::TemplateUniqueID<CRTPS<D>, IS::ID>
   {
+    using ID = typename IS::ID;
+
   public:
     virtual ~CRTPS() = default;
 
@@ -31,6 +35,9 @@ namespace lel::ecs::system
   private:
     static ID _id;
   };
+
+  template <class D>
+  typename CRTPS<D>::ID CRTPS<D>::_id = CRTPS<D>::generateID();
 
   namespace old
   {
