@@ -1,4 +1,5 @@
 #include "SIDGenerator.hh"
+#include <iostream>
 
 template <>
 std::unique_ptr<lel::ecs::utility::IIDGenerator<lel::ecs::system::IDSystem>> createGenerator()
@@ -10,6 +11,7 @@ namespace lel::ecs::system
 {
   IDSystem SIDGenerator::generateID()
   {
+    std::cout << "[SIDGen]\n";
     return _id++;
   }
 
