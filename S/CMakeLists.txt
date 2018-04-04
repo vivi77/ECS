@@ -4,7 +4,9 @@ set(IDLIB_NAME "SIDGen")
 set(SRCS "SIDGenerator.cpp")
 set(HDRS "SIDGenerator.hh")
 add_library(${IDLIB_NAME} SHARED ${SRCS} ${HDRS})
-target_include_directories(${IDLIB_NAME} PUBLIC ${CMAKE_BINARY_DIR}/S)
+target_include_directories(${IDLIB_NAME} PUBLIC
+  ${CMAKE_BINARY_DIR}
+  ${PROJECT_SOURCE_DIR})
 set_target_properties(${IDLIB_NAME} PROPERTIES IMPORTED_LOCATION ${OUTPUT_LOCATION})
 
 generate_export_header(${IDLIB_NAME})

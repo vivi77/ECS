@@ -2,20 +2,28 @@
 
 namespace lel::ecs::system
 {
-  SIDGenerator::SIDGenerator()
-    : _idGenerator{0}
+  IDSystem SIDGenerator::generateID()
   {
-    ;
+    return _id++;
   }
 
-  SIDGenerator::ID SIDGenerator::generateID()
+  namespace old
   {
-    return _idGenerator++;
-  }
+    SIDGenerator::SIDGenerator()
+      : _idGenerator{0}
+    {
+      ;
+    }
 
-  SIDGenerator& SIDGenerator::getSingleton()
-  {
-    static SIDGenerator singleton;
-    return singleton;
-  }
+    SIDGenerator::ID SIDGenerator::generateID()
+    {
+      return _idGenerator++;
+    }
+
+    SIDGenerator& SIDGenerator::getSingleton()
+    {
+      static SIDGenerator singleton;
+      return singleton;
+    }
+  } /* !old */
 } /* !lel::ecs::system */
