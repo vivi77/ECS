@@ -18,7 +18,7 @@ extern "C"
 
 static void assignID()
 {
-  lel::ecs::system::Debug::assignID(lel::ecs::system::SIDGenerator::getSingleton().generateID());
+  //lel::ecs::system::Debug::assignID(lel::ecs::system::SIDGenerator::getSingleton().generateID());
 }
 
 template struct EntryPointWrapper<lel::ecs::system::Debug>;
