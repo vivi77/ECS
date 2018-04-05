@@ -1,7 +1,7 @@
-#include "CManagerEvent.hh"
-#include "EIDGenerator.hh"
-#include "EManager.hh"
-#include "E_lib.hh"
+#include "E/CManagerEvent/CManagerEvent.hh"
+#include "E/EIDGenerator.hh"
+#include "E/EManager.hh"
+#include "E/E_lib.hh"
 
 namespace
 {

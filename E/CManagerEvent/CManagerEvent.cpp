@@ -1,4 +1,4 @@
-#include "CManagerEvent.hh"
+#include "E/CManagerEvent/CManagerEvent.hh"
 
 namespace lel::ecs::event
 {

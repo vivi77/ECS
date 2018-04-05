@@ -4,9 +4,7 @@ file(GLOB SRCS *.cpp)
 file(GLOB HDRS *.hh *.hpp)
 set(HDRS ${HDRS} ../E_lib.hh)
 set(DIRS
-  ${CMAKE_BINARY_DIR}/E/${NAME}
-  ${PROJECT_SOURCE_DIR}/C
-  ${PROJECT_SOURCE_DIR}/E
+  ${CMAKE_BINARY_DIR}
   ${PROJECT_SOURCE_DIR})
 
 add_library(${NAME} SHARED ${SRCS} ${HDRS})
