@@ -27,5 +27,8 @@ namespace lel::ecs::component
     Position position;
     Rotation rotation;
     Scale scale;
+
+  public:
+    constexpr static std::string_view name = "Transform";
   };
 } /* !lel */
