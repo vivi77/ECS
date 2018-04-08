@@ -1,24 +1,5 @@
 include(GenerateExportHeader)
 
-set(IDLIB_NAME "CIDGen")
-set(SRCS "${CMAKE_CURRENT_SOURCE_DIR}/CIDGenerator.cpp")
-set(HDRS "${CMAKE_CURRENT_SOURCE_DIR}/CIDGenerator.hh")
-add_library(${IDLIB_NAME} SHARED ${SRCS} ${HDRS})
-target_include_directories(${IDLIB_NAME} PUBLIC
-  ${CMAKE_BINARY_DIR}
-  ${PROJECT_SOURCE_DIR})
-set_target_properties(${IDLIB_NAME} PROPERTIES IMPORTED_LOCATION ${OUTPUT_LOCATION})
-
-generate_export_header(${IDLIB_NAME})
-
-string(TOLOWER ${IDLIB_NAME} IDLIB_NAME_LOW)
-install(TARGETS ${IDLIB_NAME} DESTINATION ${LIBRARY_INSTALL_DIR}/C)
-install(FILES
-  ${HDRS}
-  ${CMAKE_BINARY_DIR}/C/${IDLIB_NAME_LOW}_export.h
-  DESTINATION ${INCLUDE_INSTALL_DIR})
-
-
 if(UNIX)
   set(COMP_OUTPUT_LOCATION ${OUTPUT_LOCATION}/lib/C)
 elseif(WIN32)
@@ -34,28 +15,10 @@ foreach(OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES})
   set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY})
 endforeach(OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES)
 
-function(generateLib NAME)
-  # Can set SRCS, HDRS, DIRS, LIBS
-  include(CMakeLists_${NAME}.txt OPTIONAL)
-
-  file(GLOB TMP_SRCS ${NAME}*.cpp)
-  set(SRCS ${SRCS} ${TMP_SRCS})
-  set(HDRS ${HDRS} ${NAME}.hh C_lib.hh)
-  set(DIRS ${DIRS} ${CMAKE_BINARY_DIR}/C)
-  add_library(${NAME} SHARED ${SRCS} ${HDRS})
-  target_include_directories(${NAME} PUBLIC ${DIRS})
-  target_link_libraries(${NAME} ${IDLIB_NAME} ${LIBS})
-  set_target_properties(${NAME} PROPERTIES IMPORTED_LOCATION ${COMP_OUTPUT_LOCATION})
-  generate_export_header(${NAME})
-  string(TOLOWER ${NAME} NAME_LOW)
-  install(TARGETS ${NAME} DESTINATION ${LIBRARY_INSTALL_DIR}/C)
-  install(FILES
-    ${HDRS}
-    ${CMAKE_BINARY_DIR}/C/${NAME_LOW}_export.h
-    DESTINATION ${INCLUDE_INSTALL_DIR})
-endfunction()
+add_subdirectory(CIDGenerator)
 
 subdirlist(COMP_LIST ${CMAKE_CURRENT_SOURCE_DIR})
+list(REMOVE_ITEM COMP_LIST CIDGenerator)
 foreach(C ${COMP_LIST})
   add_subdirectory(${C})
 endforeach()

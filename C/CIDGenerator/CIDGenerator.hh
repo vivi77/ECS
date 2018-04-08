@@ -1,6 +1,6 @@
 #pragma once
 
-#include "C/cidgen_export.h"
+#include "C/CIDGenerator/cidgen_export.h"
 #include "Utility/Fwd.hh"
 #include "Utility/IIDGenerator.hpp"
 
