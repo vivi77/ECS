@@ -1,7 +1,7 @@
 #pragma once
 
 #include "C/IC.hh"
-#include "E/EManager.hh"
+#include "E/EManager/EManager.hh"
 #include "E/DebugEvent/DebugEvent.hh"
 #include "Utility/TemplateUniqueID.hpp"
 #include "Utility/meta.hpp"

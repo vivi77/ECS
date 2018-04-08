@@ -1,7 +1,7 @@
 #pragma once
 
-#include "E/emanager_export.h"
-#include "IEListener.hh"
+#include "E/EManager/emanager_export.h"
+#include "E/IEListener.hh"
 #include <vector>
 #include <unordered_map>
 

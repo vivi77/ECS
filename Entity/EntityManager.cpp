@@ -2,7 +2,7 @@
 #include "EntityIDGenerator.hh"
 #include "S/CoreSystemProxy/CoreSystemProxy.hh"
 #include "E/EntityManagerEvent/EntityManagerEvent.hh"
-#include "E/EManager.hh"
+#include "E/EManager/EManager.hh"
 #include <algorithm>
 
 namespace lel::ecs::entity

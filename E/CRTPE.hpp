@@ -2,7 +2,7 @@
 
 #include "IE.hh"
 #include "Utility/TemplateUniqueID.hpp"
-#include "E/EManager.hh"
+#include "E/EManager/EManager.hh"
 #include "E/DebugEvent/DebugEvent.hh"
 #include "Utility/meta.hpp"
 #include <iostream>

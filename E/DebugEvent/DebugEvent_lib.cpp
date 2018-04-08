@@ -1,5 +1,5 @@
 #include "E/DebugEvent/DebugEvent.hh"
-#include "E/EIDGenerator.hh"
+#include "E/EIDGenerator/EIDGenerator.hh"
 //#include "E/EManager.hh"
 #include "E/E_lib.hh"
 #include <iostream>

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "E/eidgen_export.h"
+#include "E/EIDGenerator/eidgen_export.h"
 #include "Utility/IIDGenerator.hpp"
 #include "Utility/Fwd.hh"
 

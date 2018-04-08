@@ -1,6 +1,6 @@
 #include "CLI.hh"
 #include "E/CoreEvent/CoreEvent.hh"
-#include "E/EManager.hh"
+#include "E/EManager/EManager.hh"
 #include "E/CLISystemEvent/CLISystemEvent.hh"
 #include <experimental/source_location>
 

@@ -1,8 +1,8 @@
 #include "CoreEvent.hh"
-#include "EManager.hh"
-#include "EManagerEvent.hh"
-#include "EIDGenerator.hh"
-#include "E_lib.hh"
+#include "E/EManager/EManager.hh"
+#include "E/EManagerEvent/EManagerEvent.hh"
+#include "E/EIDGenerator/EIDGenerator.hh"
+#include "E/E_lib.hh"
 
 namespace
 {

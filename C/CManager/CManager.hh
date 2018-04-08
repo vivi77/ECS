@@ -3,7 +3,7 @@
 #include "C/CManager/cmanager_export.h"
 #include "C/IC.hh"
 #include "S/IS.hh"
-#include "E/EManager.hh"
+#include "E/EManager/EManager.hh"
 #include "E/CManagerEvent/CManagerEvent.hh"
 #include <memory>
 #include <unordered_map>

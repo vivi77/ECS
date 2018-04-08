@@ -3,7 +3,7 @@
 #include "S/IS.hh"
 #include "S/SIDGenerator.hh"
 #include "E/IEListener.hh"
-#include "E/EManager.hh"
+#include "E/EManager/EManager.hh"
 #include "E/DebugEvent/DebugEvent.hh"
 #include "Utility/TemplateUniqueID.hpp"
 #include "Utility/meta.hpp"

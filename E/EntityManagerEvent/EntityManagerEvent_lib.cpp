@@ -1,6 +1,6 @@
 #include "EntityManagerEvent.hh"
-#include "E/EIDGenerator.hh"
-#include "E/EManager.hh"
+#include "E/EIDGenerator/EIDGenerator.hh"
+#include "E/EManager/EManager.hh"
 #include "E/E_lib.hh"
 
 namespace
