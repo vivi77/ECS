@@ -1,9 +1,9 @@
 #pragma once
 
 #include "C/IC.hh"
-#include "Utility/TemplateUniqueID.hpp"
 #include "E/EManager.hh"
 #include "E/DebugEvent/DebugEvent.hh"
+#include "Utility/TemplateUniqueID.hpp"
 #include "Utility/meta.hpp"
 
 namespace lel::ecs::component

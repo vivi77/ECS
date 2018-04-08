@@ -1,14 +1,15 @@
 #pragma once
 
 #include "IE.hh"
+#include "Utility/TemplateUniqueID.hpp"
 
 namespace lel::ecs::event
 {
   template <class D>
-  class CRTPE : public IE
+  class CRTPE : public IE, public meta::TemplateUniqueID<CRTPE<D>, IE::ID>
   {
   public:
-    using ID = IE::ID;
+    using ID = typename IE::ID;
 
   public:
     virtual ~CRTPE() = default;
@@ -23,28 +24,57 @@ namespace lel::ecs::event
       return _id;
     }
 
-    static void assignID(const ID id)
-    {
-      if (!isIDAssigned())
-      {
-        _id = id;
-        _idAssigned = true;
-      }
-    }
-
-    static bool isIDAssigned()
-    {
-      return _idAssigned;
-    }
-
   private:
     static ID _id;
-    static bool _idAssigned;
   };
 
   template <class D>
-  typename CRTPE<D>::ID CRTPE<D>::_id = 0;
+  typename CRTPE<D>::ID CRTPE<D>::_id = CRTPE<D>::generateID();
 
-  template <class D>
-  bool CRTPE<D>::_idAssigned = false;
+  namespace old
+  {
+    template <class D>
+    class CRTPE : public IE
+    {
+    public:
+      using ID = IE::ID;
+
+    public:
+      virtual ~CRTPE() = default;
+
+      ID getID() const final
+      {
+        return getEventID();
+      }
+
+      static ID getEventID()
+      {
+        return _id;
+      }
+
+      static void assignID(const ID id)
+      {
+        if (!isIDAssigned())
+        {
+          _id = id;
+          _idAssigned = true;
+        }
+      }
+
+      static bool isIDAssigned()
+      {
+        return _idAssigned;
+      }
+
+    private:
+      static ID _id;
+      static bool _idAssigned;
+    };
+
+    template <class D>
+    typename CRTPE<D>::ID CRTPE<D>::_id = 0;
+
+    template <class D>
+    bool CRTPE<D>::_idAssigned = false;
+  } /* !old */
 } /* !lel::ecs::event */

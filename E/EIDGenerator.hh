@@ -1,22 +1,40 @@
 #pragma once
 
 #include "E/eidgen_export.h"
+#include "Utility/IIDGenerator.hpp"
+#include "Utility/Fwd.hh"
 
 namespace lel::ecs::event
 {
-  class EIDGEN_EXPORT EIDGenerator
+  class EIDGEN_EXPORT EIDGenerator : public utility::IIDGenerator<IDEvent>
   {
   public:
-    using ID = unsigned;
+    using ID = IDEvent;
 
   public:
-    static EIDGenerator& getSingleton();
-    ID generateID();
+    virtual ~EIDGenerator() = default;
+    ID generateID() override;
 
   private:
-    EIDGenerator();
-
-  private:
-    ID _idGenerator;
+    ID _id;
   };
+
+  namespace old
+  {
+    class EIDGEN_EXPORT EIDGenerator
+    {
+    public:
+      using ID = unsigned;
+
+    public:
+      static EIDGenerator& getSingleton();
+      ID generateID();
+
+    private:
+      EIDGenerator();
+
+    private:
+      ID _idGenerator;
+    };
+  } /* !old */
 } /* !lel::ecs::event */

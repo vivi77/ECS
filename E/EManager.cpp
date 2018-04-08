@@ -88,6 +88,6 @@ namespace lel::ecs::event
 
   void EManager::eventNotFound(const EventID id)
   {
-          EManager::template fire<EManagerEvent>(EManagerEvent::Type::EVENT_DTOR_NOT_FOUND, id);
+    EManager::template fire<EManagerEvent>(EManagerEvent::Type::EVENT_DTOR_NOT_FOUND, id);
   }
 } /* !lel::ecs::event */

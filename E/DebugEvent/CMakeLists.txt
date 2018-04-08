@@ -6,6 +6,8 @@ set(HDRS ${HDRS} ../E_lib.hh)
 set(DIRS
   ${CMAKE_BINARY_DIR}
   ${PROJECT_SOURCE_DIR})
+set(LIBS
+  ecs_utils)
 
 add_library(${NAME} SHARED ${SRCS} ${HDRS})
 target_include_directories(${NAME} PUBLIC ${DIRS})

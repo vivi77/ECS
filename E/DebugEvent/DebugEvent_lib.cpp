@@ -16,7 +16,7 @@ static void setup()
 {
   using namespace lel::ecs::event;
 
-  DebugEvent::assignID(EIDGenerator::getSingleton().generateID());
+  //DebugEvent::assignID(EIDGenerator::getSingleton().generateID());
   EManager::registerEventDtor(DebugEvent::getEventID(), (EManager::Dtor)&destroy);
 }
 

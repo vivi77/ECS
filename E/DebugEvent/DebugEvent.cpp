@@ -1,9 +1,10 @@
 #include "DebugEvent.hh"
 #include "E/EIDGenerator.hh"
+#include "Utility/TemplateUniqueID.hpp"
 
 namespace lel::ecs::event
 {
-  DebugEvent::ID DebugEvent::_id = EIDGenerator::getSingleton().generateID();
+  DebugEvent::ID DebugEvent::_id = 0;
 
   DebugEvent::DebugEvent(const std::string& msg)
     : _msg{msg}
