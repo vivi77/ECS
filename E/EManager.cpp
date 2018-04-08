@@ -1,4 +1,5 @@
 #include "EManager.hh"
+#include "E/EManagerEvent/EManagerEvent.hh"
 #include "S/IS.hh"
 #include <algorithm>
 #include <sstream>
