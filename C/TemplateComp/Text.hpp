@@ -2,7 +2,6 @@
 
 #include "DefaultInfo.hh"
 #include "C/CRTPC.hpp"
-#include <functional>
 
 namespace lel::ecs::component::templateComponent
 {

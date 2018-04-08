@@ -5,7 +5,6 @@
 #include "E/DebugEvent/DebugEvent.hh"
 #include "Utility/TemplateUniqueID.hpp"
 #include "Utility/meta.hpp"
-#include <iostream>
 
 namespace lel::ecs::event
 {

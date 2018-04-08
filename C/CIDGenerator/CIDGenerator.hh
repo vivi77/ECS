@@ -1,8 +1,8 @@
 #pragma once
 
 #include "C/CIDGenerator/cidgen_export.h"
-#include "Utility/Fwd.hh"
 #include "Utility/IIDGenerator.hpp"
+#include "Utility/Fwd.hh"
 
 namespace lel::ecs::component
 {
@@ -17,22 +17,4 @@ namespace lel::ecs::component
   private:
     ID _id;
   };
-
-  namespace old
-  {
-    class CIDGEN_EXPORT CIDGenerator
-    {
-      using ID = unsigned;
-
-    public:
-      static CIDGenerator& getSingleton();
-      ID generateID();
-
-    private:
-      CIDGenerator();
-
-    private:
-      ID _idGenerator;
-    };
-  } /* !old */
 } /* !lel::ecs::component */
