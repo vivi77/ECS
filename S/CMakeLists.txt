@@ -1,24 +1,5 @@
 include(GenerateExportHeader)
 
-set(IDLIB_NAME "SIDGen")
-set(SRCS "SIDGenerator.cpp")
-set(HDRS "SIDGenerator.hh")
-add_library(${IDLIB_NAME} SHARED ${SRCS} ${HDRS})
-target_include_directories(${IDLIB_NAME} PUBLIC
-  ${CMAKE_BINARY_DIR}
-  ${PROJECT_SOURCE_DIR})
-set_target_properties(${IDLIB_NAME} PROPERTIES IMPORTED_LOCATION ${OUTPUT_LOCATION})
-
-generate_export_header(${IDLIB_NAME})
-
-string(TOLOWER ${IDLIB_NAME} IDLIB_NAME_LOW)
-install(TARGETS ${IDLIB_NAME} DESTINATION ${LIBRARY_INSTALL_DIR}/S)
-install(FILES
-  ${HDRS}
-  ${CMAKE_BINARY_DIR}/S/${IDLIB_NAME_LOW}_export.h
-  DESTINATION ${INCLUDE_INSTALL_DIR})
-
-
 if(UNIX)
   set(SYS_OUTPUT_LOCATION ${OUTPUT_LOCATION}/lib/S)
 elseif(WIN32)
@@ -34,7 +15,10 @@ foreach(OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES})
   set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY})
 endforeach(OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES)
 
+add_subdirectory(SIDGenerator)
+
 subdirlist(SYS_LIST ${CMAKE_CURRENT_SOURCE_DIR})
+list(REMOVE_ITEM SYS_LIST SIDGenerator)
 foreach(S ${SYS_LIST})
   add_subdirectory(${S})
 endforeach()

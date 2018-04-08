@@ -1,16 +1,5 @@
 #include "CLI.hh"
-#include "S/S_lib.hh"
-#include "S/SIDGenerator.hh"
 #include "S/CLI/clisystem_export.h"
-
-static void assignID()
-{
-  //using namespace lel::ecs::system;
-
-  //CLI::assignID(SIDGenerator::getSingleton().generateID());
-}
-
-template struct EntryPointWrapper<lel::ecs::system::CLI>;
 
 extern "C"
 {

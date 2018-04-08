@@ -1,7 +1,5 @@
 #include "Debug.hh"
 #include "S/Debug/debugsystem_export.h"
-#include "S/SIDGenerator.hh"
-#include "S/S_lib.hh"
 
 extern "C"
 {
@@ -15,10 +13,3 @@ extern "C"
     delete ptr;
   }
 }
-
-static void assignID()
-{
-  //lel::ecs::system::Debug::assignID(lel::ecs::system::SIDGenerator::getSingleton().generateID());
-}
-
-template struct EntryPointWrapper<lel::ecs::system::Debug>;

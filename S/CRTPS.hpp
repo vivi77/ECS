@@ -1,7 +1,7 @@
 #pragma once
 
 #include "S/IS.hh"
-#include "S/SIDGenerator.hh"
+#include "S/SIDGenerator/SIDGenerator.hh"
 #include "E/IEListener.hh"
 #include "E/EManager/EManager.hh"
 #include "E/DebugEvent/DebugEvent.hh"

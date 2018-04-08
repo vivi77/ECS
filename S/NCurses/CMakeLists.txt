@@ -1,22 +1,20 @@
 set(NAME NCursesSystem)
 
 file(GLOB SRCS
-  *.cpp)
-file(GLOB HDRS
+  *.cpp
   *.hh
-  *.hpp)
-set(HDRS ${HDRS} ../S_lib.hh)
-set(DIRS ${DIRS}
+  *.hpp
+  ../S_lib.hh)
+set(DIRS
   ${PROJECT_SOURCE_DIR}
-  ${CMAKE_BINARY_DIR}
-  )
+  ${CMAKE_BINARY_DIR})
 
-add_library(${NAME} SHARED ${SRCS} ${HDRS})
+add_library(${NAME} SHARED ${SRCS})
 target_include_directories(${NAME} PUBLIC ${DIRS})
 # IDLIB_NAME variable available from ECS/S/CMakeLists.txt
-target_link_libraries(${NAME}
-  ncurses
+target_link_libraries(${NAME} PUBLIC
   ${IDLIB_NAME}
+  ncurses
   EntityLogic
 
   EManager
