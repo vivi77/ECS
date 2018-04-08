@@ -16,7 +16,7 @@ namespace lel::ecs::event
     ID generateID() override;
 
   private:
-    ID _id;
+    ID _id = 1; // Not 0 because it is reserved for DebugEvent
   };
 
   namespace old

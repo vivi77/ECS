@@ -26,14 +26,14 @@ namespace lel::ecs
       template <typename Event, typename ... Args>
       static void fire(Args&& ... args)
       {
-        auto it = _registeredEvents.find(Event::getEventID());
-        if (it == std::end(_registeredEvents))
-        {
-          eventNotFound(Event::getEventID());
-          return ;
-        }
+        //auto it = _registeredEvents.find(Event::getEventID());
+        //if (it == std::end(_registeredEvents))
+        //{
+          //eventNotFound(Event::getEventID());
+          //return ;
+        //}
 
-        auto ev = std::shared_ptr<Event>(new Event(std::forward<Args>(args)...), it->second);
+        auto ev = std::shared_ptr<Event>(new Event(std::forward<Args>(args)...));
         for (auto& it : _listeners)
           it->update(ev);
       }

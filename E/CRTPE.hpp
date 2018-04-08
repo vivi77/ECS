@@ -2,6 +2,10 @@
 
 #include "IE.hh"
 #include "Utility/TemplateUniqueID.hpp"
+#include "E/EManager.hh"
+#include "E/DebugEvent/DebugEvent.hh"
+#include "Utility/meta.hpp"
+#include <iostream>
 
 namespace lel::ecs::event
 {
@@ -29,7 +33,17 @@ namespace lel::ecs::event
   };
 
   template <class D>
-  typename CRTPE<D>::ID CRTPE<D>::_id = CRTPE<D>::generateID();
+  typename CRTPE<D>::ID CRTPE<D>::_id = CRTPE<D>::generateID(
+    [](auto id)
+    {
+      std::string msg;
+      if constexpr (meta::has_variable_name_v<D>)
+        msg += D::name;
+      else
+        msg += typeid(D).name();
+      msg += " EVENT has been attributed the ID#" + std::to_string(id);
+      event::EManager::fire<event::DebugEvent>(msg);
+    });
 
   namespace old
   {

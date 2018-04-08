@@ -24,8 +24,4 @@ namespace lel::ecs::event
   {
     return _id;
   }
-
-  // TODO: Will be removed
-  void DebugEvent::assignID(const ID)
-  {}
 } /* !lel::ecs::event */
