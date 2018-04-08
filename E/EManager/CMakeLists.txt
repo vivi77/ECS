@@ -1,4 +1,4 @@
-set(MANAGER_NAME "EManager")
+set(MANAGER_NAME EManager)
 
 file(GLOB SRCS *.cpp *hh)
 add_library(${MANAGER_NAME} SHARED ${SRCS})
@@ -6,9 +6,7 @@ target_include_directories(${MANAGER_NAME} PUBLIC
   ${CMAKE_BINARY_DIR}
   ${PROJECT_SOURCE_DIR})
 target_link_libraries(${MANAGER_NAME} PUBLIC
-  EIDGen
-  DebugEvent
-  )
+  DebugEvent)
 
 set_target_properties(${MANAGER_NAME} PROPERTIES IMPORTED_LOCATION ${OUTPUT_LOCATION})
 generate_export_header(${MANAGER_NAME})
