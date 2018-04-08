@@ -18,23 +18,4 @@ namespace lel::ecs::event
   private:
     ID _id = 1; // Not 0 because it is reserved for DebugEvent
   };
-
-  namespace old
-  {
-    class EIDGEN_EXPORT EIDGenerator
-    {
-    public:
-      using ID = unsigned;
-
-    public:
-      static EIDGenerator& getSingleton();
-      ID generateID();
-
-    private:
-      EIDGenerator();
-
-    private:
-      ID _idGenerator;
-    };
-  } /* !old */
 } /* !lel::ecs::event */

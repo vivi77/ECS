@@ -1,6 +1,4 @@
 #include "DebugEvent.hh"
-#include "E/EIDGenerator/EIDGenerator.hh"
-#include "Utility/TemplateUniqueID.hpp"
 
 namespace lel::ecs::event
 {

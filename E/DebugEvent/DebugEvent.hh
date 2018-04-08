@@ -16,7 +16,6 @@ namespace lel::ecs::event
     ID getID() const override;
 
     static ID getEventID();
-    static void assignID(const ID);
 
   private:
     static ID _id;

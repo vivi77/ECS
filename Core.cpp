@@ -19,6 +19,12 @@ namespace
     return ss.str();
   }
 
+  // TODO: Find a better way to check than this
+  std::shared_ptr<lel::ecs::event::IEListener> castToListener(const std::shared_ptr<lel::ecs::system::IS>& sys)
+  {
+    return std::dynamic_pointer_cast<lel::ecs::event::IEListener>(sys);
+  }
+
   bool trySystemRegistering(lel::ecs::CoreSystemData& data)
   {
     using CoreEvent = lel::ecs::event::CoreEvent;
@@ -45,7 +51,7 @@ namespace
     data.sys = std::shared_ptr<lel::ecs::system::IS>(ctor(), dtor);
     data.sys->setup();
     if (data.sys->isListener())
-      lel::ecs::event::EManager::registerListenerSystem(data.sys);
+      lel::ecs::event::EManager::registerListener(castToListener(data.sys));
     lel::ecs::entity::EntityManager::updateSysComponent(data.sys);
     return true;
   }
@@ -123,7 +129,7 @@ namespace
       }
 
       if (it->sys->isListener())
-        lel::ecs::event::EManager::deregisterListenerSystem(it->sys);
+        lel::ecs::event::EManager::deregisterListener(castToListener(it->sys));
       it->sys->atRemove();
       lel::ecs::event::EManager::fire<lel::ecs::event::CoreEvent>(lel::ecs::event::CoreEvent::Type::REM_SYSTEM_SUCCESS,
                                                                   it->path.u8string(),
@@ -139,7 +145,7 @@ namespace
     while (!container.empty())
     {
       if (container.back().sys->isListener())
-        lel::ecs::event::EManager::deregisterListenerSystem(container.back().sys);
+        lel::ecs::event::EManager::deregisterListener(castToListener(container.back().sys));
       container.back().sys->atRemove();
       lel::ecs::event::EManager::fire<lel::ecs::event::CoreEvent>(lel::ecs::event::CoreEvent::Type::REM_SYSTEM_SUCCESS,
                                                                   container.back().path.u8string(),
