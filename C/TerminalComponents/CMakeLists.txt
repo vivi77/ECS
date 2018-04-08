@@ -11,6 +11,8 @@ target_link_libraries(${NAME} PUBLIC
   ${IDLIB_NAME}
   CManager
   TemplateComp
+  EManager
+  DebugEvent
   )
 
 set_target_properties(${NAME} PROPERTIES IMPORTED_LOCATION ${OUTPUT_LOCATION})

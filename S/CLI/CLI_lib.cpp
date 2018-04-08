@@ -5,7 +5,7 @@
 
 static void assignID()
 {
-  using namespace lel::ecs::system;
+  //using namespace lel::ecs::system;
 
   //CLI::assignID(SIDGenerator::getSingleton().generateID());
 }

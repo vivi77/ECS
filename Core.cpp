@@ -152,8 +152,8 @@ namespace
 
 namespace lel::ecs
 {
-  std::string_view Core::sysLibPath = meta::conditional_os<std::string_view>("lib/S/", "./").value;
-  std::string_view Core::autoLoadedSysRegex = meta::conditional_os<std::string_view>("lib(CLISystem)[.]so", "S[0-9]*[.]dll").value;
+  std::string_view Core::sysLibPath = lel::meta::conditional_os<std::string_view>("lib/S/", "./").value;
+  std::string_view Core::autoLoadedSysRegex = lel::meta::conditional_os<std::string_view>("lib(CLISystem)[.]so", "S[0-9]*[.]dll").value;
 
   Core::Core()
     : _data{setupData()}

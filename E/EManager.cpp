@@ -1,4 +1,5 @@
 #include "EManager.hh"
+#include "E/EManagerEvent/EManagerEvent.hh"
 #include "S/IS.hh"
 #include <algorithm>
 #include <sstream>
@@ -83,5 +84,10 @@ namespace lel::ecs::event
       ev = EManagerEvent::Type::EVENT_ADDED;
     }
     EManager::fire<EManagerEvent>(ev, id);
+  }
+
+  void EManager::eventNotFound(const EventID id)
+  {
+    EManager::template fire<EManagerEvent>(EManagerEvent::Type::EVENT_DTOR_NOT_FOUND, id);
   }
 } /* !lel::ecs::event */

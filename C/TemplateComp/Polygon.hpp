@@ -1,22 +1,23 @@
 #pragma once
 
+#include "DefaultInfo.hh"
 #include "C/CRTPC.hpp"
 #include "Utility/Vector.hpp"
 #include <vector>
 
 namespace lel::ecs::component::templateComponent
 {
-  template <class _Vector, class _Color>
-  struct Polygon : public CRTPC<Polygon<_Vector, _Color>>, public _Color
+  template <class V, class C, class I = details::DefaultInfo>
+  struct Polygon : public CRTPC<Polygon<V, C, I>>, public C, public I
   {
   public:
-    using Color = _Color;
-    using Vector = _Vector;
+    using Color = C;
+    using Vector = V;
 
   public:
     template <typename ... Args>
     Polygon(const std::vector<Vector>& pts, Args&& ... args)
-      : CRTPC<Polygon<Vector, Color>>{}
+      : CRTPC<Polygon<Vector, Color, I>>{}
       , Color{std::forward<Args>(args)...}
       , points{pts}
     {}

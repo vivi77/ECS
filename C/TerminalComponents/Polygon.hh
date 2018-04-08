@@ -7,8 +7,16 @@
 
 namespace lel::ecs::component
 {
+  namespace details
+  {
+    struct PolyInfo
+    {
+      constexpr static std::string_view name = "TerminalPolygon";
+    };
+  }
+
   struct TERMINALCOMPONENTS_EXPORT TerminalPolygon :
-    public templateComponent::Polygon<Vector2<int>, TerminalColor>
+    public templateComponent::Polygon<Vector2<int>, TerminalColor, details::PolyInfo>
   {
   public:
     template <typename ... Args>

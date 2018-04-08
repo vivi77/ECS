@@ -1,7 +1,7 @@
 #pragma once
 
-#include "CRTPS.hpp"
-#include "IEListener.hh"
+#include "S/CRTPS.hpp"
+#include "E/IEListener.hh"
 #include "Log.hh"
 #include <fstream>
 
@@ -21,5 +21,8 @@ namespace lel::ecs::system
   private:
     std::ofstream _logFile;
     lel::Log _log;
+
+  private:
+    static constexpr std::string_view name{"Debug"};
   };
 } /* !lel::ecs::system */

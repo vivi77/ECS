@@ -15,7 +15,7 @@ static void setup()
 {
   using EntityManagerEvent = lel::ecs::event::EntityManagerEvent;
 
-  EntityManagerEvent::assignID(lel::ecs::event::EIDGenerator::getSingleton().generateID());
+  //EntityManagerEvent::assignID(lel::ecs::event::EIDGenerator::getSingleton().generateID());
   lel::ecs::event::EManager::registerEventDtor(EntityManagerEvent::getEventID(), (lel::ecs::event::EManager::Dtor)&destroy);
 }
 

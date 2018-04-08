@@ -16,7 +16,7 @@ namespace lel::ecs
 
   namespace event
   {
-    using IDEvent = unsigned int;
+    using IDEvent = unsigned long;
   } /* !event */
 
   namespace utility

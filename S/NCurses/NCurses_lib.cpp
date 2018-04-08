@@ -7,12 +7,12 @@
 
 extern "C"
 {
-  lel::ecs::system::IS* create()
+  NCURSESSYSTEM_EXPORT lel::ecs::system::IS* create()
   {
     return new lel::ecs::system::NCurses();
   }
 
-  void destroy(lel::ecs::system::IS* ptr)
+  NCURSESSYSTEM_EXPORT void destroy(lel::ecs::system::IS* ptr)
   {
     delete ptr;
   }

@@ -54,5 +54,8 @@ namespace lel::ecs::system
   private:
     Container<NCursesData> _text;
     Container<NCursesData> _polygon;
+
+  public:
+    static constexpr std::string_view name{"NCurses"};
   };
 } /* !lel::ecs::system */
