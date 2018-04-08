@@ -1,11 +1,12 @@
 #pragma once
 
 #include "S/IS.hh"
-#include "E/IEListener.hh"
-#include <type_traits>
-
-#include "Utility/TemplateUniqueID.hpp"
 #include "S/SIDGenerator.hh"
+#include "E/IEListener.hh"
+#include "E/EManager.hh"
+#include "E/DebugEvent/DebugEvent.hh"
+#include "Utility/TemplateUniqueID.hpp"
+#include "Utility/meta.hpp"
 
 namespace lel::ecs::system
 {
@@ -37,7 +38,17 @@ namespace lel::ecs::system
   };
 
   template <class D>
-  typename CRTPS<D>::ID CRTPS<D>::_id = CRTPS<D>::generateID();
+  typename CRTPS<D>::ID CRTPS<D>::_id = CRTPS<D>::generateID(
+    [](auto id)
+    {
+      std::string msg;
+      if constexpr (meta::has_variable_name_v<D>)
+        msg += D::name;
+      else
+        msg += typeid(D).name();
+      msg += " system has been attributed the ID#" + std::to_string(id);
+      event::EManager::fire<event::DebugEvent>(msg);
+    });
 
   namespace old
   {

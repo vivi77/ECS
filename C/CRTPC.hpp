@@ -4,12 +4,7 @@
 #include "Utility/TemplateUniqueID.hpp"
 #include "E/EManager.hh"
 #include "E/DebugEvent/DebugEvent.hh"
-#include "lel_library/meta/type_traits_has.hpp"
-
-namespace lel::ecs::meta
-{
-  METACONCEPT_HAS_VARIABLE(name);
-} /* !lel::ecs::meta */
+#include "Utility/meta.hpp"
 
 namespace lel::ecs::component
 {
