@@ -2,7 +2,6 @@
 
 #include "E/emanager_export.h"
 #include "IEListener.hh"
-#include "E/EManagerEvent/EManagerEvent.hh"
 #include <vector>
 #include <unordered_map>
 
@@ -30,7 +29,7 @@ namespace lel::ecs
         auto it = _registeredEvents.find(Event::getEventID());
         if (it == std::end(_registeredEvents))
         {
-          EManager::template fire<EManagerEvent>(EManagerEvent::Type::EVENT_DTOR_NOT_FOUND, Event::getEventID());
+          eventNotFound(Event::getEventID());
           return ;
         }
 
@@ -48,6 +47,9 @@ namespace lel::ecs
     private:
       static std::vector<IEListenerPtr> _listeners;
       static std::unordered_map<EventID, Dtor> _registeredEvents;
+
+    private:
+      static void eventNotFound(const EventID id);
     };
   } /* !event */
 } /* !lel::ecs */
