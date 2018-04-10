@@ -43,6 +43,10 @@ namespace lel::ecs::meta
     std::unique_ptr<utility::IIDGenerator<ID>> TemplateUniqueID_helper<Out<void>, ID>::_generator = nullptr;
   } /* !details */
 
+  // It provides a way to generate unique ID to each template class of a
+  // class template
+  // We void the template argument of the class <C> in order to only care about
+  // the class template that C use
   template <class C, typename ID>
   struct TemplateUniqueID : public details::TemplateUniqueID_helper<details::void_in_t<C>, ID>
   {

@@ -3,6 +3,7 @@
 #include "Entity/entitylogic_export.h"
 #include "Entity.hh"
 #include "S/IS.hh"
+#include "Utility/Fwd.hh"
 
 namespace lel::ecs::entity
 {
@@ -11,7 +12,7 @@ namespace lel::ecs::entity
   public:
     using EntityPtr = std::shared_ptr<Entity>;
     using ComponentPtr = Entity::CPtr;
-    using ID = EntityIDGenerator::ID;
+    using ID = IDEntity;
     using SPtr = std::shared_ptr<system::IS>;
 
   public:
