@@ -184,8 +184,8 @@ namespace lel::ecs
       delayedEventUpdate();
     }
     event::EManager::deregisterListener(shared_from_this());
-    reverseClear(_data);
     event::EManager::fire<event::CoreEvent>(event::CoreEvent::Type::CLOSING);
+    reverseClear(_data);
   }
 
   void Core::update(const IEListener::EPtr& e)
