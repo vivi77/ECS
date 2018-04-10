@@ -11,7 +11,6 @@ namespace lel::ecs
     class EMANAGER_EXPORT EManager
     {
     public:
-      using EventID = unsigned; //EIDGenerator::ID;
       using Dtor = void(*)(void*);
       using IEListenerPtr = std::shared_ptr<IEListener>;
 

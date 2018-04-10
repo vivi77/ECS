@@ -1,19 +1,10 @@
 set(MANAGER_NAME CManager)
 
-file(GLOB SRCS *.cpp)
-file(GLOB HDRS *.hh *.hpp)
-add_library(${MANAGER_NAME} SHARED ${SRCS} ${HDRS})
+file(GLOB SRCS *.cpp *.hh *.hpp)
+add_library(${MANAGER_NAME} SHARED ${SRCS})
 target_include_directories(${MANAGER_NAME} PUBLIC
   ${CMAKE_BINARY_DIR}
-  ${CMAKE_BINARY_DIR}/E
-  ${CMAKE_BINARY_DIR}/E/EManagerEvent
-  ${CMAKE_BINARY_DIR}/E/CManagerEvent
-  ${CMAKE_BINARY_DIR}/C/${MANAGER_NAME}
-  ${PROJECT_SOURCE_DIR}/E
-  ${PROJECT_SOURCE_DIR}/E/EManagerEvent
-  ${PROJECT_SOURCE_DIR}/E/CManagerEvent
-  ${PROJECT_SOURCE_DIR}/C
-  ${PROJECT_SOURCE_DIR}/S
+  ${PROJECT_SOURCE_DIR}
   )
 target_link_libraries(${MANAGER_NAME} PUBLIC
   EManager

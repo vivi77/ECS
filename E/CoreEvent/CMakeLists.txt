@@ -7,12 +7,14 @@ set(DIRS
   ${CMAKE_BINARY_DIR}
   ${PROJECT_SOURCE_DIR})
 set(LIBS
-  EManagerEvent)
+  ${IDLIB_NAME}
+  ${MANAGER_NAME}
+  )
 
 add_library(${NAME} SHARED ${SRCS} ${HDRS})
 target_include_directories(${NAME} PUBLIC ${DIRS})
 # IDLIB_NAME and MANAGER_NAME variables available from ECS/E/CMakeLists.txt
-target_link_libraries(${NAME} PUBLIC ${IDLIB_NAME} ${MANAGER_NAME} ${LIBS})
+target_link_libraries(${NAME} PUBLIC ${LIBS})
 set_target_properties(${NAME} PROPERTIES IMPORTED_LOCATION ${EVENT_OUTPUT_LOCATION})
 generate_export_header(${NAME})
 

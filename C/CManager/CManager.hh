@@ -1,7 +1,6 @@
 #pragma once
 
 #include "C/CManager/cmanager_export.h"
-#include "C/IC.hh"
 #include "E/EManager/EManager.hh"
 #include "E/CManagerEvent/CManagerEvent.hh"
 #include "Utility/Fwd.hh"
@@ -20,7 +19,7 @@ namespace lel::ecs::component
     {
       auto comp = std::make_shared<C>(std::forward<Args>(args)...);
       event::EManager::fire<event::CManagerEvent>(
-        event::CManagerEvent::Type::COMP_CREATED, comp->getId());
+        event::CManagerEvent::Type::COMP_CREATED, C::getComponentID());
       _components.emplace_back(comp);
       return comp;
     }

@@ -15,11 +15,14 @@ namespace lel::ecs
   namespace component
   {
     using IDComponent = unsigned short;
+    class IC;
   } /* !component */
 
   namespace event
   {
     using IDEvent = unsigned long;
+    class IE;
+    class IEListener;
   } /* !event */
 
   namespace entity

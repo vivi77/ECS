@@ -13,13 +13,15 @@ add_library(${NAME} SHARED ${SRCS})
 target_include_directories(${NAME} PUBLIC ${DIRS})
 # IDLIB_NAME variable available from ECS/S/CMakeLists.txt
 target_link_libraries(${NAME} PUBLIC
-  ${IDLIB_NAME}
   ncurses
+  ${IDLIB_NAME}
+
   EntityLogic
 
   EManager
   CLISystemEvent
   CoreEvent
+
   Transform
   TerminalComponents)
 
