@@ -65,7 +65,9 @@ namespace
       {
         l.emplace_back(data);
         lel::ecs::event::EManager::fire<lel::ecs::event::CoreEvent>(lel::ecs::event::CoreEvent::Type::ADD_SYSTEM_SUCCESS,
-                                                                    data.path.u8string(), to_string(data.sys.get()));
+                                                                    data.path.u8string(),
+                                                                    to_string(data.sys.get()),
+                                                                    std::to_string(data.sys->getID()));
       }
     };
     startup.applyOnPaths(libFetcher);
@@ -92,7 +94,9 @@ namespace
       {
         datalist.emplace_back(std::move(data));
         lel::ecs::event::EManager::fire<lel::ecs::event::CoreEvent>(lel::ecs::event::CoreEvent::Type::ADD_SYSTEM_SUCCESS,
-                                                                    datalist.back().path.u8string(), to_string(datalist.back().sys.get()));
+                                                                    datalist.back().path.u8string(),
+                                                                    to_string(datalist.back().sys.get()),
+                                                                    std::to_string(datalist.back().sys->getID()));
       }
     }
     addRequest.clear();
@@ -120,9 +124,11 @@ namespace
 
       if (it->sys->isListener())
         lel::ecs::event::EManager::deregisterListenerSystem(it->sys);
-      lel::ecs::event::EManager::fire<lel::ecs::event::CoreEvent>(lel::ecs::event::CoreEvent::Type::REM_SYSTEM_SUCCESS,
-                                                                  it->path.u8string(), to_string(it->sys.get()));
       it->sys->atRemove();
+      lel::ecs::event::EManager::fire<lel::ecs::event::CoreEvent>(lel::ecs::event::CoreEvent::Type::REM_SYSTEM_SUCCESS,
+                                                                  it->path.u8string(),
+                                                                  to_string(it->sys.get()),
+                                                                  std::to_string(it->sys->getID()));
       datalist.erase(it);
     }
     removeRequest.clear();
@@ -134,9 +140,11 @@ namespace
     {
       if (container.back().sys->isListener())
         lel::ecs::event::EManager::deregisterListenerSystem(container.back().sys);
-      lel::ecs::event::EManager::fire<lel::ecs::event::CoreEvent>(lel::ecs::event::CoreEvent::Type::REM_SYSTEM_SUCCESS,
-                                                                  container.back().path.u8string(), to_string(container.back().sys.get()));
       container.back().sys->atRemove();
+      lel::ecs::event::EManager::fire<lel::ecs::event::CoreEvent>(lel::ecs::event::CoreEvent::Type::REM_SYSTEM_SUCCESS,
+                                                                  container.back().path.u8string(),
+                                                                  to_string(container.back().sys.get()),
+                                                                  std::to_string(container.back().sys->getID()));
       container.pop_back();
     }
   }
@@ -144,8 +152,8 @@ namespace
 
 namespace lel::ecs
 {
-  std::string_view Core::sysLibPath = meta::conditional_os<std::string_view>("lib/S/", "./").value;
-  std::string_view Core::autoLoadedSysRegex = meta::conditional_os<std::string_view>("lib(CLISystem)[.]so", "S[0-9]*[.]dll").value;
+  std::string_view Core::sysLibPath = lel::meta::conditional_os<std::string_view>("lib/S/", "./").value;
+  std::string_view Core::autoLoadedSysRegex = lel::meta::conditional_os<std::string_view>("lib(CLISystem)[.]so", "S[0-9]*[.]dll").value;
 
   Core::Core()
     : _data{setupData()}

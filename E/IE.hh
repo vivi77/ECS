@@ -1,11 +1,13 @@
 #pragma once
 
+#include "Utility/Fwd.hh"
+
 namespace lel::ecs::event
 {
   class IE
   {
   public:
-    using ID = unsigned;
+    using ID = IDEvent;
 
   public:
     virtual ~IE() = default;

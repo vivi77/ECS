@@ -7,12 +7,12 @@
 
 extern "C"
 {
-  lel::ecs::system::IS* create()
+  NCURSESSYSTEM_EXPORT lel::ecs::system::IS* create()
   {
     return new lel::ecs::system::NCurses();
   }
 
-  void destroy(lel::ecs::system::IS* ptr)
+  NCURSESSYSTEM_EXPORT void destroy(lel::ecs::system::IS* ptr)
   {
     delete ptr;
   }
@@ -30,10 +30,11 @@ void assignID()
 {
   using namespace lel::ecs;
 
-  system::NCurses::assignID(system::SIDGenerator::getSingleton().generateID());
-  system::NCurses::NCTransform::assignID(component::CIDGenerator::getSingleton().generateID());
-  component::CManager::registerCompDtor(system::NCurses::NCTransform::getComponentID(),
-                                        (component::CManager::Dtor)&::destroyNCTransform);
+  //system::NCurses::assignID(system::SIDGenerator::getSingleton().generateID());
+  //system::NCurses::NCTransform::assignID(component::CIDGenerator::getSingleton().generateID());
+  //std::cout << system::NCurses::NCTransform::getComponentID() << " NCT\n";
+  //component::CManager::registerCompDtor(system::NCurses::NCTransform::getComponentID(),
+                                        //(component::CManager::Dtor)&::destroyNCTransform);
 }
 
 template struct EntryPointWrapper<lel::ecs::system::NCurses>;

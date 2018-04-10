@@ -48,5 +48,8 @@ namespace lel::ecs::system
     lel::CLIParser _cliparser;
     CmdManager _cmds;
     bool _enabled = true;
+
+  public:
+    constexpr static std::string_view name{"CLIParser"};
   };
 } /* !lel::ecs::system */

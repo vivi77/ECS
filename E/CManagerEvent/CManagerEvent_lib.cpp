@@ -15,7 +15,7 @@ static void setup()
 {
   using CManagerEvent = lel::ecs::event::CManagerEvent;
 
-  CManagerEvent::assignID(lel::ecs::event::EIDGenerator::getSingleton().generateID());
+  //CManagerEvent::assignID(lel::ecs::event::EIDGenerator::getSingleton().generateID());
   lel::ecs::event::EManager::registerEventDtor(CManagerEvent::getEventID(), (lel::ecs::event::EManager::Dtor)&destroy);
 }
 

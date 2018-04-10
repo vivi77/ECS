@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Utility/Fwd.hh"
 #include "Entity/Entity.hh"
 #include <memory>
 
@@ -8,7 +9,7 @@ namespace lel::ecs::system
   class IS
   {
   public:
-    using ID = unsigned;
+    using ID = IDSystem;
     using EntityPtr = std::shared_ptr<entity::Entity>;
 
   public:

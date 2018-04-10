@@ -15,7 +15,7 @@ static void setup()
 {
   using CLISystemEvent = lel::ecs::event::CLISystemEvent;
 
-  CLISystemEvent::assignID(lel::ecs::event::EIDGenerator::getSingleton().generateID());
+  //CLISystemEvent::assignID(lel::ecs::event::EIDGenerator::getSingleton().generateID());
   lel::ecs::event::EManager::registerEventDtor(CLISystemEvent::getEventID(), (lel::ecs::event::EManager::Dtor)&destroy);
 }
 

@@ -1,12 +1,13 @@
 #pragma once
 
+#include "DefaultInfo.hh"
 #include "C/CRTPC.hpp"
 #include <functional>
 
 namespace lel::ecs::component::templateComponent
 {
-  template <class Color>
-  struct Text : public CRTPC<Text<Color>>, public Color
+  template <class Color, class Info = details::DefaultInfo>
+  struct Text : public CRTPC<Text<Color, Info>>, public Color, public Info
   {
   public:
     using ColorClass = Color;
@@ -14,7 +15,7 @@ namespace lel::ecs::component::templateComponent
   public:
     template <typename ... Args>
     Text(const char* txt, Args&& ... args)
-      : CRTPC<Text<Color>>{}
+      : CRTPC<Text<Color, Info>>{}
       , Color{std::forward<Args>(args)...}
       , text{txt}
     {}

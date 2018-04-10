@@ -1,5 +1,7 @@
 #pragma once
 
+#include <iostream>
+
 static void setup();
 
 #ifdef __linux__

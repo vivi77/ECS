@@ -1,21 +1,15 @@
 #include "EIDGenerator.hh"
 
+template <>
+std::unique_ptr<lel::ecs::utility::IIDGenerator<lel::ecs::event::IDEvent>> createGenerator()
+{
+  return std::make_unique<lel::ecs::event::EIDGenerator>();
+}
+
 namespace lel::ecs::event
 {
-  EIDGenerator::EIDGenerator()
-    : _idGenerator{0}
-  {
-    ;
-  }
-
   EIDGenerator::ID EIDGenerator::generateID()
   {
-    return _idGenerator++;
-  }
-
-  EIDGenerator& EIDGenerator::getSingleton()
-  {
-    static EIDGenerator singleton;
-    return singleton;
+    return _id++;
   }
 } /* !lel::ecs::event */

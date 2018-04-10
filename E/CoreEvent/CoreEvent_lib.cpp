@@ -16,7 +16,7 @@ static void setup()
 {
   using CoreEvent = lel::ecs::event::CoreEvent;
 
-  CoreEvent::assignID(lel::ecs::event::EIDGenerator::getSingleton().generateID());
+  //CoreEvent::assignID(lel::ecs::event::EIDGenerator::getSingleton().generateID());
   lel::ecs::event::EManager::registerEventDtor(CoreEvent::getEventID(), (lel::ecs::event::EManager::Dtor)&destroy);
 }
 

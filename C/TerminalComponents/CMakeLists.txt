@@ -8,9 +8,11 @@ target_include_directories(${NAME} PUBLIC
   ${PROJECT_SOURCE_DIR}
   )
 target_link_libraries(${NAME} PUBLIC
-  CIDGen
+  ${IDLIB_NAME}
   CManager
   TemplateComp
+  EManager
+  DebugEvent
   )
 
 set_target_properties(${NAME} PROPERTIES IMPORTED_LOCATION ${OUTPUT_LOCATION})
