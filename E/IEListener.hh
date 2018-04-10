@@ -1,6 +1,6 @@
 #pragma once
 
-#include "IE.hh"
+#include "Utility/Fwd.hh"
 #include <memory>
 
 namespace lel::ecs::event

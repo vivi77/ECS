@@ -1,21 +1,20 @@
 set(NAME CLISystem)
 
-file(GLOB SRCS *.cpp)
-file(GLOB HDRS *.hh *.hpp ../S_lib.hh)
+file(GLOB SRCS *.cpp *.hh *.hpp ../S_lib.hh)
 set(DIRS
   ${CMAKE_BINARY_DIR}
   ${PROJECT_SOURCE_DIR})
 
-add_library(${NAME} SHARED ${SRCS} ${HDRS})
+add_library(${NAME} SHARED ${SRCS})
 target_include_directories(${NAME} PUBLIC ${DIRS})
 # IDLIB_NAME variable available from ECS/S/CMakeLists.txt
 target_link_libraries(${NAME} PUBLIC
   ${IDLIB_NAME}
-  CLIParser
   EManager
-  DebugEvent
   CoreEvent
-  CLISystemEvent)
+  CLISystemEvent
+  # From lel_library
+  CLIParser)
 set_target_properties(${NAME} PROPERTIES IMPORTED_LOCATION ${SYS_OUTPUT_LOCATION})
 generate_export_header(${NAME})
 

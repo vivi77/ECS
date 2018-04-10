@@ -9,7 +9,7 @@ namespace lel::ecs
   struct CoreSystemData
   {
     std::experimental::filesystem::path path;
-    lel::OSDLLoader loader;
-    std::shared_ptr<lel::ecs::system::IS> sys;
+    OSDLLoader loader;
+    std::shared_ptr<system::IS> sys;
   };
 } /* !lel::ecs */

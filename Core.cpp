@@ -1,7 +1,7 @@
 #include "Core.hh"
 #include "meta/conditional_os.hpp"
 #include "E/CoreEvent/CoreEvent.hh"
-#include "EManager.hh"
+#include "E/EManager/EManager.hh"
 #include "C/CManager/CManager.hh"
 #include "Entity/EntityManager.hh"
 #include "StartupLoader.hh"
@@ -17,6 +17,12 @@ namespace
     std::stringstream ss;
     ss << ptr;
     return ss.str();
+  }
+
+  // TODO: Find a better way to check than this
+  std::shared_ptr<lel::ecs::event::IEListener> castToListener(const std::shared_ptr<lel::ecs::system::IS>& sys)
+  {
+    return std::dynamic_pointer_cast<lel::ecs::event::IEListener>(sys);
   }
 
   bool trySystemRegistering(lel::ecs::CoreSystemData& data)
@@ -45,7 +51,7 @@ namespace
     data.sys = std::shared_ptr<lel::ecs::system::IS>(ctor(), dtor);
     data.sys->setup();
     if (data.sys->isListener())
-      lel::ecs::event::EManager::registerListenerSystem(data.sys);
+      lel::ecs::event::EManager::registerListener(castToListener(data.sys));
     lel::ecs::entity::EntityManager::updateSysComponent(data.sys);
     return true;
   }
@@ -123,7 +129,7 @@ namespace
       }
 
       if (it->sys->isListener())
-        lel::ecs::event::EManager::deregisterListenerSystem(it->sys);
+        lel::ecs::event::EManager::deregisterListener(castToListener(it->sys));
       it->sys->atRemove();
       lel::ecs::event::EManager::fire<lel::ecs::event::CoreEvent>(lel::ecs::event::CoreEvent::Type::REM_SYSTEM_SUCCESS,
                                                                   it->path.u8string(),
@@ -139,7 +145,7 @@ namespace
     while (!container.empty())
     {
       if (container.back().sys->isListener())
-        lel::ecs::event::EManager::deregisterListenerSystem(container.back().sys);
+        lel::ecs::event::EManager::deregisterListener(castToListener(container.back().sys));
       container.back().sys->atRemove();
       lel::ecs::event::EManager::fire<lel::ecs::event::CoreEvent>(lel::ecs::event::CoreEvent::Type::REM_SYSTEM_SUCCESS,
                                                                   container.back().path.u8string(),
@@ -178,8 +184,8 @@ namespace lel::ecs
       delayedEventUpdate();
     }
     event::EManager::deregisterListener(shared_from_this());
-    reverseClear(_data);
     event::EManager::fire<event::CoreEvent>(event::CoreEvent::Type::CLOSING);
+    reverseClear(_data);
   }
 
   void Core::update(const IEListener::EPtr& e)

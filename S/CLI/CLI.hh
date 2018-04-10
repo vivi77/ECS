@@ -6,6 +6,7 @@
 #include "E/IEListener.hh"
 #include <functional>
 
+// To move elsewhere
 class CmdManager
 {
 public:

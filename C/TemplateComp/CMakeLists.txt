@@ -7,8 +7,7 @@ target_include_directories(${NAME} INTERFACE
   ${PROJECT_SOURCE_DIR}
   )
 target_link_libraries(${NAME} INTERFACE
-  CIDGen
-  CManager
+  ${IDLIB_NAME}
   ecs_utils
   )
 target_sources(${NAME} INTERFACE ${SRCS})

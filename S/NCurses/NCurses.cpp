@@ -1,6 +1,6 @@
 #include "NCurses.hh"
 #include "E/CLISystemEvent/CLISystemEvent.hh"
-#include "E/EManager.hh"
+#include "E/EManager/EManager.hh"
 #include "Utility/Bresenham.hpp"
 #include <curses.h>
 #include <algorithm>

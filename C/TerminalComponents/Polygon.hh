@@ -1,7 +1,6 @@
 #pragma once
 
 #include "C/TerminalComponents/terminalcomponents_export.h"
-#include "C/CRTPC.hpp"
 #include "C/TemplateComp/Polygon.hpp"
 #include "TerminalColor.hh"
 

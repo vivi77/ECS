@@ -10,7 +10,7 @@ namespace lel::ecs::entity
   class ENTITYLOGIC_EXPORT Entity
   {
   public:
-    using CPtr = std::shared_ptr<lel::ecs::component::IC>;
+    using CPtr = std::shared_ptr<component::IC>;
     using CContainer = std::vector<CPtr>;
 
   public:
@@ -23,7 +23,7 @@ namespace lel::ecs::entity
     CContainer getComponents() const;
 
     void addComponent(const CPtr& comp);
-    void removeComponent(const lel::ecs::component::IC::ID);
+    void removeComponent(const component::IDComponent);
 
   private:
     ID _id;

@@ -3,6 +3,7 @@
 #include "E/CRTPE.hpp"
 #include "E/CManagerEvent/cmanagerevent_export.h"
 #include "C/IC.hh"
+#include "Utility/Fwd.hh"
 #include <memory>
 #include <variant>
 
@@ -11,8 +12,8 @@ namespace lel::ecs::event
   class CMANAGEREVENT_EXPORT CManagerEvent : public CRTPE<CManagerEvent>
   {
   public:
-    using CPtr = std::shared_ptr<lel::ecs::component::IC>;
-    using CID = unsigned; // CGenerator::ID
+    using CPtr = std::shared_ptr<component::IC>;
+    using CID = component::IDComponent;
     using Data = std::variant<CPtr, CID>;
 
   public:

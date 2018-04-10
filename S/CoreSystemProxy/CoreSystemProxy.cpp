@@ -1,4 +1,5 @@
 #include "CoreSystemProxy.hh"
+#include "S/IS.hh"
 
 namespace lel::ecs
 {

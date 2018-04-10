@@ -1,8 +1,7 @@
 set(NAME DebugSystem)
 
 file(GLOB SRCS
-  *.cpp)
-file(GLOB HDRS
+  *.cpp
   *.hh
   *.hpp
   ../S_lib.hh)
@@ -10,7 +9,7 @@ set(DIRS
   ${CMAKE_BINARY_DIR}
   ${PROJECT_SOURCE_DIR})
 
-add_library(${NAME} SHARED ${SRCS} ${HDRS})
+add_library(${NAME} SHARED ${SRCS})
 target_include_directories(${NAME} PUBLIC ${DIRS})
 # IDLIB_NAME variable available from ECS/S/CMakeLists.txt
 target_link_libraries(${NAME} PUBLIC
@@ -22,7 +21,6 @@ target_link_libraries(${NAME} PUBLIC
   CoreEvent
   CLISystemEvent
   EntityManagerEvent
-  DebugEvent
   ${IDLIB_NAME})
 set_target_properties(${NAME} PROPERTIES IMPORTED_LOCATION ${SYS_OUTPUT_LOCATION})
 generate_export_header(${NAME})

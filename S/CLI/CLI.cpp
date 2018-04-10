@@ -1,6 +1,6 @@
 #include "CLI.hh"
 #include "E/CoreEvent/CoreEvent.hh"
-#include "E/EManager.hh"
+#include "E/EManager/EManager.hh"
 #include "E/CLISystemEvent/CLISystemEvent.hh"
 #include <experimental/source_location>
 
@@ -11,14 +11,14 @@ namespace lel::ecs::system
     , _cmds{
       {
         "quit",
-        [](const lel::CmdOutput&) -> void
+        [](const CmdOutput&) -> void
         {
-          lel::ecs::event::EManager::fire<event::CoreEvent>(event::CoreEvent::Type::EXIT);
+          event::EManager::fire<event::CoreEvent>(event::CoreEvent::Type::EXIT);
         }
       },
       {
         "add",
-        [](const lel::CmdOutput& o) -> void
+        [](const CmdOutput& o) -> void
         {
           if (o.getArgs().size() != 1)
           {
@@ -27,12 +27,12 @@ namespace lel::ecs::system
           }
 
           auto sysPath = o.getArgs()[0]->getTerminal();
-          lel::ecs::event::EManager::fire<event::CoreEvent>(event::CoreEvent::Type::ADD_SYSTEM, sysPath);
+          event::EManager::fire<event::CoreEvent>(event::CoreEvent::Type::ADD_SYSTEM, sysPath);
         }
       },
       {
         "remove",
-        [](const lel::CmdOutput& o) -> void
+        [](const CmdOutput& o) -> void
         {
           if (o.getArgs().size() != 1)
           {
@@ -41,7 +41,7 @@ namespace lel::ecs::system
           }
 
           auto sysPath = o.getArgs()[0]->getTerminal();
-          lel::ecs::event::EManager::fire<event::CoreEvent>(event::CoreEvent::Type::REM_SYSTEM, sysPath);
+          event::EManager::fire<event::CoreEvent>(event::CoreEvent::Type::REM_SYSTEM, sysPath);
         }
       },
     } //CLI::_cmds end of initialization
@@ -56,21 +56,21 @@ namespace lel::ecs::system
     try
     {
       auto expr = _cliparser.parseExpression();
-      _cliparser.consume({lel::CLIProducerType::EOL, lel::CLIProducerType::CTRL_D});
+      _cliparser.consume({CLIProducerType::EOL, CLIProducerType::CTRL_D});
 
-      if (expr->getType() != lel::CLIParserType::COMMAND)
+      if (expr->getType() != CLIParserType::COMMAND)
       {
-        if (expr->getType() == lel::CLIParserType::CANCEL)
+        if (expr->getType() == CLIParserType::CANCEL)
         {
           std::cout << "quit\n";
-          lel::ecs::event::EManager::fire<event::CoreEvent>(event::CoreEvent::Type::EXIT);
+          event::EManager::fire<event::CoreEvent>(event::CoreEvent::Type::EXIT);
         }
-        else if (expr->getType() != lel::CLIParserType::EOL)
+        else if (expr->getType() != CLIParserType::EOL)
           std::cout << "This is not a command. (Type: " << expr->getType() << ")\n";
         return ;
       }
 
-      auto cmd = std::static_pointer_cast<lel::CmdOutput>(expr);
+      auto cmd = std::static_pointer_cast<CmdOutput>(expr);
       _cmds.exec(*cmd);
     }
     catch (const std::exception& e)

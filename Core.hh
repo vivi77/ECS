@@ -1,6 +1,6 @@
 #pragma once
 
-#include "IEListener.hh"
+#include "E/IEListener.hh"
 #include "CoreSystemData.hh"
 #include <memory>
 #include <list>
@@ -10,7 +10,7 @@ namespace lel::ecs
   class Core : public event::IEListener, public std::enable_shared_from_this<Core>
   {
   public:
-    using SysPtr = std::shared_ptr<lel::ecs::system::IS>;
+    using SysPtr = std::shared_ptr<system::IS>;
 
   public:
     Core();
