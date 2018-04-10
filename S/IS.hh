@@ -2,7 +2,6 @@
 
 #include "Utility/Fwd.hh"
 #include "Entity/Entity.hh"
-#include <memory>
 
 namespace lel::ecs::system
 {
