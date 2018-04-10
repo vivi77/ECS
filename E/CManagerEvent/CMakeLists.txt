@@ -2,7 +2,7 @@ set(NAME CManagerEvent)
 
 file(GLOB SRCS *.cpp)
 file(GLOB HDRS *.hh *.hpp)
-set(HDRS ${HDRS} ../E_lib.hh)
+set(HDRS ${HDRS})
 set(DIRS
   ${CMAKE_BINARY_DIR}
   ${PROJECT_SOURCE_DIR})

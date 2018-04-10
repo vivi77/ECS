@@ -1,6 +1,6 @@
 set(MANAGER_NAME EManager)
 
-file(GLOB SRCS *.cpp *hh)
+file(GLOB SRCS *.cpp *.hh)
 add_library(${MANAGER_NAME} SHARED ${SRCS})
 target_include_directories(${MANAGER_NAME} PUBLIC
   ${CMAKE_BINARY_DIR}
