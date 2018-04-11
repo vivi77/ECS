@@ -6,3 +6,4 @@ googletest
 
 # Use it to ignore something
 *.ignore
+*.keeplocal
