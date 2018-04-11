@@ -15,7 +15,6 @@ target_include_directories(${NAME} PUBLIC ${DIRS})
 target_link_libraries(${NAME} PUBLIC
   Log
   EManager
-  CManager
   EManagerEvent
   CManagerEvent
   CoreEvent

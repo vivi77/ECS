@@ -2,7 +2,6 @@
 #include "meta/conditional_os.hpp"
 #include "E/CoreEvent/CoreEvent.hh"
 #include "E/EManager/EManager.hh"
-#include "C/CManager/CManager.hh"
 #include "Entity/EntityManager.hh"
 #include "StartupLoader.hh"
 #include "S/CoreSystemProxy/CoreSystemProxy.hh"
