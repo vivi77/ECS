@@ -1,4 +1,5 @@
 #include "Debug.hh"
+#include "E/IEListener.hh"
 #include "E/CoreEvent/CoreEvent.hh"
 #include "E/EManagerEvent/EManagerEvent.hh"
 #include "E/CManagerEvent/CManagerEvent.hh"

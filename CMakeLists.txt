@@ -82,7 +82,6 @@ target_link_libraries(${NAME} PUBLIC
   lel_lib
   EntityLogic
   EManager
-  CManager
   CoreEvent
   CManagerEvent)
 target_include_directories(${NAME} PUBLIC

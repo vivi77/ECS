@@ -2,10 +2,15 @@
 
 #include "S/CRTPS.hpp"
 #include "S/NCurses/ncursessystem_export.h"
-#include "C/TerminalComponents/Text.hh"
-#include "C/TerminalComponents/Polygon.hh"
-#include "C/Transform/Transform.hpp"
 #include <vector>
+
+// NCurses specific forward declaration
+namespace lel::ecs::component
+{
+  class TerminalText;
+  class TerminalPolygon;
+  template <class T> struct Transform;
+} /* !lel::ecs::component */
 
 namespace lel::ecs::system
 {

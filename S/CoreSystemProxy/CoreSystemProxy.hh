@@ -10,6 +10,10 @@ namespace lel::ecs
   // This class serve as a proxy to the class Core
   //   It provides services that Core should provide. But it does not need to the
   //   users of theses services to include Core (which is not in a shared library)
+  // TODO: Make it not use a static variable to store the system list.
+  //    ==> Problem: Works like a global. Does not follow the willing of having
+  //    several different 'Core' class (In this situation, all the 'Core'
+  //    classes would share the same SystemContainer)
   class CoreSystemProxy
   {
   public:

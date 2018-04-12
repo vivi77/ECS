@@ -15,7 +15,7 @@ namespace lel::ecs::component
     };
   } /* !details */
 
-  // Should use type-alias but there cannot export the class
+  // TODO: Look for __decltype with type-alias
   struct TERMINALCOMPONENTS_EXPORT TerminalText :
     public templateComponent::Text<TerminalColor, details::TextInfo>
   {

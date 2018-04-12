@@ -1,7 +1,7 @@
 #pragma once
 
 #include "OSDLLoader/OSDLLoader.hh"
-#include "S/IS.hh"
+#include "Utility/Fwd.hh"
 #include <experimental/filesystem>
 
 namespace lel::ecs

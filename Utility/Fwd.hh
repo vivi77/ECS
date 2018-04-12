@@ -7,27 +7,38 @@
 // have the same type.
 namespace lel::ecs
 {
+  class Core;
+  class CoreSystemProxy;
+  class StartupLoader;
+
   namespace system
   {
     using IDSystem = unsigned int;
+    class IS;
+    class SIDGenerator;
   } /* !system */
 
   namespace component
   {
     using IDComponent = unsigned short;
     class IC;
+    class CIDGenerator;
   } /* !component */
 
   namespace event
   {
     using IDEvent = unsigned long;
     class IE;
+    class EIDGenerator;
     class IEListener;
   } /* !event */
 
   namespace entity
   {
     using IDEntity = unsigned long long;
+    class Entity;
+    class EntityIDGenerator;
+    class EntityManager;
   } /* !entity */
 
   namespace utility

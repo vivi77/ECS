@@ -2,7 +2,6 @@
 
 #include "E/CRTPE.hpp"
 #include "E/CManagerEvent/cmanagerevent_export.h"
-#include "C/IC.hh"
 #include "Utility/Fwd.hh"
 #include <memory>
 #include <variant>

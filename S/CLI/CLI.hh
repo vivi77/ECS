@@ -3,10 +3,9 @@
 #include "S/CRTPS.hpp"
 #include "CLIParser/CLIParser.hh"
 #include "CLIParser/CLIParserOutputs.hh"
-#include "E/IEListener.hh"
 #include <functional>
 
-// To move elsewhere
+// TODO: To move elsewhere
 class CmdManager
 {
 public:
@@ -46,7 +45,7 @@ namespace lel::ecs::system
     void update(const EPtr&) override;
 
   private:
-    lel::CLIParser _cliparser;
+    CLIParser _cliparser;
     CmdManager _cmds;
     bool _enabled = true;
 

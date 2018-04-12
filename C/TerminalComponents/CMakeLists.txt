@@ -8,8 +8,6 @@ target_include_directories(${NAME} PUBLIC
   ${PROJECT_SOURCE_DIR}
   )
 target_link_libraries(${NAME} PUBLIC
-  #${IDLIB_NAME}
-  #CManager
   TemplateComp
   EManager
   DebugEvent
