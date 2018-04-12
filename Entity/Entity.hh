@@ -1,7 +1,7 @@
 #pragma once
 
-#include "C/IC.hh"
 #include "Entity/entitylogic_export.h"
+#include "Utility/Fwd.hh"
 #include <vector>
 #include <memory>
 

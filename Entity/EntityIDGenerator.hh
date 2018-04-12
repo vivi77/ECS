@@ -4,6 +4,7 @@
 
 namespace lel::ecs::entity
 {
+  // TODO: Change it into not a singleton
   class ENTITYLOGIC_EXPORT EntityIDGenerator
   {
   public:

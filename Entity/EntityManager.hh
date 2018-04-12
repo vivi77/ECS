@@ -2,11 +2,13 @@
 
 #include "Entity/entitylogic_export.h"
 #include "Entity.hh"
-#include "S/IS.hh"
 #include "Utility/Fwd.hh"
 
 namespace lel::ecs::entity
 {
+  // TODO: Make the manager not being a singleton.
+  //    ==> Reason: Does not match with the will to have several different
+  //    instance of a 'Core' class.
   class ENTITYLOGIC_EXPORT EntityManager
   {
   public:

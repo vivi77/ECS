@@ -5,6 +5,7 @@
 #include "Entity/EntityManager.hh"
 #include "StartupLoader.hh"
 #include "S/CoreSystemProxy/CoreSystemProxy.hh"
+#include "S/IS.hh"
 #include <iostream>
 #include <algorithm>
 #include <sstream>

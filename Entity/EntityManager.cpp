@@ -1,5 +1,6 @@
 #include "EntityManager.hh"
 #include "EntityIDGenerator.hh"
+#include "S/IS.hh"
 #include "S/CoreSystemProxy/CoreSystemProxy.hh"
 #include "E/EntityManagerEvent/EntityManagerEvent.hh"
 #include "E/EManager/EManager.hh"

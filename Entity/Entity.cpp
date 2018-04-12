@@ -1,4 +1,5 @@
 #include "Entity.hh"
+#include "C/IC.hh"
 #include <algorithm>
 
 namespace lel::ecs::entity
