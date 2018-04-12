@@ -1,8 +1,9 @@
 #include "DebugEvent.hh"
+#include "E/EIDGenerator/EIDGenerator.hh"
 
 namespace lel::ecs::event
 {
-  DebugEvent::ID DebugEvent::_id = 0;
+  DebugEvent::ID DebugEvent::_id = EIDGenerator::_debugEventID;
 
   DebugEvent::DebugEvent(const std::string& msg)
     : _msg{msg}
