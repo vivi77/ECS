@@ -1,19 +1,20 @@
 #pragma once
 
 #include "Entity/entitylogic_export.h"
+#include "Utility/IIDGenerator.hpp"
+#include "Utility/Fwd.hh"
 
 namespace lel::ecs::entity
 {
-  // TODO: Change it into not a singleton
-  class ENTITYLOGIC_EXPORT EntityIDGenerator
+  class ENTITYLOGIC_EXPORT EntityIDGenerator : public utility::IIDGenerator<IDEntity>
   {
   public:
-    using ID = unsigned;
+    using ID = IDEntity;
 
   public:
-    static ID generateID();
+    ID generateID() override;
 
   private:
-    static ID _id;
+    ID _id = 0;
   };
 } /* !lel::ecs::entity */

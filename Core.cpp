@@ -2,7 +2,6 @@
 #include "meta/conditional_os.hpp"
 #include "E/CoreEvent/CoreEvent.hh"
 #include "E/EManager/EManager.hh"
-#include "Entity/EntityManager.hh"
 #include "StartupLoader.hh"
 #include "S/CoreSystemProxy/CoreSystemProxy.hh"
 #include "S/IS.hh"
@@ -23,89 +22,6 @@ namespace
   std::shared_ptr<lel::ecs::event::IEListener> castToListener(const std::shared_ptr<lel::ecs::system::IS>& sys)
   {
     return std::dynamic_pointer_cast<lel::ecs::event::IEListener>(sys);
-  }
-
-  bool trySystemRegistering(lel::ecs::CoreSystemData& data)
-  {
-    using CoreEvent = lel::ecs::event::CoreEvent;
-
-    if (!data.loader.isValid())
-    {
-      lel::ecs::event::EManager::fire<CoreEvent>(CoreEvent::Type::SYSTEM_NOT_FOUND,
-                                                 data.path.u8string(),
-                                                 data.loader.getLastError());
-      std::cerr << data.loader.getLastError() << "\n";
-      return false;
-    }
-
-    auto ctor = data.loader.getSymbol<lel::ecs::system::IS*(*)()>("create");
-    auto dtor = data.loader.getSymbol<void(*)(lel::ecs::system::IS*)>("destroy");
-    if (!ctor.isValid() || !dtor.isValid())
-    {
-      lel::ecs::event::EManager::fire<CoreEvent>(CoreEvent::Type::INVALID_SYSTEM,
-                                                 data.path.filename().u8string(),
-                                                 data.loader.getLastError());
-      return false;
-    }
-
-    data.sys = std::shared_ptr<lel::ecs::system::IS>(ctor(), dtor);
-    data.sys->setup();
-    if (data.sys->isListener())
-      lel::ecs::event::EManager::registerListener(castToListener(data.sys));
-    lel::ecs::entity::EntityManager::updateSysComponent(data.sys);
-    return true;
-  }
-
-  std::list<lel::ecs::CoreSystemData> setupData()
-  {
-    std::list<lel::ecs::CoreSystemData> l;
-    lel::ecs::StartupLoader startup{"startup.ecs"};
-
-    auto libFetcher = [&l](const std::experimental::filesystem::path& path)
-    {
-      lel::ecs::CoreSystemData data;
-      data.path = lel::ecs::Core::sysLibPath;
-      data.path += path;
-      data.loader.loadLibrary(data.path.u8string().c_str());
-      if (trySystemRegistering(data))
-      {
-        l.emplace_back(data);
-        lel::ecs::event::EManager::fire<lel::ecs::event::CoreEvent>(lel::ecs::event::CoreEvent::Type::ADD_SYSTEM_SUCCESS,
-                                                                    data.path.u8string(),
-                                                                    to_string(data.sys.get()),
-                                                                    std::to_string(data.sys->getID()));
-      }
-    };
-    startup.applyOnPaths(libFetcher);
-    return l;
-  }
-
-  void updateAddRequest(std::list<std::string>& addRequest, std::list<lel::ecs::CoreSystemData>& datalist)
-  {
-    for (const auto& addSysPath : addRequest)
-    {
-      lel::ecs::CoreSystemData data;
-      data.path = lel::ecs::Core::sysLibPath;
-      data.path += addSysPath;
-
-      if (lel::OSDLLoader::isLibraryLoaded(addSysPath.c_str()))
-      {
-        lel::ecs::event::EManager::fire<lel::ecs::event::CoreEvent>(lel::ecs::event::CoreEvent::Type::ALREADY_ADDED_SYSTEM,
-                                                                    data.path.u8string());
-        continue ;
-      }
-
-      data.loader.loadLibrary(data.path.u8string().c_str());
-      if (trySystemRegistering(data))
-      {
-        datalist.emplace_back(std::move(data));
-        lel::ecs::event::EManager::fire<lel::ecs::event::CoreEvent>(lel::ecs::event::CoreEvent::Type::ADD_SYSTEM_SUCCESS,
-                                                                    datalist.back().path.u8string(),
-                                                                    to_string(datalist.back().sys.get()),
-                                                                    std::to_string(datalist.back().sys->getID()));
-      }
-    }
-    addRequest.clear();
   }
 
   void updateRemoveRequest(std::list<std::string>& removeRequest, std::list<lel::ecs::CoreSystemData>& datalist)
@@ -162,8 +78,12 @@ namespace lel::ecs
   std::string_view Core::autoLoadedSysRegex = lel::meta::conditional_os<std::string_view>("lib(CLISystem)[.]so", "S[0-9]*[.]dll").value;
 
   Core::Core()
-    : _data{setupData()}
-  {}
+  {
+    // MUST be setted before the loading of any library
+    CoreSystemProxy::setSystemsList(_data);
+    CoreSystemProxy::setEntityManager(_entityManager);
+    _data = setupData();
+  }
 
   void Core::run()
   {
@@ -173,7 +93,6 @@ namespace lel::ecs
       return ;
     }
 
-    CoreSystemProxy::setSystemsList(_data);
     event::EManager::registerListener(shared_from_this());
     while (!shouldQuit() && !_data.empty())
     {
@@ -224,5 +143,92 @@ namespace lel::ecs
   {
     updateAddRequest(_addRequest, _data);
     updateRemoveRequest(_remRequest, _data);
+  }
+
+  bool Core::trySystemRegistering(lel::ecs::CoreSystemData& data)
+  {
+    using CoreEvent = lel::ecs::event::CoreEvent;
+    using EManager = lel::ecs::event::EManager;
+
+    if (!data.loader.isValid())
+    {
+      EManager::fire<CoreEvent>(CoreEvent::Type::SYSTEM_NOT_FOUND,
+                                data.path.u8string(),
+                                data.loader.getLastError());
+      std::cerr << data.loader.getLastError() << "\n";
+      return false;
+    }
+
+    auto ctor = data.loader.getSymbol<lel::ecs::system::IS*(*)()>("create");
+    auto dtor = data.loader.getSymbol<void(*)(lel::ecs::system::IS*)>("destroy");
+    if (!ctor.isValid() || !dtor.isValid())
+    {
+      EManager::fire<CoreEvent>(CoreEvent::Type::INVALID_SYSTEM,
+                                data.path.filename().u8string(),
+                                data.loader.getLastError());
+      return false;
+    }
+
+    data.sys = std::shared_ptr<lel::ecs::system::IS>(ctor(), dtor);
+    data.sys->setup();
+    if (data.sys->isListener())
+      EManager::registerListener(castToListener(data.sys));
+    _entityManager.updateSysComponent(data.sys);
+    return true;
+  }
+
+  std::list<lel::ecs::CoreSystemData> Core::setupData()
+  {
+    using EManager = lel::ecs::event::EManager;
+    using CoreEvent = lel::ecs::event::CoreEvent;
+
+    std::list<lel::ecs::CoreSystemData> l;
+    lel::ecs::StartupLoader startup{"startup.ecs"};
+
+    auto libFetcher = [this, &l](const std::experimental::filesystem::path& path)
+    {
+      lel::ecs::CoreSystemData data;
+      data.path = lel::ecs::Core::sysLibPath;
+      data.path += path;
+      data.loader.loadLibrary(data.path.u8string().c_str());
+      if (trySystemRegistering(data))
+      {
+        l.emplace_back(data);
+        EManager::fire<CoreEvent>(CoreEvent::Type::ADD_SYSTEM_SUCCESS,
+                                  data.path.u8string(),
+                                  to_string(data.sys.get()),
+                                  std::to_string(data.sys->getID()));
+      }
+    };
+    startup.applyOnPaths(libFetcher);
+    return l;
+  }
+
+  void Core::updateAddRequest(std::list<std::string>& addRequest, std::list<lel::ecs::CoreSystemData>& datalist)
+  {
+    for (const auto& addSysPath : addRequest)
+    {
+      lel::ecs::CoreSystemData data;
+      data.path = lel::ecs::Core::sysLibPath;
+      data.path += addSysPath;
+
+      if (lel::OSDLLoader::isLibraryLoaded(addSysPath.c_str()))
+      {
+        lel::ecs::event::EManager::fire<lel::ecs::event::CoreEvent>(lel::ecs::event::CoreEvent::Type::ALREADY_ADDED_SYSTEM,
+                                                                    data.path.u8string());
+        continue ;
+      }
+
+      data.loader.loadLibrary(data.path.u8string().c_str());
+      if (trySystemRegistering(data))
+      {
+        datalist.emplace_back(std::move(data));
+        lel::ecs::event::EManager::fire<lel::ecs::event::CoreEvent>(lel::ecs::event::CoreEvent::Type::ADD_SYSTEM_SUCCESS,
+                                                                    datalist.back().path.u8string(),
+                                                                    to_string(datalist.back().sys.get()),
+                                                                    std::to_string(datalist.back().sys->getID()));
+      }
+    }
+    addRequest.clear();
   }
 } /* !lel::ecs */

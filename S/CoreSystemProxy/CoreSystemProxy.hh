@@ -1,6 +1,7 @@
 #pragma once
 
 #include "S/CoreSystemProxy/coresystemproxy_export.h"
+#include "Entity/EntityManager.hh"
 #include "CoreSystemData.hh"
 #include <list>
 
@@ -21,13 +22,16 @@ namespace lel::ecs
     using SystemContainer = std::list<CoreSystemData>; //Core::'Container of the systems'
 
   public:
-    static void registerEntityInSystems(const std::shared_ptr<entity::Entity>& entity);
+    static entity::EntityManager::EntityPtr createEntity(std::initializer_list<entity::EntityManager::ComponentPtr>);
 
   private:
+    static void registerEntityInSystems(const std::shared_ptr<entity::Entity>& entity);
     static void setSystemsList(SystemContainer& systems);
+    static void setEntityManager(entity::EntityManager& manager);
 
   private:
     static SystemContainer* _systems;
+    static entity::EntityManager* _entityManager;
 
     friend Core;
   };

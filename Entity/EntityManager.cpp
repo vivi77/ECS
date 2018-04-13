@@ -1,21 +1,16 @@
 #include "EntityManager.hh"
-#include "EntityIDGenerator.hh"
 #include "S/IS.hh"
-#include "S/CoreSystemProxy/CoreSystemProxy.hh"
 #include "E/EntityManagerEvent/EntityManagerEvent.hh"
 #include "E/EManager/EManager.hh"
 #include <algorithm>
 
 namespace lel::ecs::entity
 {
-  std::vector<EntityManager::EntityPtr> EntityManager::_entities;
-
   EntityManager::EntityPtr ENTITYLOGIC_EXPORT EntityManager::createEntity(std::initializer_list<ComponentPtr> comps)
   {
-    auto ent = std::make_shared<Entity>(EntityIDGenerator::generateID(), comps);
+    auto ent = std::make_shared<Entity>(_idGenerator.generateID(), comps);
     _entities.emplace_back(ent);
     event::EManager::fire<event::EntityManagerEvent>(event::EntityManagerEvent::Type::ENTITY_CREATED, ent->getID());
-    CoreSystemProxy::registerEntityInSystems(ent);
     return ent;
   }
 
@@ -32,7 +27,7 @@ namespace lel::ecs::entity
       event::EManager::fire<event::EntityManagerEvent>(event::EntityManagerEvent::Type::ENTITY_NOT_FOUND, id);
     else
     {
-      // TODO: Remove Entitty from systems
+      // TODO: Remove Entity from systems
       _entities.erase(it);
       event::EManager::fire<event::EntityManagerEvent>(event::EntityManagerEvent::Type::ENTITY_DESTROYED, id);
     }

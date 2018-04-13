@@ -2,6 +2,7 @@
 
 #include "E/IEListener.hh"
 #include "CoreSystemData.hh"
+#include "Entity/EntityManager.hh"
 #include <memory>
 #include <list>
 
@@ -22,12 +23,16 @@ namespace lel::ecs
     bool shouldQuit() const;
     void stopCore();
     void delayedEventUpdate();
+    bool trySystemRegistering(lel::ecs::CoreSystemData& data);
+    std::list<CoreSystemData> setupData();
+    void updateAddRequest(std::list<std::string>& addRequest, std::list<CoreSystemData>& datalist);
 
   private:
     bool _quit = false;
-    std::list<CoreSystemData> _data;
+    entity::EntityManager _entityManager;
     std::list<std::string> _addRequest;
     std::list<std::string> _remRequest;
+    std::list<CoreSystemData> _data;
 
   public:
     static std::string_view sysLibPath;

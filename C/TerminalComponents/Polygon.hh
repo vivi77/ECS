@@ -15,3 +15,4 @@ namespace lel::ecs::component
   }
 
   using TerminalPolygon = templateComponent::Polygon<Vector2<int>, TerminalColor, details::PolyInfo>;
+}

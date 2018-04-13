@@ -14,7 +14,9 @@ target_include_directories(${NAME} PUBLIC ${DIRS})
 # IDLIB_NAME variable available from ECS/S/CMakeLists.txt
 target_link_libraries(${NAME} PUBLIC
   ncurses
+
   ${IDLIB_NAME}
+  CoreSystemProxy
 
   EntityLogic
 

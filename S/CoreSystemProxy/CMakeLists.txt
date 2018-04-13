@@ -8,6 +8,9 @@ set(DIRS
 
 add_library(${NAME} SHARED ${SRCS} ${DIRS})
 target_include_directories(${NAME} PUBLIC ${DIRS})
-target_link_libraries(${NAME} PUBLIC lel_utils)
+target_link_libraries(${NAME} PUBLIC
+  lel_utils
+  EntityLogic
+  )
 
 generate_export_header(${NAME})
