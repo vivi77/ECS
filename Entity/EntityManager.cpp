@@ -10,7 +10,7 @@ namespace lel::ecs::entity
 {
   std::vector<EntityManager::EntityPtr> EntityManager::_entities;
 
-  EntityManager::EntityPtr EntityManager::createEntity(std::initializer_list<ComponentPtr> comps)
+  EntityManager::EntityPtr ENTITYLOGIC_EXPORT EntityManager::createEntity(std::initializer_list<ComponentPtr> comps)
   {
     auto ent = std::make_shared<Entity>(EntityIDGenerator::generateID(), comps);
     _entities.emplace_back(ent);
