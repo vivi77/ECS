@@ -1,4 +1,4 @@
-set(NAME CoreSystemProxy)
+set(NAME CoreProxy)
 
 file(GLOB SRCS *.cpp *.hh *.hpp)
 set(DIRS

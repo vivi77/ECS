@@ -1,5 +1,5 @@
 #include "NCurses.hh"
-#include "S/CoreSystemProxy/CoreSystemProxy.hh"
+#include "S/CoreProxy/CoreProxy.hh"
 #include "C/Transform/Transform.hpp"
 #include "E/CLISystemEvent/CLISystemEvent.hh"
 #include "E/EManager/EManager.hh"
@@ -239,7 +239,7 @@ namespace lel::ecs::system
         auto draw = std::make_shared<component::TerminalText>(
           "a", realColor[fg], realColor[bg], termattr[attr]);
         auto transform = std::make_shared<NCTransform>(fg * 8 + attr, bg, 0);
-        CoreSystemProxy::createEntity({draw, transform});
+        CoreProxy::createEntity({draw, transform});
       };
       ::execOnColorsAndAttr(callback);
       ::initNCursesColor();
@@ -249,19 +249,19 @@ namespace lel::ecs::system
     std::vector<Vector2<int>> pts{{0, 0}, {0, 3}, {3, 3}, {3, 0}};
     auto poly = std::make_shared<component::TerminalPolygon>(pts);
     auto transform = std::make_shared<NCTransform>(20, 20, 0);
-    CoreSystemProxy::createEntity({poly, transform});
+    CoreProxy::createEntity({poly, transform});
 
     //'Perfect' Diagonale line test
     pts = {{0, -2}, {2, 0}, {0, 2}, {-2, 0}};
     poly = std::make_shared<component::TerminalPolygon>(pts);
     transform = std::make_shared<NCTransform>(28, 20, 0);
-    CoreSystemProxy::createEntity({poly, transform});
+    CoreProxy::createEntity({poly, transform});
 
     // Slight rotation line test
     pts = {{3, 0}, {0, 1}, {1, 4}, {4, 3}};
     poly = std::make_shared<component::TerminalPolygon>(pts, TerminalColor::Color::RED);
     transform = std::make_shared<NCTransform>(36, 20, 0);
-    CoreSystemProxy::createEntity({poly, transform});
+    CoreProxy::createEntity({poly, transform});
   }
 
   void NCurses::atRemove()

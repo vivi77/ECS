@@ -3,7 +3,7 @@
 #include "E/CoreEvent/CoreEvent.hh"
 #include "E/EManager/EManager.hh"
 #include "StartupLoader.hh"
-#include "S/CoreSystemProxy/CoreSystemProxy.hh"
+#include "S/CoreProxy/CoreProxy.hh"
 #include "S/IS.hh"
 #include <iostream>
 #include <algorithm>
@@ -80,8 +80,8 @@ namespace lel::ecs
   Core::Core()
   {
     // MUST be setted before the loading of any library
-    CoreSystemProxy::setSystemsList(_data);
-    CoreSystemProxy::setEntityManager(_entityManager);
+    CoreProxy::setSystemsList(_data);
+    CoreProxy::setEntityManager(_entityManager);
     _data = setupData();
   }
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "S/CoreSystemProxy/coresystemproxy_export.h"
+#include "S/CoreProxy/coreproxy_export.h"
 #include "Entity/EntityManager.hh"
 #include "CoreSystemData.hh"
 #include <list>
@@ -16,7 +16,7 @@ namespace lel::ecs
   //    ==> Problem: Works like a global. Does not follow the willing of having
   //    several different 'Core' class (In this situation, all the 'Core'
   //    classes would share the same SystemContainer)
-  class CORESYSTEMPROXY_EXPORT CoreSystemProxy
+  class COREPROXY_EXPORT CoreProxy
   {
   public:
     using SystemContainer = std::list<CoreSystemData>; //Core::'Container of the systems'
