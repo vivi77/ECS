@@ -14,14 +14,4 @@ namespace lel::ecs::component
     };
   }
 
-  struct TERMINALCOMPONENTS_EXPORT TerminalPolygon :
-    public templateComponent::Polygon<Vector2<int>, TerminalColor, details::PolyInfo>
-  {
-  public:
-    template <typename ... Args>
-    TerminalPolygon(const std::vector<Vector2<int>>& points, Args&& ... args)
-      : Polygon{points, std::forward<Args>(args)...}
-    {}
-    virtual ~TerminalPolygon() = default;
-  };
-} /* !lel */
+  using TerminalPolygon = templateComponent::Polygon<Vector2<int>, TerminalColor, details::PolyInfo>;

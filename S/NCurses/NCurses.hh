@@ -2,13 +2,14 @@
 
 #include "S/CRTPS.hpp"
 #include "S/NCurses/ncursessystem_export.h"
+#include "C/TerminalComponents/Text.hh"
+#include "C/TerminalComponents/Polygon.hh"
 #include <vector>
 
 // NCurses specific forward declaration
+// In C++, It is not possible to fast forward type-alias
 namespace lel::ecs::component
 {
-  class TerminalText;
-  class TerminalPolygon;
   template <class T> struct Transform;
 } /* !lel::ecs::component */
 

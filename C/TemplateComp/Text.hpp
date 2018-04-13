@@ -13,7 +13,7 @@ namespace lel::ecs::component::templateComponent
 
   public:
     template <typename ... Args>
-    Text(const char* txt, Args&& ... args)
+    Text(const char* txt = "", Args&& ... args)
       : CRTPC<Text<Color, Info>>{}
       , Color{std::forward<Args>(args)...}
       , text{txt}
@@ -22,6 +22,6 @@ namespace lel::ecs::component::templateComponent
     virtual ~Text() = default;
 
   public:
-    const char* text;
+    const char* text = "";
   };
 } /* !lel::ecs::component::templateComponent */

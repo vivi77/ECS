@@ -1,6 +1,4 @@
 #include "NCurses.hh"
-#include "C/TerminalComponents/Text.hh"
-#include "C/TerminalComponents/Polygon.hh"
 #include "C/Transform/Transform.hpp"
 #include "E/CLISystemEvent/CLISystemEvent.hh"
 #include "E/EManager/EManager.hh"

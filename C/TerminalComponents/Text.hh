@@ -15,14 +15,5 @@ namespace lel::ecs::component
     };
   } /* !details */
 
-  // TODO: Look for __decltype with type-alias
-  struct TERMINALCOMPONENTS_EXPORT TerminalText :
-    public templateComponent::Text<TerminalColor, details::TextInfo>
-  {
-  public:
-    template <typename ... Args>
-    TerminalText(const char* text, Args&& ... args)
-      : Text{text, std::forward<Args>(args)...}
-    {}
-  };
+  using TerminalText = templateComponent::Text<TerminalColor, details::TextInfo>;
 } /* !lel::ecs::component */
