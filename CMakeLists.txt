@@ -53,13 +53,11 @@ add_subdirectory(./S)
 set(SRCS
   main.cpp
   Core.cpp
-  FileSearcher.cpp
   StartupLoader.cpp
   )
 
 set(HDRS
   Core.hh
-  FileSearcher.hh
   StartupLoader.hh
   CoreSystemData.hh
   )
