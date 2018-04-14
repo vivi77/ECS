@@ -16,6 +16,7 @@ namespace lel::ecs
 
     auto entity = _entityManager->createEntity(il);
     registerEntityInSystems(entity);
+    // TODO: Fire event
     return entity;
   }
 

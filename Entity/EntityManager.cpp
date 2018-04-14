@@ -10,7 +10,7 @@ namespace lel::ecs::entity
   {
     auto ent = std::make_shared<Entity>(_idGenerator.generateID(), comps);
     _entities.emplace_back(ent);
-    event::EManager::fire<event::EntityManagerEvent>(event::EntityManagerEvent::Type::ENTITY_CREATED, ent->getID());
+    //event::EManager::fire<event::EntityManagerEvent>(event::EntityManagerEvent::Type::ENTITY_CREATED, ent->getID());
     return ent;
   }
 
@@ -24,12 +24,13 @@ namespace lel::ecs::entity
           };
     auto it = std::find_if(beginIt, endIt, pred);
     if (it == endIt)
-      event::EManager::fire<event::EntityManagerEvent>(event::EntityManagerEvent::Type::ENTITY_NOT_FOUND, id);
+      ;
+      //event::EManager::fire<event::EntityManagerEvent>(event::EntityManagerEvent::Type::ENTITY_NOT_FOUND, id);
     else
     {
       // TODO: Remove Entity from systems
       _entities.erase(it);
-      event::EManager::fire<event::EntityManagerEvent>(event::EntityManagerEvent::Type::ENTITY_DESTROYED, id);
+      //event::EManager::fire<event::EntityManagerEvent>(event::EntityManagerEvent::Type::ENTITY_DESTROYED, id);
     }
   }
 
