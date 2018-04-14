@@ -1,4 +1,5 @@
 #include "EIDGenerator.hh"
+#include "Utility/Fwd.hh"
 
 template <>
 std::unique_ptr<lel::ecs::utility::IIDGenerator<lel::ecs::event::IDEvent>> EIDGEN_EXPORT createGenerator()
@@ -14,7 +15,7 @@ namespace lel::ecs::event
   }
 
   // DebugEvent
-  EIDGenerator::ID EIDGenerator::DebugEvent::_id = EIDGenerator::_debugEventID;
+  EIDGenerator::ID EIDGenerator::DebugEvent::_id{0};
 
   EIDGenerator::DebugEvent::DebugEvent(const std::string& msg)
     : _msg{msg}

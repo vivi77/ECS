@@ -1,7 +1,7 @@
 set(IDLIB_NAME EIDGen)
 
 file(GLOB SRCS *.cpp *.hh)
-add_library(${IDLIB_NAME} SHARED ${SRCS})
+add_library(${IDLIB_NAME} SHARED ${SRCS} ${IDEVENT_SRCS})
 target_include_directories(${IDLIB_NAME} PUBLIC
   ${CMAKE_BINARY_DIR}
   ${PROJECT_SOURCE_DIR})

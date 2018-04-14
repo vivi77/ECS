@@ -3,6 +3,7 @@
 #include "Entity/entitylogic_export.h"
 #include "Utility/IIDGenerator.hpp"
 #include "Utility/Fwd.hh"
+#include "IDEntity.hh"
 
 namespace lel::ecs::entity
 {
@@ -15,6 +16,6 @@ namespace lel::ecs::entity
     ID generateID() override;
 
   private:
-    ID _id = 0;
+    ID _id{0};
   };
 } /* !lel::ecs::entity */

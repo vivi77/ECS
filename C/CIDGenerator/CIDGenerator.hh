@@ -1,8 +1,8 @@
 #pragma once
 
+#include "C/IDComponent.hh"
 #include "C/CIDGenerator/cidgen_export.h"
 #include "Utility/IIDGenerator.hpp"
-#include "Utility/Fwd.hh"
 
 namespace lel::ecs::component
 {
@@ -15,6 +15,6 @@ namespace lel::ecs::component
     ID generateID() override;
 
   private:
-    ID _id;
+    ID _id{0};
   };
 } /* !lel::ecs::component */

@@ -2,6 +2,7 @@
 
 #include "S/IS.hh"
 #include "S/CoreProxy/CoreProxy.hh"
+#include "S/IDSystem.hh"
 #include "E/IEListener.hh"
 #include "E/EManager/EManager.hh"
 #include "Utility/TemplateUniqueID.hpp"

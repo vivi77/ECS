@@ -1,4 +1,5 @@
 #include "SIDGenerator.hh"
+#include "Utility/Fwd.hh"
 
 template <>
 std::unique_ptr<lel::ecs::utility::IIDGenerator<lel::ecs::system::IDSystem>> createGenerator()
