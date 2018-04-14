@@ -10,7 +10,6 @@ target_include_directories(${NAME} PUBLIC
 target_link_libraries(${NAME} PUBLIC
   TemplateComp
   EManager
-  DebugEvent
   )
 
 set_target_properties(${NAME} PROPERTIES IMPORTED_LOCATION ${OUTPUT_LOCATION})

@@ -5,7 +5,7 @@
 #include "E/CManagerEvent/CManagerEvent.hh"
 #include "E/CLISystemEvent/CLISystemEvent.hh"
 #include "E/EntityManagerEvent/EntityManagerEvent.hh"
-#include "E/DebugEvent/DebugEvent.hh"
+#include "E/EIDGenerator/EIDGenerator.hh"
 #include <sstream>
 
 namespace
@@ -195,7 +195,7 @@ namespace
     }
   }
 
-  void debugEvent(const std::shared_ptr<lel::ecs::event::DebugEvent>& e, lel::Log& log)
+  void debugEvent(const std::shared_ptr<lel::ecs::event::EIDGenerator::DebugEvent>& e, lel::Log& log)
   {
     infoEvent(log, e->getMessage());
   }
@@ -281,7 +281,7 @@ namespace lel::ecs::system
     using namespace lel::ecs::event;
 
     using TypeList = std::tuple<CoreEvent, EManagerEvent, CManagerEvent,
-          CLISystemEvent, EntityManagerEvent, DebugEvent>;
+          CLISystemEvent, EntityManagerEvent, EIDGenerator::DebugEvent>;
 
     updateCtor<TypeList>::partialDebugEvent(event, _log);
     _log << "\033[0m\n";
