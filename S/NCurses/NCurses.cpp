@@ -155,8 +155,7 @@ namespace lel::ecs::system
   {
     char c = getch();
     if (c == 'q')
-      ;
-      //event::EManager::fire<event::CoreEvent>(event::CoreEvent::Type::EXIT);
+      getProxy()->fire<event::CoreEvent>(event::CoreEvent::Type::EXIT);
 
     for (const auto& comp : _text)
     {
@@ -232,7 +231,7 @@ namespace lel::ecs::system
 
   void NCurses::setup()
   {
-    //event::EManager::fire<event::CLISystemEvent>(event::CLISystemEvent::Type::DISABLE);
+    getProxy()->fire<event::CLISystemEvent>(event::CLISystemEvent::Type::DISABLE);
     initscr();
     cbreak();
     noecho();
@@ -272,6 +271,6 @@ namespace lel::ecs::system
   void NCurses::atRemove()
   {
     endwin();
-    //event::EManager::fire<event::CLISystemEvent>(event::CLISystemEvent::Type::ENABLE);
+    getProxy()->fire<event::CLISystemEvent>(event::CLISystemEvent::Type::ENABLE);
   }
 } /* !lel::ecs::system */
