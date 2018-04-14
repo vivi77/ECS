@@ -1,6 +1,7 @@
 #pragma once
 
 #include "E/IEListener.hh"
+#include "E/EManager/EManager.hh"
 #include "CoreSystemData.hh"
 #include "Entity/EntityManager.hh"
 #include <memory>
@@ -23,13 +24,16 @@ namespace lel::ecs
     bool shouldQuit() const;
     void stopCore();
     void delayedEventUpdate();
-    bool trySystemRegistering(lel::ecs::CoreSystemData& data);
+    bool trySystemRegistering(lel::ecs::CoreSystemData&);
     std::list<CoreSystemData> setupData();
-    void updateAddRequest(std::list<std::string>& addRequest, std::list<CoreSystemData>& datalist);
+    void updateAddRequest(std::list<std::string>&, std::list<CoreSystemData>&);
+    void updateRemoveRequest(std::list<std::string>&, std::list<CoreSystemData>&);
+    void reverseClear(std::list<CoreSystemData>&);
 
   private:
     bool _quit = false;
     entity::EntityManager _entityManager;
+    event::EManager _eventManager;
     std::list<std::string> _addRequest;
     std::list<std::string> _remRequest;
     std::list<CoreSystemData> _data;

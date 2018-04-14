@@ -41,6 +41,6 @@ namespace lel::ecs::event
       else
         msg += typeid(D).name();
       msg += " EVENT has been attributed the ID#" + std::to_string(id);
-      EManager::fire<event::DebugEvent>(msg);
+      //EManager::fire<event::DebugEvent>(msg);
     });
 } /* !lel::ecs::event */

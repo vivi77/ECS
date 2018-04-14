@@ -15,8 +15,6 @@ namespace
 
 namespace lel::ecs::event
 {
-  std::vector<EManager::IEListenerPtr> EManager::_listeners;
-
   void EManager::registerListener(const IEListenerPtr& listener)
   {
     auto ev = EManagerEvent::Type::LISTENER_ALREADY_ADDED;

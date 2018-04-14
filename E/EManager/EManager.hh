@@ -14,17 +14,17 @@ namespace lel::ecs::event
 
   public:
     template <typename Event, typename ... Args>
-    static void fire(Args&& ... args)
+    void fire(Args&& ... args)
     {
       auto ev = std::shared_ptr<Event>(new Event(std::forward<Args>(args)...));
       for (auto& it : _listeners)
         it->update(ev);
     }
 
-    static void registerListener(const IEListenerPtr& listener);
-    static void deregisterListener(const IEListenerPtr& listener);
+    void registerListener(const IEListenerPtr& listener);
+    void deregisterListener(const IEListenerPtr& listener);
 
   private:
-    static std::vector<IEListenerPtr> _listeners;
+    std::vector<IEListenerPtr> _listeners;
   };
 } /* !lel::ecs */

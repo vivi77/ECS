@@ -23,53 +23,6 @@ namespace
   {
     return std::dynamic_pointer_cast<lel::ecs::event::IEListener>(sys);
   }
-
-  void updateRemoveRequest(std::list<std::string>& removeRequest, std::list<lel::ecs::CoreSystemData>& datalist)
-  {
-    for (const auto& removeSysPath : removeRequest)
-    {
-      auto systemPath = removeSysPath;
-
-      auto beginIt = std::begin(datalist);
-      auto endIt = std::end(datalist);
-      auto pred = [&systemPath](const lel::ecs::CoreSystemData& data) -> bool
-      {
-        return data.path.filename() == systemPath;
-      };
-      auto it = std::find_if(beginIt, endIt, pred);
-
-      if (it == endIt)
-      {
-        lel::ecs::event::EManager::fire<lel::ecs::event::CoreEvent>(lel::ecs::event::CoreEvent::Type::SYSTEM_NOT_FOUND, systemPath);
-        continue;
-      }
-
-      if (it->sys->isListener())
-        lel::ecs::event::EManager::deregisterListener(castToListener(it->sys));
-      it->sys->atRemove();
-      lel::ecs::event::EManager::fire<lel::ecs::event::CoreEvent>(lel::ecs::event::CoreEvent::Type::REM_SYSTEM_SUCCESS,
-                                                                  it->path.u8string(),
-                                                                  to_string(it->sys.get()),
-                                                                  std::to_string(it->sys->getID()));
-      datalist.erase(it);
-    }
-    removeRequest.clear();
-  }
-
-  void reverseClear(std::list<lel::ecs::CoreSystemData>& container)
-  {
-    while (!container.empty())
-    {
-      if (container.back().sys->isListener())
-        lel::ecs::event::EManager::deregisterListener(castToListener(container.back().sys));
-      container.back().sys->atRemove();
-      lel::ecs::event::EManager::fire<lel::ecs::event::CoreEvent>(lel::ecs::event::CoreEvent::Type::REM_SYSTEM_SUCCESS,
-                                                                  container.back().path.u8string(),
-                                                                  to_string(container.back().sys.get()),
-                                                                  std::to_string(container.back().sys->getID()));
-      container.pop_back();
-    }
-  }
 } /* ! */
 
 namespace lel::ecs
@@ -79,9 +32,7 @@ namespace lel::ecs
 
   Core::Core()
   {
-    // MUST be setted before the loading of any library
-    //CoreProxy::setSystemsList(_data);
-    //CoreProxy::setEntityManager(_entityManager);
+    // TODO: Put it on the constructor list
     _data = setupData();
   }
 
@@ -89,11 +40,11 @@ namespace lel::ecs
   {
     if (_data.empty())
     {
-      event::EManager::fire<event::CoreEvent>(event::CoreEvent::Type::CLOSING);
+      _eventManager.fire<event::CoreEvent>(event::CoreEvent::Type::CLOSING);
       return ;
     }
 
-    event::EManager::registerListener(shared_from_this());
+    _eventManager.registerListener(shared_from_this());
     while (!shouldQuit() && !_data.empty())
     {
       for (auto& data : _data)
@@ -102,8 +53,8 @@ namespace lel::ecs
       }
       delayedEventUpdate();
     }
-    event::EManager::deregisterListener(shared_from_this());
-    event::EManager::fire<event::CoreEvent>(event::CoreEvent::Type::CLOSING);
+    _eventManager.deregisterListener(shared_from_this());
+    _eventManager.fire<event::CoreEvent>(event::CoreEvent::Type::CLOSING);
     reverseClear(_data);
   }
 
@@ -148,13 +99,12 @@ namespace lel::ecs
   bool Core::trySystemRegistering(lel::ecs::CoreSystemData& data)
   {
     using CoreEvent = lel::ecs::event::CoreEvent;
-    using EManager = lel::ecs::event::EManager;
 
     if (!data.loader.isValid())
     {
-      EManager::fire<CoreEvent>(CoreEvent::Type::SYSTEM_NOT_FOUND,
-                                data.path.u8string(),
-                                data.loader.getLastError());
+      _eventManager.fire<CoreEvent>(CoreEvent::Type::SYSTEM_NOT_FOUND,
+                                    data.path.u8string(),
+                                    data.loader.getLastError());
       std::cerr << data.loader.getLastError() << "\n";
       return false;
     }
@@ -163,23 +113,23 @@ namespace lel::ecs
     auto dtor = data.loader.getSymbol<void(*)(lel::ecs::system::IS*)>("destroy");
     if (!ctor.isValid() || !dtor.isValid())
     {
-      EManager::fire<CoreEvent>(CoreEvent::Type::INVALID_SYSTEM,
-                                data.path.filename().u8string(),
-                                data.loader.getLastError());
+      _eventManager.fire<CoreEvent>(CoreEvent::Type::INVALID_SYSTEM,
+                                    data.path.filename().u8string(),
+                                    data.loader.getLastError());
       return false;
     }
 
-    data.sys = std::shared_ptr<lel::ecs::system::IS>(ctor(new CoreProxy{&_data, &_entityManager}), dtor);
+    auto proxy = new CoreProxy{&_data, &_entityManager, &_eventManager};
+    data.sys = std::shared_ptr<lel::ecs::system::IS>(ctor(proxy), dtor);
     data.sys->setup();
     if (data.sys->isListener())
-      EManager::registerListener(castToListener(data.sys));
+      _eventManager.registerListener(castToListener(data.sys));
     _entityManager.updateSysComponent(data.sys);
     return true;
   }
 
   std::list<lel::ecs::CoreSystemData> Core::setupData()
   {
-    using EManager = lel::ecs::event::EManager;
     using CoreEvent = lel::ecs::event::CoreEvent;
 
     std::list<lel::ecs::CoreSystemData> l;
@@ -194,10 +144,10 @@ namespace lel::ecs
       if (trySystemRegistering(data))
       {
         l.emplace_back(data);
-        EManager::fire<CoreEvent>(CoreEvent::Type::ADD_SYSTEM_SUCCESS,
-                                  data.path.u8string(),
-                                  to_string(data.sys.get()),
-                                  std::to_string(data.sys->getID()));
+        _eventManager.fire<CoreEvent>(CoreEvent::Type::ADD_SYSTEM_SUCCESS,
+                                      data.path.u8string(),
+                                      to_string(data.sys.get()),
+                                      std::to_string(data.sys->getID()));
       }
     };
     startup.applyOnPaths(libFetcher);
@@ -214,8 +164,8 @@ namespace lel::ecs
 
       if (lel::OSDLLoader::isLibraryLoaded(addSysPath.c_str()))
       {
-        lel::ecs::event::EManager::fire<lel::ecs::event::CoreEvent>(lel::ecs::event::CoreEvent::Type::ALREADY_ADDED_SYSTEM,
-                                                                    data.path.u8string());
+        _eventManager.fire<lel::ecs::event::CoreEvent>(lel::ecs::event::CoreEvent::Type::ALREADY_ADDED_SYSTEM,
+                                                       data.path.u8string());
         continue ;
       }
 
@@ -223,12 +173,59 @@ namespace lel::ecs
       if (trySystemRegistering(data))
       {
         datalist.emplace_back(std::move(data));
-        lel::ecs::event::EManager::fire<lel::ecs::event::CoreEvent>(lel::ecs::event::CoreEvent::Type::ADD_SYSTEM_SUCCESS,
-                                                                    datalist.back().path.u8string(),
-                                                                    to_string(datalist.back().sys.get()),
-                                                                    std::to_string(datalist.back().sys->getID()));
+        _eventManager.fire<lel::ecs::event::CoreEvent>(lel::ecs::event::CoreEvent::Type::ADD_SYSTEM_SUCCESS,
+                                                       datalist.back().path.u8string(),
+                                                       to_string(datalist.back().sys.get()),
+                                                       std::to_string(datalist.back().sys->getID()));
       }
     }
     addRequest.clear();
+  }
+
+  void Core::updateRemoveRequest(std::list<std::string>& removeRequest, std::list<lel::ecs::CoreSystemData>& datalist)
+  {
+    for (const auto& removeSysPath : removeRequest)
+    {
+      auto systemPath = removeSysPath;
+
+      auto beginIt = std::begin(datalist);
+      auto endIt = std::end(datalist);
+      auto pred = [&systemPath](const lel::ecs::CoreSystemData& data) -> bool
+      {
+        return data.path.filename() == systemPath;
+      };
+      auto it = std::find_if(beginIt, endIt, pred);
+
+      if (it == endIt)
+      {
+        _eventManager.fire<event::CoreEvent>(event::CoreEvent::Type::SYSTEM_NOT_FOUND, systemPath);
+        continue;
+      }
+
+      if (it->sys->isListener())
+        _eventManager.deregisterListener(castToListener(it->sys));
+      it->sys->atRemove();
+      _eventManager.fire<event::CoreEvent>(event::CoreEvent::Type::REM_SYSTEM_SUCCESS,
+                                           it->path.u8string(),
+                                           to_string(it->sys.get()),
+                                           std::to_string(it->sys->getID()));
+      datalist.erase(it);
+    }
+    removeRequest.clear();
+  }
+
+  void Core::reverseClear(std::list<CoreSystemData>& container)
+  {
+    while (!container.empty())
+    {
+      if (container.back().sys->isListener())
+        _eventManager.deregisterListener(castToListener(container.back().sys));
+      container.back().sys->atRemove();
+      _eventManager.fire<lel::ecs::event::CoreEvent>(lel::ecs::event::CoreEvent::Type::REM_SYSTEM_SUCCESS,
+                                                     container.back().path.u8string(),
+                                                     to_string(container.back().sys.get()),
+                                                     std::to_string(container.back().sys->getID()));
+      container.pop_back();
+    }
   }
 } /* !lel::ecs */
