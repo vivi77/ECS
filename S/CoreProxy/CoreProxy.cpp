@@ -3,9 +3,6 @@
 
 namespace lel::ecs
 {
-  CoreProxy::SystemContainer* CoreProxy::_systems = nullptr;
-  entity::EntityManager* CoreProxy::_entityManager = nullptr;
-
   void CoreProxy::setSystemsList(SystemContainer& systems)
   {
     if (_systems != nullptr)
