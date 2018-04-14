@@ -26,6 +26,8 @@ namespace lel::ecs
   public:
     CoreProxy(SystemContainer*, entity::EntityManager*, event::EManager*);
     entity::EntityManager::EntityPtr createEntity(std::initializer_list<entity::EntityManager::ComponentPtr>);
+    void destroyEntity(const entity::EntityManager::ID id);
+
     template <class Event, typename ... Args>
     void fire(Args&& ... args)
     {
