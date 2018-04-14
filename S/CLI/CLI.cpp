@@ -14,7 +14,7 @@ namespace lel::ecs::system
         "quit",
         [](const CmdOutput&) -> void
         {
-          event::EManager::fire<event::CoreEvent>(event::CoreEvent::Type::EXIT);
+          //event::EManager::fire<event::CoreEvent>(event::CoreEvent::Type::EXIT);
         }
       },
       {
@@ -28,7 +28,7 @@ namespace lel::ecs::system
           }
 
           auto sysPath = o.getArgs()[0]->getTerminal();
-          event::EManager::fire<event::CoreEvent>(event::CoreEvent::Type::ADD_SYSTEM, sysPath);
+          //event::EManager::fire<event::CoreEvent>(event::CoreEvent::Type::ADD_SYSTEM, sysPath);
         }
       },
       {
@@ -42,7 +42,7 @@ namespace lel::ecs::system
           }
 
           auto sysPath = o.getArgs()[0]->getTerminal();
-          event::EManager::fire<event::CoreEvent>(event::CoreEvent::Type::REM_SYSTEM, sysPath);
+          //event::EManager::fire<event::CoreEvent>(event::CoreEvent::Type::REM_SYSTEM, sysPath);
         }
       },
     } //CLI::_cmds end of initialization
@@ -64,7 +64,7 @@ namespace lel::ecs::system
         if (expr->getType() == CLIParserType::CANCEL)
         {
           std::cout << "quit\n";
-          event::EManager::fire<event::CoreEvent>(event::CoreEvent::Type::EXIT);
+          //event::EManager::fire<event::CoreEvent>(event::CoreEvent::Type::EXIT);
         }
         else if (expr->getType() != CLIParserType::EOL)
           std::cout << "This is not a command. (Type: " << expr->getType() << ")\n";

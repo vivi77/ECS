@@ -39,6 +39,6 @@ namespace lel::ecs::component
       else
         msg += typeid(D).name();
       msg += " COMPONENT has been attributed the ID#" + std::to_string(id);
-      event::EManager::fire<event::DebugEvent>(msg);
+      //event::EManager::fire<event::DebugEvent>(msg);
     });
 } /* !lel::ecs::component */
