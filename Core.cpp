@@ -80,8 +80,8 @@ namespace lel::ecs
   Core::Core()
   {
     // MUST be setted before the loading of any library
-    CoreProxy::setSystemsList(_data);
-    CoreProxy::setEntityManager(_entityManager);
+    //CoreProxy::setSystemsList(_data);
+    //CoreProxy::setEntityManager(_entityManager);
     _data = setupData();
   }
 

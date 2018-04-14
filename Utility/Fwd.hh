@@ -8,7 +8,7 @@
 namespace lel::ecs
 {
   class Core;
-  class CoreSystemProxy;
+  class CoreProxy;
   class StartupLoader;
 
   namespace system
