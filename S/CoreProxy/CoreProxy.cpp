@@ -1,4 +1,5 @@
 #include "CoreProxy.hh"
+#include "E/EntityManagerEvent/EntityManagerEvent.hh"
 #include "S/IS.hh"
 
 namespace lel::ecs
@@ -16,7 +17,7 @@ namespace lel::ecs
 
     auto entity = _entityManager->createEntity(il);
     registerEntityInSystems(entity);
-    // TODO: Fire event
+    _eventManager->fire<event::EntityManagerEvent>(event::EntityManagerEvent::Type::ENTITY_CREATED, entity->getID());
     return entity;
   }
 

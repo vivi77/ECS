@@ -10,7 +10,6 @@ namespace lel::ecs::entity
   {
     auto ent = std::make_shared<Entity>(_idGenerator.generateID(), comps);
     _entities.emplace_back(ent);
-    //event::EManager::fire<event::EntityManagerEvent>(event::EntityManagerEvent::Type::ENTITY_CREATED, ent->getID());
     return ent;
   }
 
