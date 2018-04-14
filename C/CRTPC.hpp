@@ -2,7 +2,6 @@
 
 #include "C/IC.hh"
 #include "E/EManager/EManager.hh"
-#include "E/DebugEvent/DebugEvent.hh"
 #include "Utility/TemplateUniqueID.hpp"
 #include "Utility/meta.hpp"
 
@@ -39,6 +38,5 @@ namespace lel::ecs::component
       else
         msg += typeid(D).name();
       msg += " COMPONENT has been attributed the ID#" + std::to_string(id);
-      //event::EManager::fire<event::DebugEvent>(msg);
     });
 } /* !lel::ecs::component */

@@ -2,7 +2,6 @@
 
 #include "IE.hh"
 #include "E/EManager/EManager.hh"
-#include "E/DebugEvent/DebugEvent.hh"
 #include "Utility/TemplateUniqueID.hpp"
 #include "Utility/meta.hpp"
 
@@ -41,6 +40,5 @@ namespace lel::ecs::event
       else
         msg += typeid(D).name();
       msg += " EVENT has been attributed the ID#" + std::to_string(id);
-      //EManager::fire<event::DebugEvent>(msg);
     });
 } /* !lel::ecs::event */
