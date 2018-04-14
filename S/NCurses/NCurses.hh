@@ -50,6 +50,7 @@ namespace lel::ecs::system
     };
 
   public:
+    NCurses(std::unique_ptr<CoreProxy>& proxy);
     virtual ~NCurses() = default;
 
     void exec() override;
