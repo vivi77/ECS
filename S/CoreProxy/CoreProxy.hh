@@ -1,9 +1,11 @@
 #pragma once
 
 #include "S/CoreProxy/coreproxy_export.h"
+#include "E/EManager/EManager.hh"
 #include "Entity/EntityManager.hh"
 #include "CoreSystemData.hh"
 #include <list>
+#include <iostream>
 
 namespace lel::ecs
 {
@@ -22,8 +24,18 @@ namespace lel::ecs
     using SystemContainer = std::list<CoreSystemData>; //Core::'Container of the systems'
 
   public:
-    CoreProxy(SystemContainer* systems, entity::EntityManager* manager);
+    CoreProxy(SystemContainer*, entity::EntityManager*, event::EManager*);
     entity::EntityManager::EntityPtr createEntity(std::initializer_list<entity::EntityManager::ComponentPtr>);
+    template <class Event, typename ... Args>
+    void fire(Args&& ... args)
+    {
+      if (!_eventManager)
+      {
+        std::cerr << "Not event manager attributed\n";
+        return ;
+      }
+      _eventManager->fire<Event>(std::forward<Args>(args)...);
+    }
 
   private:
     void registerEntityInSystems(const std::shared_ptr<entity::Entity>& entity);
@@ -31,6 +43,7 @@ namespace lel::ecs
   private:
     SystemContainer* _systems;
     entity::EntityManager* _entityManager;
+    event::EManager* _eventManager;
   };
 } /* !lel::ecs */
 

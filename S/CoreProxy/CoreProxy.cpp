@@ -3,11 +3,11 @@
 
 namespace lel::ecs
 {
-  CoreProxy::CoreProxy(SystemContainer* systems, entity::EntityManager* manager)
+  CoreProxy::CoreProxy(SystemContainer* systems, entity::EntityManager* manager, event::EManager* eventManager)
     : _systems{systems}
     , _entityManager{manager}
-  {
-  }
+    , _eventManager{eventManager}
+  {}
 
   entity::EntityManager::EntityPtr CoreProxy::createEntity(std::initializer_list<entity::EntityManager::ComponentPtr> il)
   {
