@@ -119,7 +119,7 @@ namespace lel::ecs
       return false;
     }
 
-    auto proxy = new CoreProxy{&_data, &_entityManager, &_eventManager};
+    auto proxy = new CoreProxy{_data, _entityManager, _eventManager};
     data.sys = std::shared_ptr<lel::ecs::system::IS>(ctor(proxy), dtor);
     data.sys->setup();
     if (data.sys->isListener())
