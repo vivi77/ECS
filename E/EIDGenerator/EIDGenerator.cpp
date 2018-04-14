@@ -12,4 +12,26 @@ namespace lel::ecs::event
   {
     return _id++;
   }
+
+  // DebugEvent
+  EIDGenerator::ID EIDGenerator::DebugEvent::_id = EIDGenerator::_debugEventID;
+
+  EIDGenerator::DebugEvent::DebugEvent(const std::string& msg)
+    : _msg{msg}
+  {}
+
+  std::string EIDGenerator::DebugEvent::getMessage() const
+  {
+    return _msg;
+  }
+
+  EIDGenerator::ID EIDGenerator::DebugEvent::getID() const
+  {
+    return getEventID();
+  }
+
+  EIDGenerator::ID EIDGenerator::DebugEvent::getEventID()
+  {
+    return _id;
+  }
 } /* !lel::ecs::event */

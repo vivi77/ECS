@@ -6,6 +6,7 @@ target_include_directories(${MANAGER_NAME} PUBLIC
   ${CMAKE_BINARY_DIR}
   ${PROJECT_SOURCE_DIR})
 target_link_libraries(${MANAGER_NAME} PUBLIC
+  ${IDLIB_NAME}
 )
 
 set_target_properties(${MANAGER_NAME} PROPERTIES IMPORTED_LOCATION ${OUTPUT_LOCATION})

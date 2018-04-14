@@ -22,6 +22,7 @@ target_link_libraries(${NAME} PUBLIC
   EntityManagerEvent
   ${IDLIB_NAME}
   OSDLLoader
+  EIDGen
   )
 set_target_properties(${NAME} PROPERTIES IMPORTED_LOCATION ${SYS_OUTPUT_LOCATION})
 generate_export_header(${NAME})
