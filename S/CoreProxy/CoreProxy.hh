@@ -22,18 +22,15 @@ namespace lel::ecs
     using SystemContainer = std::list<CoreSystemData>; //Core::'Container of the systems'
 
   public:
+    CoreProxy(SystemContainer* systems, entity::EntityManager* manager);
     entity::EntityManager::EntityPtr createEntity(std::initializer_list<entity::EntityManager::ComponentPtr>);
 
   private:
     void registerEntityInSystems(const std::shared_ptr<entity::Entity>& entity);
-    void setSystemsList(SystemContainer& systems);
-    void setEntityManager(entity::EntityManager& manager);
 
   private:
     SystemContainer* _systems;
     entity::EntityManager* _entityManager;
-
-    friend Core;
   };
 } /* !lel::ecs */
 

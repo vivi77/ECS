@@ -3,11 +3,10 @@
 
 namespace lel::ecs
 {
-  void CoreProxy::setSystemsList(SystemContainer& systems)
+  CoreProxy::CoreProxy(SystemContainer* systems, entity::EntityManager* manager)
+    : _systems{systems}
+    , _entityManager{manager}
   {
-    if (_systems != nullptr)
-      return ;
-    _systems = &systems;
   }
 
   entity::EntityManager::EntityPtr CoreProxy::createEntity(std::initializer_list<entity::EntityManager::ComponentPtr> il)
@@ -27,12 +26,5 @@ namespace lel::ecs
 
     for (auto& data : *_systems)
       data.sys->registerEntity(entity);
-  }
-
-  void CoreProxy::setEntityManager(entity::EntityManager& manager)
-  {
-    if (_entityManager != nullptr)
-      return ;
-    _entityManager = &manager;
   }
 } /* !lel::ecs */
