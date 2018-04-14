@@ -3,9 +3,10 @@
 
 extern "C"
 {
-  DEBUGSYSTEM_EXPORT lel::ecs::system::IS* create()
+  DEBUGSYSTEM_EXPORT lel::ecs::system::IS* create(lel::ecs::CoreProxy* proxy)
   {
-    return new lel::ecs::system::Debug;
+    std::unique_ptr<lel::ecs::CoreProxy> proxyPtr{proxy};
+    return new lel::ecs::system::Debug(proxyPtr);
   }
 
   DEBUGSYSTEM_EXPORT void destroy(lel::ecs::system::IS* ptr)

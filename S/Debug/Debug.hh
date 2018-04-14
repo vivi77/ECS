@@ -9,7 +9,7 @@ namespace lel::ecs::system
   class Debug : public CRTPS<Debug>, public event::IEListener
   {
   public:
-    Debug();
+    Debug(std::unique_ptr<CoreProxy>&);
     virtual ~Debug() = default;
     void exec() override;
     void update(const EPtr&) override;

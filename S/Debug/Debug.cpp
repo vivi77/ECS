@@ -262,8 +262,9 @@ namespace
 
 namespace lel::ecs::system
 {
-  Debug::Debug()
-    : _logFile{"debug_ecs.log"}
+  Debug::Debug(std::unique_ptr<CoreProxy>& proxy)
+    : CRTPS{proxy}
+    , _logFile{"debug_ecs.log"}
     , _log{_logFile}
   {
     // Fallback in case of error
