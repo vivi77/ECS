@@ -159,7 +159,7 @@ namespace lel::ecs
       return false;
     }
 
-    auto ctor = data.loader.getSymbol<lel::ecs::system::IS*(*)()>("create");
+    auto ctor = data.loader.getSymbol<lel::ecs::system::IS*(*)(CoreProxy*)>("create");
     auto dtor = data.loader.getSymbol<void(*)(lel::ecs::system::IS*)>("destroy");
     if (!ctor.isValid() || !dtor.isValid())
     {
@@ -169,7 +169,7 @@ namespace lel::ecs
       return false;
     }
 
-    data.sys = std::shared_ptr<lel::ecs::system::IS>(ctor(), dtor);
+    data.sys = std::shared_ptr<lel::ecs::system::IS>(ctor(new CoreProxy{&_data, &_entityManager}), dtor);
     data.sys->setup();
     if (data.sys->isListener())
       EManager::registerListener(castToListener(data.sys));
