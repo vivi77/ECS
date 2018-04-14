@@ -5,6 +5,7 @@
 #include "StartupLoader.hh"
 #include "S/CoreProxy/CoreProxy.hh"
 #include "S/IS.hh"
+#include "S/IDSystem.hh"
 #include <iostream>
 #include <algorithm>
 #include <sstream>

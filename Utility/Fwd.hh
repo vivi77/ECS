@@ -13,21 +13,22 @@ namespace lel::ecs
 
   namespace system
   {
-    using IDSystem = unsigned int;
+    //using IDSystem = unsigned int;
+    class IDSystem;
     class IS;
     class SIDGenerator;
   } /* !system */
 
   namespace component
   {
-    using IDComponent = unsigned short;
+    class IDComponent;
     class IC;
     class CIDGenerator;
   } /* !component */
 
   namespace event
   {
-    using IDEvent = unsigned long;
+    class IDEvent;
     class IE;
     class EIDGenerator;
     class IEListener;
@@ -35,7 +36,7 @@ namespace lel::ecs
 
   namespace entity
   {
-    using IDEntity = unsigned long long;
+    class IDEntity;
     class Entity;
     class EntityIDGenerator;
     class EntityManager;

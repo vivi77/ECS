@@ -10,7 +10,7 @@ namespace lel::ecs::event
   class EMANAGEREVENT_EXPORT EManagerEvent : public CRTPE<EManagerEvent>
   {
   public:
-    using Data = std::variant<ID, std::string>;
+    using Data = std::variant<std::string, ID>;
 
   public:
     enum class Type : char

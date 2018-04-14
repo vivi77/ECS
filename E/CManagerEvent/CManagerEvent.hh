@@ -3,7 +3,7 @@
 #include "E/CRTPE.hpp"
 #include "E/CManagerEvent/cmanagerevent_export.h"
 #include "Utility/Fwd.hh"
-#include <memory>
+#include "C/IDComponent.hh"
 #include <variant>
 
 namespace lel::ecs::event

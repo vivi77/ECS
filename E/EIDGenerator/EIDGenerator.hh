@@ -1,9 +1,9 @@
 #pragma once
 
 #include "E/IE.hh"
+#include "E/IDEvent.hh"
 #include "E/EIDGenerator/eidgen_export.h"
 #include "Utility/IIDGenerator.hpp"
-#include "Utility/Fwd.hh"
 
 namespace lel::ecs::event
 {
@@ -39,9 +39,6 @@ namespace lel::ecs::event
     ID generateID() override;
 
   private:
-    ID _id = _debugEventID + 1; // Not 0 because it is reserved for DebugEvent
-
-  private:
-    static constexpr ID _debugEventID = 0;
+    ID _id{0};
   };
 } /* !lel::ecs::event */

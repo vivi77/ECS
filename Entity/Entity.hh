@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Entity/entitylogic_export.h"
+#include "C/IDComponent.hh"
 #include "Utility/Fwd.hh"
 #include <vector>
-#include <memory>
 
 namespace lel::ecs::entity
 {

@@ -1,8 +1,8 @@
 #pragma once
 
 #include "S/sidgen_export.h"
+#include "S/IDSystem.hh"
 #include "Utility/IIDGenerator.hpp"
-#include "Utility/Fwd.hh"
 
 namespace lel::ecs::system
 {
@@ -12,6 +12,6 @@ namespace lel::ecs::system
     IDSystem generateID();
 
   private:
-    IDSystem _id;
+    IDSystem _id{0};
   };
 } /* !lel::ecs::system */
