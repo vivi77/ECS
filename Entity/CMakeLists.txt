@@ -20,7 +20,6 @@ set(DIRS
 add_library(${NAME} SHARED ${SRCS} ${HDRS})
 target_include_directories(${NAME} PUBLIC ${DIRS})
 target_link_libraries(${NAME} PUBLIC
-  #CoreSystemProxy
   EManager
   EntityManagerEvent
   )

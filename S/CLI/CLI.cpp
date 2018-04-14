@@ -6,8 +6,9 @@
 
 namespace lel::ecs::system
 {
-  CLI::CLI()
-    : _cliparser{}
+  CLI::CLI(std::unique_ptr<CoreProxy>& proxy)
+    : CRTPS{proxy}
+    , _cliparser{}
     , _cmds{
       {
         "quit",

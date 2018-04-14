@@ -1,6 +1,7 @@
 #pragma once
 
 #include "S/IS.hh"
+#include "S/CoreProxy/CoreProxy.hh"
 #include "E/IEListener.hh"
 #include "E/EManager/EManager.hh"
 #include "E/DebugEvent/DebugEvent.hh"
@@ -15,6 +16,10 @@ namespace lel::ecs::system
     using ID = typename IS::ID;
 
   public:
+    CRTPS(std::unique_ptr<CoreProxy>& proxy)
+      : _proxy{std::move(proxy)}
+    {}
+
     virtual ~CRTPS() = default;
 
     ID getID() const final
@@ -27,6 +32,11 @@ namespace lel::ecs::system
       return std::is_base_of_v<event::IEListener, D>;
     }
 
+    std::unique_ptr<CoreProxy>& getProxy()
+    {
+      return _proxy;
+    }
+
     static ID getSystemID()
     {
       return _id;
@@ -34,6 +44,7 @@ namespace lel::ecs::system
 
   private:
     static ID _id;
+    std::unique_ptr<CoreProxy> _proxy;
   };
 
   template <class D>

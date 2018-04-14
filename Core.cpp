@@ -3,7 +3,7 @@
 #include "E/CoreEvent/CoreEvent.hh"
 #include "E/EManager/EManager.hh"
 #include "StartupLoader.hh"
-#include "S/CoreSystemProxy/CoreSystemProxy.hh"
+#include "S/CoreProxy/CoreProxy.hh"
 #include "S/IS.hh"
 #include <iostream>
 #include <algorithm>
@@ -80,8 +80,8 @@ namespace lel::ecs
   Core::Core()
   {
     // MUST be setted before the loading of any library
-    CoreSystemProxy::setSystemsList(_data);
-    CoreSystemProxy::setEntityManager(_entityManager);
+    //CoreProxy::setSystemsList(_data);
+    //CoreProxy::setEntityManager(_entityManager);
     _data = setupData();
   }
 
@@ -159,7 +159,7 @@ namespace lel::ecs
       return false;
     }
 
-    auto ctor = data.loader.getSymbol<lel::ecs::system::IS*(*)()>("create");
+    auto ctor = data.loader.getSymbol<lel::ecs::system::IS*(*)(CoreProxy*)>("create");
     auto dtor = data.loader.getSymbol<void(*)(lel::ecs::system::IS*)>("destroy");
     if (!ctor.isValid() || !dtor.isValid())
     {
@@ -169,7 +169,7 @@ namespace lel::ecs
       return false;
     }
 
-    data.sys = std::shared_ptr<lel::ecs::system::IS>(ctor(), dtor);
+    data.sys = std::shared_ptr<lel::ecs::system::IS>(ctor(new CoreProxy{&_data, &_entityManager}), dtor);
     data.sys->setup();
     if (data.sys->isListener())
       EManager::registerListener(castToListener(data.sys));

@@ -80,7 +80,7 @@ endif()
 add_executable(${NAME} ${SRCS} ${HDRS})
 target_link_libraries(${NAME} PUBLIC
   lel_lib
-  CoreSystemProxy
+  CoreProxy
   EntityLogic
   EManager
   CoreEvent

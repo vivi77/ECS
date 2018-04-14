@@ -16,7 +16,7 @@ target_link_libraries(${NAME} PUBLIC
   ncurses
 
   ${IDLIB_NAME}
-  CoreSystemProxy
+  CoreProxy
 
   EntityLogic
 
