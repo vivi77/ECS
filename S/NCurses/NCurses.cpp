@@ -229,6 +229,11 @@ namespace lel::ecs::system
       _polygon.emplace_back(data);
   }
 
+  void NCurses::deregisterEntity(const entity::IDEntity id)
+  {
+    //TODO: How to find component which belongs to the entity ID#<id> ?
+  }
+
   void NCurses::setup()
   {
     getProxy()->fire<event::CLISystemEvent>(event::CLISystemEvent::Type::DISABLE);

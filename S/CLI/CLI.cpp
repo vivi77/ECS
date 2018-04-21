@@ -86,6 +86,9 @@ namespace lel::ecs::system
   void CLI::registerEntity(const EntityPtr&)
   {}
 
+  void CLI::deregisterEntity(const entity::IDEntity)
+  {}
+
   void CLI::setup()
   {}
 
