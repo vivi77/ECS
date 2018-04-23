@@ -28,6 +28,7 @@ namespace lel::ecs::entity
     return true;
   }
 
+  // TODO: The name can be ambiguous
   void EntityManager::updateSysComponent(const SPtr& sys)
   {
     for (const auto& e : _entities)
