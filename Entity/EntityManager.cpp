@@ -34,4 +34,16 @@ namespace lel::ecs::entity
     for (const auto& e : _entities)
       sys->registerEntity(e);
   }
+
+  EntityManager::EntityPtr EntityManager::fetchEntity(const ID& id)
+  {
+    auto beginIt = std::begin(_entities);
+    auto endIt = std::end(_entities);
+    auto pred = [&id](const auto& ent) -> bool
+          {
+            return ent->getID() == id;
+          };
+    auto it = std::find_if(beginIt, endIt, pred);
+    return it == endIt ? nullptr : *it;
+  }
 } /* !lel::ecs::entity */
