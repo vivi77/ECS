@@ -231,7 +231,7 @@ namespace lel::ecs::system
 
   void NCurses::deregisterEntity(const EntityPtr&)
   {
-    //TODO: How to find component which belongs to the entity ID#<id> ?
+    // TODO: To implement
   }
 
   void NCurses::setup()

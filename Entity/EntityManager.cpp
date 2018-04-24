@@ -35,6 +35,7 @@ namespace lel::ecs::entity
       sys->registerEntity(e);
   }
 
+  // TODO[HIGH PRIORITY]: Implement fetchEntity with a cache system.
   EntityManager::EntityPtr EntityManager::fetchEntity(const ID& id)
   {
     auto beginIt = std::begin(_entities);

@@ -30,24 +30,18 @@ namespace lel::ecs
 
   void CoreProxy::destroyEntity(const entity::EntityManager::ID id)
   {
-    // TODO: Remove Entity from systems
     auto eventType = event::EntityManagerEvent::Type::ENTITY_NOT_FOUND;
 
-    // TODO[HIGH PRIORITY]: Implement fetchEntity with a cache system.
-    //auto entityToDelete = _entityManager.fetchEntity(id);
-    //if (entityToDelete != nullptr)
-    //{
-    //  for (auto& data : _systems)
-    //    data.sys->deregisterEntity(entityToDelete);
-    //std::for_each(std::begin(_systems), std::end(_systems),
-                  //[&entityToDelete](auto& data)
-                  //{
-                    //data.sys->registerEntity(entityToDelete);
-                  //});
+    auto entityToDelete = _entityManager.fetchEntity(id);
+    if (entityToDelete != nullptr)
+    {
+      std::for_each(std::begin(_systems), std::end(_systems),
+                    [&entityToDelete](auto& data)
+                    { data.sys->deregisterEntity(entityToDelete); });
 
-    if (_entityManager.destroyEntity(id))
-      eventType = event::EntityManagerEvent::Type::ENTITY_DESTROYED;
-    //}
+      if (_entityManager.destroyEntity(id))
+        eventType = event::EntityManagerEvent::Type::ENTITY_DESTROYED;
+    }
     _eventManager.fire<event::EntityManagerEvent>(eventType, id);
   }
 } /* !lel::ecs */

@@ -7,7 +7,13 @@ namespace lel::ecs::entity
   Entity::Entity(const ID id, std::initializer_list<CPtr> li)
     : _id{id}
     , _components{li}
-  {}
+  {
+    std::for_each(std::begin(_components), std::end(_components),
+                  [this](auto& comp)
+                  {
+                    comp->setEntityOwner(this->_id);
+                  });
+  }
 
   Entity::ID Entity::getID() const
   {
