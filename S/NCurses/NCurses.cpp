@@ -229,7 +229,7 @@ namespace lel::ecs::system
       _polygon.emplace_back(data);
   }
 
-  void NCurses::deregisterEntity(const entity::IDEntity id)
+  void NCurses::deregisterEntity(const EntityPtr&)
   {
     //TODO: How to find component which belongs to the entity ID#<id> ?
   }

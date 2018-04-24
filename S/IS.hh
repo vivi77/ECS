@@ -17,7 +17,7 @@ namespace lel::ecs::system
     virtual ID getID() const = 0;
     virtual bool isListener() const = 0;
     virtual void registerEntity(const EntityPtr&) = 0;
-    virtual void deregisterEntity(const entity::IDEntity) = 0;
+    virtual void deregisterEntity(const EntityPtr&) = 0;
     virtual void setup() = 0;
     virtual void atRemove() = 0;
   };

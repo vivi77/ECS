@@ -39,7 +39,7 @@ namespace lel::ecs::system
     virtual ~CLI() = default;
     void exec() override;
     void registerEntity(const EntityPtr&) override;
-    void deregisterEntity(const entity::IDEntity) override;
+    void deregisterEntity(const EntityPtr&) override;
     void setup() override;
     void atRemove() override;
 

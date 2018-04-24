@@ -290,7 +290,7 @@ namespace lel::ecs::system
   void Debug::registerEntity(const EntityPtr&)
   {}
 
-  void Debug::deregisterEntity(const entity::IDEntity)
+  void Debug::deregisterEntity(const EntityPtr&)
   {}
 
   void Debug::setup()
