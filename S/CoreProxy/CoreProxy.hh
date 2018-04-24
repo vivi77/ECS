@@ -30,9 +30,6 @@ namespace lel::ecs
     }
 
   private:
-    void registerEntityInSystems(const std::shared_ptr<entity::Entity>& entity);
-
-  private:
     SystemContainer& _systems;
     entity::EntityManager& _entityManager;
     event::EManager& _eventManager;

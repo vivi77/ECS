@@ -1,6 +1,6 @@
 #pragma once
 
-#include "C/IC.hh"
+#include "C/BaseComp/BaseComp.hh"
 #include "E/EManager/EManager.hh"
 #include "Utility/TemplateUniqueID.hpp"
 #include "Utility/meta.hpp"
@@ -8,11 +8,17 @@
 namespace lel::ecs::component
 {
   template <class D>
-  class CRTPC : public IC, public meta::TemplateUniqueID<CRTPC<D>, IC::ID>
+  class CRTPC : public BaseComp, public meta::TemplateUniqueID<CRTPC<D>, IC::ID>
   {
     using ID = typename IC::ID;
 
   public:
+    CRTPC() = default;
+
+    CRTPC(const entity::IDEntity& entityOwnerID)
+      : BaseComp{entityOwnerID}
+    {}
+
     virtual ~CRTPC() = default;
     ID getID() const final
     {

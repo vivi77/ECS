@@ -19,6 +19,7 @@ namespace lel::ecs::entity
     EntityPtr createEntity(std::initializer_list<ComponentPtr>);
     bool destroyEntity(const ID);
     void updateSysComponent(const SPtr&);
+    EntityPtr fetchEntity(const ID&);
 
   private:
     std::vector<EntityPtr> _entities;

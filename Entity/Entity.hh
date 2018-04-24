@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Entity/entitylogic_export.h"
+#include "Entity/IDEntity.hh"
 #include "C/IDComponent.hh"
 #include "Utility/Fwd.hh"
 #include <vector>
@@ -14,7 +15,7 @@ namespace lel::ecs::entity
     using CContainer = std::vector<CPtr>;
 
   public:
-    using ID = unsigned;
+    using ID = IDEntity;
 
   public:
     Entity(const ID, std::initializer_list<CPtr>);

@@ -156,6 +156,8 @@ namespace lel::ecs::system
     char c = getch();
     if (c == 'q')
       getProxy()->fire<event::CoreEvent>(event::CoreEvent::Type::EXIT);
+    else if (c == 'd')
+      getProxy()->destroyEntity(0);
 
     for (const auto& comp : _text)
     {
@@ -227,6 +229,26 @@ namespace lel::ecs::system
 
     if (data.isValidPolygon())
       _polygon.emplace_back(data);
+  }
+
+  void NCurses::deregisterEntity(const EntityPtr& entity)
+  {
+    auto end = std::end(_text);
+    const auto pred = [&entity](auto& it)
+    {
+      return it.transform->getEntityOwnerID() == entity->getID();
+    };
+    auto it = std::find_if(std::begin(_text), std::end(_text), pred);
+    if (it != end)
+      _text.erase(it);
+
+    end = std::end(_polygon);
+    it = std::find_if(std::begin(_polygon), end, pred);
+    if (it != end)
+      _polygon.erase(it);
+
+    // To properly erase the deleted element
+    clear();
   }
 
   void NCurses::setup()

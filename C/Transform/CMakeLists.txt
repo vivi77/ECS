@@ -7,6 +7,7 @@ target_include_directories(${NAME} INTERFACE
   ${PROJECT_SOURCE_DIR}
   )
 target_link_libraries(${NAME} INTERFACE
+  BaseComp
   #CIDGen
   #CManager
   #ecs_utils

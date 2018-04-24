@@ -9,5 +9,6 @@ target_include_directories(${NAME} INTERFACE
 target_link_libraries(${NAME} INTERFACE
   ${IDLIB_NAME}
   ecs_utils
+  BaseComp
   )
 target_sources(${NAME} INTERFACE ${SRCS})

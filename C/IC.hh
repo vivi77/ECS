@@ -12,5 +12,6 @@ namespace lel::ecs::component
   public:
     virtual ~IC() = default;
     virtual ID getID() const = 0;
+    virtual void setEntityOwner(const entity::IDEntity&) = 0;
   };
 } /* !lel::eccs::component */
