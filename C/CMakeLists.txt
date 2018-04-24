@@ -15,12 +15,13 @@ foreach(OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES})
   set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY})
 endforeach(OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES)
 
-file(GLOB IDCOMPONENT_SRCS IDComponent*)
+add_subdirectory(BaseComp)
 
+file(GLOB IDCOMPONENT_SRCS IDComponent*)
 add_subdirectory(CIDGenerator)
 
 subdirlist(COMP_LIST ${CMAKE_CURRENT_SOURCE_DIR})
-list(REMOVE_ITEM COMP_LIST CIDGenerator)
+list(REMOVE_ITEM COMP_LIST CIDGenerator BaseComp)
 foreach(C ${COMP_LIST})
   add_subdirectory(${C})
 endforeach()
