@@ -15,7 +15,7 @@ namespace lel::ecs::component
 
     entity::IDEntity getEntityOwnerID() const;
 
-    void setEntityOwner(const entity::IDEntity&);
+    void setEntityOwner(const entity::IDEntity&) override;
 
   private:
     std::optional<entity::IDEntity> _entityOwnerID;
