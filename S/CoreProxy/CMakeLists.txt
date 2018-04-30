@@ -11,6 +11,7 @@ target_include_directories(${NAME} PUBLIC ${DIRS})
 target_link_libraries(${NAME} PUBLIC
   lel_utils
   EntityLogic
+  EManager
   )
 
 generate_export_header(${NAME})
