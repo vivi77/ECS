@@ -124,7 +124,7 @@ namespace lel::ecs
     data.sys->setup();
     if (data.sys->isListener())
       _eventManager.registerListener(castToListener(data.sys));
-    _entityManager.updateSysComponent(data.sys);
+    _entityManager.tryRegisterEntitiesInSystem(data.sys);
     return true;
   }
 

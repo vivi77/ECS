@@ -29,7 +29,7 @@ namespace lel::ecs::entity
   }
 
   // TODO: The name can be ambiguous
-  void EntityManager::updateSysComponent(const SPtr& sys)
+  void EntityManager::tryRegisterEntitiesInSystem(const SPtr& sys)
   {
     for (const auto& e : _entities)
       sys->registerEntity(e);

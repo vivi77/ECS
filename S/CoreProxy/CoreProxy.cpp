@@ -22,6 +22,7 @@ namespace lel::ecs
   entity::EntityManager::EntityPtr CoreProxy::createEntity(std::initializer_list<entity::EntityManager::ComponentPtr> il)
   {
     auto entity = _entityManager.createEntity(il);
+    // Try to register the new entity into all existing system
     std::for_each(std::begin(_systems), std::end(_systems),
                   [&entity](auto& data) { data.sys->registerEntity(entity); });
     _eventManager.fire<event::EntityManagerEvent>(event::EntityManagerEvent::Type::ENTITY_CREATED, entity->getID());
