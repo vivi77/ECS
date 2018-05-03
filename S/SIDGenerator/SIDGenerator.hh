@@ -1,6 +1,6 @@
 #pragma once
 
-#include "S/sidgen_export.h"
+#include "S/SIDGenerator/sidgen_export.h"
 #include "S/IDSystem.hh"
 #include "Utility/IIDGenerator.hpp"
 
