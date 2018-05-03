@@ -1,6 +1,7 @@
 #pragma once
 
 #include "C/BaseComp/BaseComp.hh"
+#include "C/IDComponent.hh"
 #include "E/EManager/EManager.hh"
 #include "Utility/TemplateUniqueID.hpp"
 #include "Utility/meta.hpp"
@@ -20,6 +21,7 @@ namespace lel::ecs::component
     {}
 
     virtual ~CRTPC() = default;
+
     ID getID() const final
     {
       return getComponentID();
