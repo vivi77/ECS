@@ -9,6 +9,7 @@
 
 #include "E/CoreEvent/CoreEvent.hh"
 #include "Entity/EntityManager.hh"
+#include "C/TextInput/TextInput.hh"
 
 namespace
 {
@@ -212,6 +213,8 @@ namespace lel::ecs::system
   {
     NCursesData data;
 
+    static int counter = 0;
+
     auto comps = entity->getComponents();
     for (auto& comp : comps)
     {
@@ -222,6 +225,11 @@ namespace lel::ecs::system
         data.transform = std::static_pointer_cast<NCTransform>(comp);
       else if (compID == component::TerminalPolygon::getComponentID())
         data.polygon = std::static_pointer_cast<component::TerminalPolygon>(comp);
+      else if (compID == component::TextInputStr::getComponentID())
+      {
+        ++counter;
+        mvprintw(40, 40, (std::to_string(counter) + " " + std::to_string(compID) + " " + std::to_string(entity->getID())).c_str());
+      }
     }
 
     if (data.isValidText())
@@ -270,6 +278,10 @@ namespace lel::ecs::system
       ::execOnColorsAndAttr(callback);
       ::initNCursesColor();
     }
+
+    // Text input test
+    auto textInput = std::make_shared<component::TextInputStr>("system input");
+    getProxy()->createEntity({textInput});
 
     // Straight line test
     std::vector<Vector2<int>> pts{{0, 0}, {0, 3}, {3, 3}, {3, 0}};

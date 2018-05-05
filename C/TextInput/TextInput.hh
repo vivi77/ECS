@@ -6,14 +6,10 @@ namespace lel::ecs::component
 {
   namespace details
   {
-    class BaseTextInput : public CRTPC<BaseTextInput>
+    class BaseTextInput
     {
     public:
       BaseTextInput(const std::string& input = "", const bool active = true);
-      BaseTextInput(const entity::IDEntity& entityOwnerID,
-                    const std::string& input = "",
-                    const bool active = true);
-      ~BaseTextInput() override = default;
 
       void setInput(const std::string& input);
       void activateSending();
@@ -36,11 +32,12 @@ namespace lel::ecs::component
   namespace meta
   {
     template <class TextInputID>
-    class TextInput : public details::BaseTextInput
+    class TextInput : public details::BaseTextInput, public CRTPC<TextInput<TextInputID>>
     {
     public:
       TextInput(const TextInputID& id, const std::string& input = "", const bool active = true)
         : details::BaseTextInput{input, active}
+        , CRTPC<TextInput<TextInputID>>{}
         , _id{id}
       {}
 
@@ -48,7 +45,8 @@ namespace lel::ecs::component
                 const TextInputID& id,
                 const std::string& input = "",
                 const bool active = true)
-        : details::BaseTextInput{entityOwnerID, input, active}
+        : details::BaseTextInput{input, active}
+        , CRTPC<TextInput<TextInputID>>{entityOwnerID}
         , _id{id}
       {}
 

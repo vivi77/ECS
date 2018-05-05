@@ -24,8 +24,10 @@ target_link_libraries(${NAME} PUBLIC
   CLISystemEvent
   CoreEvent
 
+  TextInput
   Transform
-  TerminalComponents)
+  TerminalComponents
+  )
 
 set_target_properties(${NAME} PROPERTIES IMPORTED_LOCATION ${SYS_OUTPUT_LOCATION})
 generate_export_header(${NAME})

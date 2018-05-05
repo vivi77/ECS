@@ -20,7 +20,7 @@ namespace lel::ecs::component
       : BaseComp{entityOwnerID}
     {}
 
-    virtual ~CRTPC() = default;
+    ~CRTPC() override = default;
 
     ID getID() const final
     {

@@ -10,12 +10,14 @@ target_include_directories(${NAME} PUBLIC ${DIRS})
 # IDLIB_NAME variable available from ECS/S/CMakeLists.txt
 target_link_libraries(${NAME} PUBLIC
   ${IDLIB_NAME}
-  EManager
-  OSDLLoader
-  BaseComp
-  EntityLogic
   CIDGen
+  EManager
+
+  OSDLLoader
+  EntityLogic
+
   TextInput
+  CoreProxy
   )
 set_target_properties(${NAME} PROPERTIES IMPORTED_LOCATION ${SYS_OUTPUT_LOCATION})
 generate_export_header(${NAME})

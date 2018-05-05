@@ -7,7 +7,7 @@ namespace lel::ecs::component
 {
   namespace details
   {
-    class BaseCommands : public CRTPC<BaseCommands>
+    class BaseCommands
     {
     protected:
       using Key = std::string;
@@ -15,10 +15,6 @@ namespace lel::ecs::component
 
     public:
       BaseCommands(const std::unordered_map<Key, Fct>& fcts);
-      BaseCommands(const entity::IDEntity& entityOwnerID,
-                   const std::unordered_map<Key, Fct>& fcts);
-
-      ~BaseCommands() override = default;
 
       void executeCommand(const Key& key);
 
@@ -37,19 +33,21 @@ namespace lel::ecs::component
   namespace meta
   {
     template <class CommandsID>
-    class Commands : public details::BaseCommands
+    class Commands : public details::BaseCommands, public CRTPC<Commands<CommandsID>>
     {
     public:
       Commands(const CommandsID& id,
                const std::unordered_map<Key, Fct>& fcts)
         : BaseCommands{fcts}
+        , CRTPC<Commands<CommandsID>>{}
         , _id{id}
       {}
 
       Commands(const entity::IDEntity& entityOwnerID,
                const CommandsID& id,
                const std::unordered_map<Key, Fct>& fcts)
-        : BaseCommands{entityOwnerID, fcts}
+        : BaseCommands{fcts}
+        , CRTPC<Commands<CommandsID>>{entityOwnerID}
         , _id{id}
       {}
 

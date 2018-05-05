@@ -1,23 +1,17 @@
 #include "TextInput.hh"
 #include "E/EManager/EManager.hh"
 
+#include <iostream>
+
 namespace lel::ecs::component
 {
   namespace details
   {
     BaseTextInput::BaseTextInput(const std::string& input, const bool active)
-      : CRTPC{}
-      , _active{active}
+      : _active{active}
       , _input{input}
-    {}
-
-    BaseTextInput::BaseTextInput(const entity::IDEntity& entityOwnerID,
-                                 const std::string& input,
-                                 const bool active)
-      : CRTPC{entityOwnerID}
-      , _active{active}
-      , _input{input}
-    {}
+    {
+    }
 
     void BaseTextInput::setInput(const std::string& input)
     {

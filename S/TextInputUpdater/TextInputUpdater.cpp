@@ -28,6 +28,8 @@ namespace lel::ecs::system
       //else if (compID == component::TextInputState::getComponentID())
         //;
     }
+    if (item.isValid())
+      _components.emplace_back(item);
   }
 
   void TextInputUpdater::deregisterEntity(const EntityPtr& entity)
