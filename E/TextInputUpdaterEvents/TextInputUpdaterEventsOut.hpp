@@ -1,13 +1,11 @@
 #pragma once
 
 #include "E/CRTPE.hpp"
-#include "E/TextInputUpdaterEvents/textinputupdaterevents_export.h"
 
 namespace lel::ecs::event
 {
   template <typename ID>
-  class TEXTINPUTUPDATEREVENTS_EXPORT TextInputUpdaterEventsOut :
-    public CRTPE<TextInputUpdaterEventsOut>
+  class TextInputUpdaterEventsOut : public CRTPE<TextInputUpdaterEventsOut<ID>>
   {
   public:
     enum class Type : char
@@ -15,10 +13,11 @@ namespace lel::ecs::event
       INPUT_SEND
     };
 
-  private:
-    TextInputUpdaterEventsOut(const ID senderID)
+  public:
+    TextInputUpdaterEventsOut(const ID senderID, const std::string& input)
       : _senderID{senderID}
-      , _type{INPUT_SEND}
+      , _type{Type::INPUT_SEND}
+      , _input{input}
     {}
 
     ~TextInputUpdaterEventsOut() override = default;
@@ -33,8 +32,14 @@ namespace lel::ecs::event
       return _type;
     }
 
+    std::string getInput() const
+    {
+      return _input;
+    }
+
   private:
     ID _senderID;
     Type _type;
+    std::string _input;
   };
 } /* !lel::ecs::event */

@@ -64,7 +64,7 @@ namespace lel::ecs::system
     //        {
     //          const auto c = ev->getChar();
     //          if (item.getTriggerCharacter() == c)
-    //            EManager::fire<TextInputUpdaterEventOut>(itemID);
+    //            EManager::fire<TextInputUpdaterEventOut>(itemID, ev.getInput());
     //          else
     //            item.addChar(c);
     //        }

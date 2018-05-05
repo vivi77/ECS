@@ -5,23 +5,23 @@ namespace lel::ecs::component
 {
   namespace details
   {
-    BaseTextInput::BaseTextInput(const std::string& content, const bool active)
+    BaseTextInput::BaseTextInput(const std::string& input, const bool active)
       : CRTPC{}
       , _active{active}
-      , _content{content}
+      , _input{input}
     {}
 
     BaseTextInput::BaseTextInput(const entity::IDEntity& entityOwnerID,
-                         const std::string& content,
-                         const bool active)
+                                 const std::string& input,
+                                 const bool active)
       : CRTPC{entityOwnerID}
       , _active{active}
-      , _content{content}
+      , _input{input}
     {}
 
-    void BaseTextInput::setContent(const std::string& content)
+    void BaseTextInput::setInput(const std::string& input)
     {
-      _content = content;
+      _input = input;
     }
 
     void BaseTextInput::activateSending()
@@ -36,12 +36,12 @@ namespace lel::ecs::component
 
     void BaseTextInput::addChar(const char c)
     {
-      _content += c;
+      _input += c;
     }
 
     void BaseTextInput::removeLastChar()
     {
-      _content.pop_back();
+      _input.pop_back();
     }
 
     void BaseTextInput::setTriggerCharacter(const char c)
@@ -49,9 +49,9 @@ namespace lel::ecs::component
       _triggerCharacter = c;
     }
 
-    std::string BaseTextInput::getContent() const
+    std::string BaseTextInput::getInput() const
     {
-      return _content;
+      return _input;
     }
 
     bool BaseTextInput::isSendActive() const
@@ -63,26 +63,20 @@ namespace lel::ecs::component
     {
       return _triggerCharacter;
     }
-
-    void BaseTextInput::sendInput() const
-    {
-      if (!_active)
-        return ;
-    }
   }
 
   TextInputStr::TextInputStr(const std::string& id,
-                             const std::string& content,
+                             const std::string& input,
                              const bool active)
-    : meta::TextInput<TextInputStr::TextInputID>{id, content, active}
+    : meta::TextInput<TextInputStr::TextInputID>{id, input, active}
   {
   }
 
   TextInputStr::TextInputStr(const entity::IDEntity& entityOwnerID,
                              const std::string& id,
-                             const std::string& content,
+                             const std::string& input,
                              const bool active)
-    : meta::TextInput<TextInputStr::TextInputID>{entityOwnerID, id, content, active}
+    : meta::TextInput<TextInputStr::TextInputID>{entityOwnerID, id, input, active}
   {
   }
 } /* !lel::ecs::component */
