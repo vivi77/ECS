@@ -2,6 +2,8 @@
 #include "C/TextInput/TextInput.hh"
 #include "E/IE.hh"
 #include "E/IDEvent.hh"
+#include "E/TextInputUpdaterEvents/TextInputUpdaterEventsIn.hpp"
+#include "E/TextInputUpdaterEvents/TextInputUpdaterEventsOut.hpp"
 
 namespace lel::ecs::system
 {
@@ -50,35 +52,38 @@ namespace lel::ecs::system
 
   void TextInputUpdater::update(const EPtr& ptr)
   {
-    //if (ptr->getID() == event::TextInputUpdaterEventIn::getEventID())
-    //{
-    //  const auto ev = std::static_pointer_cast<event::TextInputUpdaterEventIn>(ptr);
-    //  switch (ev->getType())
-    //  {
-    //    case event::TextInputUpdaterEventIn::Type::ADD_CHAR:
-    //    std::for_each(std::begin(_components), std::end(_components),
-    //      [&ev](auto& item)
-    //      {
-    //        const auto itemID = item.inputComp->getTextInputID();
-    //        if (itemID == ev->getReceiverID())
-    //        {
-    //          const auto c = ev->getChar();
-    //          if (item.getTriggerCharacter() == c)
-    //            EManager::fire<TextInputUpdaterEventOut>(itemID, ev.getInput());
-    //          else
-    //            item.addChar(c);
-    //        }
-    //      });
-    //      break;
-    //    case event::TextInputUpdaterEventIn::Type::REMOVE_CHAR:
-    //      std::for_each(std::begin(_components), std::end(_components)),
-    //      [&ev](auto& item)
-    //      {
-    //        if (item.inputComp->getTextInputID() == ev->getReceiverID())
-    //          item.removeChar();
-    //      }
-    //      break;
-    //  }
-    //}
+    using TIEventIn = event::TextInputUpdaterEventsIn<std::string>;
+    using TIEventOut = event::TextInputUpdaterEventsOut<std::string>;
+
+    if (ptr->getID() == TIEventIn::getEventID())
+    {
+      const auto ev = std::static_pointer_cast<TIEventIn>(ptr);
+      switch (ev->getType())
+      {
+        case TIEventIn::Type::ADD_CHAR:
+          std::for_each(std::begin(_components), std::end(_components),
+            [&ev, this](auto& item)
+            {
+              const auto itemID = item.inputComp->getTextInputID();
+              if (itemID == ev->getReceiverID())
+              {
+                const auto c = ev->getChar();
+                if (item.inputComp->getTriggerCharacter() == c)
+                  getProxy()->fire<TIEventOut>(itemID, item.inputComp->getInput());
+                else
+                  item.inputComp->addChar(c);
+              }
+            });
+          break;
+        case TIEventIn::Type::REMOVE_CHAR:
+          std::for_each(std::begin(_components), std::end(_components),
+            [&ev](auto& item)
+            {
+              if (item.inputComp->getTextInputID() == ev->getReceiverID())
+                item.inputComp->removeLastChar();
+            });
+          break;
+      }
+    }
   }
 }

@@ -15,6 +15,7 @@ target_link_libraries(${NAME} PUBLIC
   BaseComp
   EntityLogic
   CIDGen
+  TextInput
   )
 set_target_properties(${NAME} PROPERTIES IMPORTED_LOCATION ${SYS_OUTPUT_LOCATION})
 generate_export_header(${NAME})
