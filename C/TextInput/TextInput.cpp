@@ -7,16 +7,16 @@ namespace lel::ecs::component
   {
     BaseTextInput::BaseTextInput(const std::string& content, const bool active)
       : CRTPC{}
-      , _content{content}
       , _active{active}
+      , _content{content}
     {}
 
     BaseTextInput::BaseTextInput(const entity::IDEntity& entityOwnerID,
                          const std::string& content,
                          const bool active)
       : CRTPC{entityOwnerID}
-      , _content{content}
       , _active{active}
+      , _content{content}
     {}
 
     void BaseTextInput::setContent(const std::string& content)

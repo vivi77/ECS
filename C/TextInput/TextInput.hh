@@ -46,7 +46,8 @@ namespace lel::ecs::component
         , _id{id}
       {}
 
-      TextInput(const entity::IDEntity& entityOwnerID, const TextInput& id,
+      TextInput(const entity::IDEntity& entityOwnerID,
+                const TextInputID& id,
                 const std::string& content = "",
                 const bool active = true)
         : details::BaseTextInput{entityOwnerID, content, active}

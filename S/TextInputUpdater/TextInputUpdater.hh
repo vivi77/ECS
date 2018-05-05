@@ -10,7 +10,6 @@ namespace lel::ecs::component
 
 namespace lel::ecs::system
 {
-
   class TextInputUpdater : public CRTPS<TextInputUpdater>, public event::IEListener
   {
   public:

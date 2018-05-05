@@ -33,7 +33,7 @@ namespace lel::ecs::system
     const auto end = std::end(_components);
     const auto pred = [&entity](const auto& it)
     {
-      return it.transform->getEntityOwnerID() == entity->getID();
+      return it.inputComp->getEntityOwnerID() == entity->getID();
     };
     const auto it = std::find_if(std::begin(_components), std::end(_components), pred);
     if (it != end)
