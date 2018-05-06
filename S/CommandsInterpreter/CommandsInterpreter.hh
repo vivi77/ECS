@@ -2,11 +2,7 @@
 
 #include "S/CRTPS.hpp"
 #include "E/IEListener.hh"
-
-namespace lel::ecs::component
-{
-  class CommandsStr;
-} /* !lel::ecs::component */
+#include "C/Commands/Commands.hpp"
 
 namespace lel::ecs::system
 {

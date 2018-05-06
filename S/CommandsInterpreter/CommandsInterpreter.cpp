@@ -1,6 +1,4 @@
 #include "CommandsInterpreter.hh"
-#include "C/IC.hh"
-#include "C/Commands/Commands.hpp"
 #include "E/TextInputUpdaterEvents/TextInputUpdaterEventsOut.hpp"
 
 namespace lel::ecs::system
@@ -51,12 +49,17 @@ namespace lel::ecs::system
       auto event = std::static_pointer_cast<event::TextInputUpdaterEventsOut<std::string>>(e);
       for (const auto& ent : _entities)
       {
-        if (event->getSenderID() == ent.commands->getCommandsOwnerID())
+        if (event->getSenderID() == ent.commands->_commandsOwnerId)
         {
           switch (event->getType())
           {
             case event::TextInputUpdaterEventsOut<std::string>::Type::INPUT_SEND:
-              ent.commands->executeCommand(event->getInput());
+              {
+                const auto key = event->getInput();
+                const auto it = ent.commands->_functions.find(key);
+                if (it != std::end(ent.commands->_functions))
+                  it->second();
+              }
               break;
           }
         }
