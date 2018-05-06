@@ -6,70 +6,47 @@ namespace lel::ecs::component
 {
   namespace details
   {
-    class BaseTextInput
+    struct BaseTextInput
     {
-    public:
       BaseTextInput(const std::string& input = "", const bool active = true);
 
-      void setInput(const std::string& input);
-      void activateSending();
-      void deactivateSending();
-      void addChar(const char c);
-      void removeLastChar();
-      void setTriggerCharacter(const char c);
-
-      std::string getInput() const;
-      bool isSendActive() const;
-      char getTriggerCharacter() const;
-
-    public:
-      bool _active = true;
-      std::string _input = "";
-      char _triggerCharacter = -1;
+      bool active = true;
+      std::string input = "";
+      char triggerCharacter = -1;
     };
   }
 
   namespace meta
   {
     template <class TextInputID>
-    class TextInput : public details::BaseTextInput, public CRTPC<TextInput<TextInputID>>
+    struct TextInput : public details::BaseTextInput, public CRTPC<TextInput<TextInputID>>
     {
-    public:
-      TextInput(const TextInputID& id, const std::string& input = "", const bool active = true)
+      TextInput(const TextInputID& inputId, const std::string& input = "", const bool active = true)
         : details::BaseTextInput{input, active}
         , CRTPC<TextInput<TextInputID>>{}
-        , _id{id}
+        , textInputID{inputId}
       {}
 
       TextInput(const entity::IDEntity& entityOwnerID,
-                const TextInputID& id,
+                const TextInputID& inputId,
                 const std::string& input = "",
                 const bool active = true)
         : details::BaseTextInput{input, active}
         , CRTPC<TextInput<TextInputID>>{entityOwnerID}
-        , _id{id}
+        , textInputID{inputId}
       {}
 
       ~TextInput() override = default;
 
-      TextInputID getTextInputID() const
-      {
-        return _id;
-      }
-
-    public:
-      TextInputID _id;
+      TextInputID textInputID;
     };
   } /* !meta */
 
-  class TextInputStr : public meta::TextInput<std::string>
+  inline void removeLastChar(details::BaseTextInput& input)
   {
-    using TextInputID = std::string;
+    if (input.active && !input.input.empty())
+      input.input.pop_back();
+  }
 
-  public:
-    TextInputStr(const std::string& id, const std::string& input = "", const bool active = true);
-    TextInputStr(const entity::IDEntity& entityOwnerID, const std::string& id,
-                 const std::string& input = "", const bool active = true);
-    ~TextInputStr() override = default;
-  };
+  using TextInputStr = meta::TextInput<std::string>;
 } /* !lel::ecs::component */

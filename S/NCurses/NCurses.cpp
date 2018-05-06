@@ -291,9 +291,9 @@ namespace lel::ecs::system
 
     // Text input test
     auto textInput = std::make_shared<component::TextInputStr>("basic text input");
-    textInput->setTriggerCharacter('\n');
+    textInput->triggerCharacter = '\n';
     auto cmds = std::make_shared<component::CommandsStr>(
-      textInput->_id,
+      textInput->textInputID,
       std::unordered_map<std::string, component::CommandsStr::Fct>{
         {"help", [](){ std::cout << "help, quit\n"; }},
         {"exit", [](){ std::cout << "EXPERIMENTAL\n"; }},

@@ -68,16 +68,16 @@ namespace lel::ecs::system
           std::for_each(std::begin(_components), std::end(_components),
             [&ev, isBroadcast, this](auto& item)
             {
-              const auto itemID = item.inputComp->getTextInputID();
+              const auto itemID = item.inputComp->textInputID;
               if (isBroadcast || itemID == ev->getReceiverID())
               {
                 const auto c = ev->getChar();
-                if (item.inputComp->getTriggerCharacter() == c)
-                  getProxy()->fire<TIEventOut>(itemID, item.inputComp->getInput());
+                if (item.inputComp->triggerCharacter == c)
+                  getProxy()->fire<TIEventOut>(itemID, item.inputComp->input);
                 else
                 {
-                  item.inputComp->addChar(c);
-                  item.textComp->text = item.inputComp->_input.c_str();
+                  item.inputComp->input += c;
+                  item.textComp->text = item.inputComp->input.c_str();
                 }
               }
             });
@@ -86,10 +86,10 @@ namespace lel::ecs::system
           std::for_each(std::begin(_components), std::end(_components),
             [&ev, isBroadcast](auto& item)
             {
-              if (isBroadcast || item.inputComp->getTextInputID() == ev->getReceiverID())
+              if (isBroadcast || item.inputComp->textInputID == ev->getReceiverID())
               {
-                item.inputComp->removeLastChar();
-                item.textComp->text = item.inputComp->_input.c_str();
+                component::removeLastChar(*item.inputComp);
+                item.textComp->text = item.inputComp->input.c_str();
               }
             });
           break;
