@@ -1,5 +1,4 @@
 #include "TextInputUpdater.hh"
-#include "C/TextInput/TextInput.hh"
 #include "E/IE.hh"
 #include "E/IDEvent.hh"
 #include "E/TextInputUpdaterEvents/TextInputUpdaterEventsIn.hpp"
@@ -25,6 +24,8 @@ namespace lel::ecs::system
       const auto compID = comp->getID();
       if (compID == component::TextInputStr::getComponentID())
         item.inputComp = std::static_pointer_cast<component::TextInputStr>(comp);
+      else if (compID == component::TerminalText::getComponentID())
+        item.textComp = std::static_pointer_cast<component::TerminalText>(comp);
       //else if (compID == component::TextInputState::getComponentID())
         //;
     }
@@ -73,7 +74,10 @@ namespace lel::ecs::system
                 if (item.inputComp->getTriggerCharacter() == c)
                   getProxy()->fire<TIEventOut>(itemID, item.inputComp->getInput());
                 else
+                {
                   item.inputComp->addChar(c);
+                  item.textComp->text = item.inputComp->_input.c_str();
+                }
               }
             });
           break;
@@ -82,7 +86,10 @@ namespace lel::ecs::system
             [&ev](auto& item)
             {
               if (item.inputComp->getTextInputID() == ev->getReceiverID())
+              {
                 item.inputComp->removeLastChar();
+                item.textComp->text = item.inputComp->_input.c_str();
+              }
             });
           break;
       }
