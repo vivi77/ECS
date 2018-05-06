@@ -73,12 +73,13 @@ namespace lel::ecs::system
               {
                 const auto c = ev->getChar();
                 if (item.inputComp->triggerCharacter == c)
-                  getProxy()->fire<TIEventOut>(itemID, item.inputComp->input);
-                else
                 {
-                  item.inputComp->input += c;
-                  item.textComp->text = item.inputComp->input.c_str();
+                  getProxy()->fire<TIEventOut>(itemID, item.inputComp->input);
+                  item.inputComp->input.clear();
                 }
+                else
+                  item.inputComp->input += c;
+                item.textComp->text = item.inputComp->input.c_str();
               }
             });
           break;

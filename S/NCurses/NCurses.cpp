@@ -157,17 +157,15 @@ namespace lel::ecs::system
   void NCurses::exec()
   {
     char c = getch();
-    if (c == 'q')
-      getProxy()->fire<event::CoreEvent>(event::CoreEvent::Type::EXIT);
-    else if (c == 127)
+    switch (c)
     {
-      getProxy()->fire<event::TextInputUpdaterEventsIn<std::string>>("");
-      clear();
-    }
-    // Last case
-    else if (c != ERR)
-    {
-      getProxy()->fire<event::TextInputUpdaterEventsIn<std::string>>("", c);
+      case 127: // Delete character
+        getProxy()->fire<event::TextInputUpdaterEventsIn<std::string>>("");
+        clear();
+        break;
+      case ERR: break; //Ignored
+      default:
+        getProxy()->fire<event::TextInputUpdaterEventsIn<std::string>>("", c);
     }
 
     for (const auto& comp : _polygon)
@@ -296,7 +294,12 @@ namespace lel::ecs::system
       textInput->textInputID,
       std::unordered_map<std::string, component::CommandsStr::Fct>{
         {"help", [](){ std::cout << "help, quit\n"; }},
-        {"exit", [](){ std::cout << "EXPERIMENTAL\n"; }},
+        {"exit", [this](){
+          getProxy()->fire<event::CoreEvent>(event::CoreEvent::Type::EXIT);
+        }},
+        {"quit", [this](){
+          getProxy()->fire<event::CoreEvent>(event::CoreEvent::Type::EXIT);
+        }},
       }
     );
     auto inputPoly = std::make_shared<component::TerminalPolygon>(
