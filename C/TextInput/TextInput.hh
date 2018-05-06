@@ -22,7 +22,7 @@ namespace lel::ecs::component
       bool isSendActive() const;
       char getTriggerCharacter() const;
 
-    private:
+    public:
       bool _active = true;
       std::string _input = "";
       char _triggerCharacter = -1;
@@ -57,7 +57,7 @@ namespace lel::ecs::component
         return _id;
       }
 
-    private:
+    public:
       TextInputID _id;
     };
   } /* !meta */

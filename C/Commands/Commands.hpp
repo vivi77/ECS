@@ -9,7 +9,7 @@ namespace lel::ecs::component
   {
     class BaseCommands
     {
-    protected:
+    public:
       using Key = std::string;
       using Fct = std::function<void()>;
 
@@ -36,30 +36,30 @@ namespace lel::ecs::component
     class Commands : public details::BaseCommands, public CRTPC<Commands<CommandsID>>
     {
     public:
-      Commands(const CommandsID& id,
+      Commands(const CommandsID& commandsOwnerId,
                const std::unordered_map<Key, Fct>& fcts)
         : BaseCommands{fcts}
         , CRTPC<Commands<CommandsID>>{}
-        , _id{id}
+        , _commandsOwnerId{commandsOwnerId}
       {}
 
       Commands(const entity::IDEntity& entityOwnerID,
-               const CommandsID& id,
+               const CommandsID& commandsOwnerId,
                const std::unordered_map<Key, Fct>& fcts)
         : BaseCommands{fcts}
         , CRTPC<Commands<CommandsID>>{entityOwnerID}
-        , _id{id}
+        , _commandsOwnerId{commandsOwnerId}
       {}
 
       ~Commands() override = default;
 
-      CommandsID getCommandsID() const
+      CommandsID getCommandsOwnerID() const
       {
-        return _id;
+        return _commandsOwnerId;
       }
 
     private:
-      CommandsID _id;
+      CommandsID _commandsOwnerId;
     };
   } /* !lel::ecs::meta */
 
@@ -68,15 +68,15 @@ namespace lel::ecs::component
     using CommandsID = std::string;
 
   public:
-    CommandsStr(const CommandsID& id,
+    CommandsStr(const CommandsID& commandsOwnerId,
                 const std::unordered_map<Key, Fct>& fcts)
-      : Commands{id, fcts}
+      : Commands{commandsOwnerId, fcts}
     {}
 
     CommandsStr(const entity::IDEntity& entityOwnerID,
-                const CommandsID& id,
+                const CommandsID& commandsOwnerId,
                 const std::unordered_map<Key, Fct>& fcts)
-      : Commands{entityOwnerID, id, fcts}
+      : Commands{entityOwnerID, commandsOwnerId, fcts}
     {}
 
     ~CommandsStr() override = default;

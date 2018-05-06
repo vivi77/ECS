@@ -51,7 +51,7 @@ namespace lel::ecs::system
       auto event = std::static_pointer_cast<event::TextInputUpdaterEventsOut<std::string>>(e);
       for (const auto& ent : _entities)
       {
-        if (event->getSenderID() == ent.commands->getCommandsID())
+        if (event->getSenderID() == ent.commands->getCommandsOwnerID())
         {
           switch (event->getType())
           {

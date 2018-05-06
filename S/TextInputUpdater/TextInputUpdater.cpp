@@ -61,14 +61,15 @@ namespace lel::ecs::system
     if (ptr->getID() == TIEventIn::getEventID())
     {
       const auto ev = std::static_pointer_cast<TIEventIn>(ptr);
+      const bool isBroadcast = ev->getReceiverID().empty();
       switch (ev->getType())
       {
         case TIEventIn::Type::ADD_CHAR:
           std::for_each(std::begin(_components), std::end(_components),
-            [&ev, this](auto& item)
+            [&ev, isBroadcast, this](auto& item)
             {
               const auto itemID = item.inputComp->getTextInputID();
-              if (itemID == ev->getReceiverID())
+              if (isBroadcast || itemID == ev->getReceiverID())
               {
                 const auto c = ev->getChar();
                 if (item.inputComp->getTriggerCharacter() == c)
@@ -83,9 +84,9 @@ namespace lel::ecs::system
           break;
         case TIEventIn::Type::REMOVE_CHAR:
           std::for_each(std::begin(_components), std::end(_components),
-            [&ev](auto& item)
+            [&ev, isBroadcast](auto& item)
             {
-              if (item.inputComp->getTextInputID() == ev->getReceiverID())
+              if (isBroadcast || item.inputComp->getTextInputID() == ev->getReceiverID())
               {
                 item.inputComp->removeLastChar();
                 item.textComp->text = item.inputComp->_input.c_str();

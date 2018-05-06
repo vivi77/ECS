@@ -8,6 +8,7 @@
 #include <algorithm>
 
 #include "E/CoreEvent/CoreEvent.hh"
+#include "E/TextInputUpdaterEvents/TextInputUpdaterEventsIn.hpp"
 #include "Entity/EntityManager.hh"
 #include "C/TextInput/TextInput.hh"
 #include "C/Commands/Commands.hpp"
@@ -158,19 +159,15 @@ namespace lel::ecs::system
     char c = getch();
     if (c == 'q')
       getProxy()->fire<event::CoreEvent>(event::CoreEvent::Type::EXIT);
-    else if (c == 'd')
-      getProxy()->destroyEntity(0);
-
-    for (const auto& comp : _text)
+    else if (c == 127)
     {
-      auto index = ::getIndexColorPair(comp.text->fgColor, comp.text->bgColor);
-      attron(COLOR_PAIR(index));
-      toggleOnAttributes(comp.text->attributes);
-      mvprintw(comp.transform->position.y,
-               comp.transform->position.x,
-               comp.text->text);
-      toggleOffAttributes();
-      attroff(COLOR_PAIR(index));
+      getProxy()->fire<event::TextInputUpdaterEventsIn<std::string>>("");
+      clear();
+    }
+    // Last case
+    else if (c != ERR)
+    {
+      getProxy()->fire<event::TextInputUpdaterEventsIn<std::string>>("", c);
     }
 
     for (const auto& comp : _polygon)
@@ -203,6 +200,18 @@ namespace lel::ecs::system
         lel::graphic::drawLine(p1.x, p1.y, p2.x, p2.y, drawCallback);
       }
 
+      toggleOffAttributes();
+      attroff(COLOR_PAIR(index));
+    }
+
+    for (const auto& comp : _text)
+    {
+      auto index = ::getIndexColorPair(comp.text->fgColor, comp.text->bgColor);
+      attron(COLOR_PAIR(index));
+      toggleOnAttributes(comp.text->attributes);
+      mvprintw(comp.transform->position.y,
+               comp.transform->position.x,
+               comp.text->text);
       toggleOffAttributes();
       attroff(COLOR_PAIR(index));
     }
@@ -282,18 +291,20 @@ namespace lel::ecs::system
 
     // Text input test
     auto textInput = std::make_shared<component::TextInputStr>("basic text input");
+    textInput->setTriggerCharacter('\n');
     auto cmds = std::make_shared<component::CommandsStr>(
-      "basic text input command",
+      textInput->_id,
       std::unordered_map<std::string, component::CommandsStr::Fct>{
         {"help", [](){ std::cout << "help, quit\n"; }},
-        {"quit", [](){ std::cout << "EXPERIMENTAL\n"; }},
+        {"exit", [](){ std::cout << "EXPERIMENTAL\n"; }},
       }
     );
     auto inputPoly = std::make_shared<component::TerminalPolygon>(
       std::vector<Vector2<int>>{{0, 0}, {0, 2}, {10, 2}, {10, 0}}
     );
     auto inputTrans = std::make_shared<NCTransform>(40, 30, 0);
-    getProxy()->createEntity({textInput, cmds, inputPoly, inputTrans});
+    auto inputText = std::make_shared<component::TerminalText>("");
+    getProxy()->createEntity({textInput, cmds, inputPoly, inputTrans, inputText});
 
     // Straight line test
     std::vector<Vector2<int>> pts{{0, 0}, {0, 3}, {3, 3}, {3, 0}};

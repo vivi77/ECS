@@ -1,8 +1,6 @@
 #include "TextInput.hh"
 #include "E/EManager/EManager.hh"
 
-#include <iostream>
-
 namespace lel::ecs::component
 {
   namespace details
@@ -35,7 +33,8 @@ namespace lel::ecs::component
 
     void BaseTextInput::removeLastChar()
     {
-      _input.pop_back();
+      if (!_input.empty())
+        _input.pop_back();
     }
 
     void BaseTextInput::setTriggerCharacter(const char c)
