@@ -33,8 +33,7 @@ namespace lel::ecs
 
   Core::Core()
   {
-    // TODO: Put it on the constructor list
-    _data = setupData();
+    setupData();
   }
 
   void Core::run()
@@ -129,14 +128,13 @@ namespace lel::ecs
     return true;
   }
 
-  std::list<lel::ecs::CoreSystemData> Core::setupData()
+  void Core::setupData()
   {
     using CoreEvent = lel::ecs::event::CoreEvent;
 
-    std::list<lel::ecs::CoreSystemData> l;
     lel::ecs::StartupLoader startup{"startup.ecs"};
 
-    auto libFetcher = [this, &l](const std::experimental::filesystem::path& path)
+    auto libFetcher = [this](const std::experimental::filesystem::path& path)
     {
       lel::ecs::CoreSystemData data;
       data.path = lel::ecs::Core::sysLibPath;
@@ -144,7 +142,7 @@ namespace lel::ecs
       data.loader.loadLibrary(data.path.u8string().c_str());
       if (trySystemRegistering(data))
       {
-        l.emplace_back(data);
+        _data.emplace_back(data);
         _eventManager.fire<CoreEvent>(CoreEvent::Type::ADD_SYSTEM_SUCCESS,
                                       data.path.u8string(),
                                       to_string(data.sys.get()),
@@ -152,7 +150,6 @@ namespace lel::ecs
       }
     };
     startup.applyOnPaths(libFetcher);
-    return l;
   }
 
   void Core::updateAddRequest(std::list<std::string>& addRequest, std::list<lel::ecs::CoreSystemData>& datalist)
