@@ -10,6 +10,7 @@
 #include "E/CoreEvent/CoreEvent.hh"
 #include "Entity/EntityManager.hh"
 #include "C/TextInput/TextInput.hh"
+#include "C/Commands/Commands.hpp"
 
 namespace
 {
@@ -280,8 +281,19 @@ namespace lel::ecs::system
     }
 
     // Text input test
-    auto textInput = std::make_shared<component::TextInputStr>("system input");
-    getProxy()->createEntity({textInput});
+    auto textInput = std::make_shared<component::TextInputStr>("basic text input");
+    auto cmds = std::make_shared<component::CommandsStr>(
+      "basic text input command",
+      std::unordered_map<std::string, component::CommandsStr::Fct>{
+        {"help", [](){ std::cout << "help, quit\n"; }},
+        {"quit", [](){ std::cout << "EXPERIMENTAL\n"; }},
+      }
+    );
+    auto inputPoly = std::make_shared<component::TerminalPolygon>(
+      std::vector<Vector2<int>>{{0, 0}, {0, 2}, {10, 2}, {10, 0}}
+    );
+    auto inputTrans = std::make_shared<NCTransform>(40, 30, 0);
+    getProxy()->createEntity({textInput, cmds, inputPoly, inputTrans});
 
     // Straight line test
     std::vector<Vector2<int>> pts{{0, 0}, {0, 3}, {3, 3}, {3, 0}};

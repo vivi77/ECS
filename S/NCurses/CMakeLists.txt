@@ -27,6 +27,7 @@ target_link_libraries(${NAME} PUBLIC
   TextInput
   Transform
   TerminalComponents
+  Commands
   )
 
 set_target_properties(${NAME} PROPERTIES IMPORTED_LOCATION ${SYS_OUTPUT_LOCATION})
