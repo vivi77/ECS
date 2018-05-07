@@ -26,8 +26,8 @@ namespace lel::ecs::system
         item.inputComp = std::static_pointer_cast<component::TextInputStr>(comp);
       else if (compID == component::TerminalText::getComponentID())
         item.textComp = std::static_pointer_cast<component::TerminalText>(comp);
-      //else if (compID == component::TextInputState::getComponentID())
-        //;
+      else if (compID == component::TextInputState::getComponentID())
+        item.inputStateComp = std::static_pointer_cast<component::TextInputState>(comp);
     }
     if (item.isValid())
       _components.emplace_back(item);
@@ -66,11 +66,14 @@ namespace lel::ecs::system
       {
         case TIEventIn::Type::ADD_CHAR:
           std::for_each(std::begin(_components), std::end(_components),
-            [&ev, isBroadcast, this](auto& item)
+            [&ev, isBroadcast, this](auto& item) -> void
             {
               const auto itemID = item.inputComp->textInputID;
               if (isBroadcast || itemID == ev->getReceiverID())
               {
+                if (!item.inputStateComp->active || !item.inputStateComp->focused)
+                  return ;
+
                 const auto c = ev->getChar();
                 if (item.inputComp->triggerCharacter == c)
                 {
@@ -89,6 +92,9 @@ namespace lel::ecs::system
             {
               if (isBroadcast || item.inputComp->textInputID == ev->getReceiverID())
               {
+                if (!item.inputStateComp->active || !item.inputStateComp->focused)
+                  return ;
+
                 component::removeLastChar(*item.inputComp);
                 item.textComp->text = item.inputComp->input.c_str();
               }

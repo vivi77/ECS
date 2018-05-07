@@ -11,6 +11,7 @@
 #include "E/TextInputUpdaterEvents/TextInputUpdaterEventsIn.hpp"
 #include "Entity/EntityManager.hh"
 #include "C/TextInput/TextInput.hh"
+#include "C/TextInput/TextInputState.hh"
 #include "C/Commands/Commands.hpp"
 
 namespace
@@ -307,7 +308,8 @@ namespace lel::ecs::system
     );
     auto inputTrans = std::make_shared<NCTransform>(40, 30, 0);
     auto inputText = std::make_shared<component::TerminalText>("");
-    getProxy()->createEntity({textInput, cmds, inputPoly, inputTrans, inputText});
+    auto inputTextState = std::make_shared<component::TextInputState>(true, true);
+    getProxy()->createEntity({textInput, cmds, inputPoly, inputTrans, inputText, inputTextState});
 
     // Straight line test
     std::vector<Vector2<int>> pts{{0, 0}, {0, 3}, {3, 3}, {3, 0}};
