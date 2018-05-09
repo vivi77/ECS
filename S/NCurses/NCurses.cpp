@@ -8,7 +8,11 @@
 #include <algorithm>
 
 #include "E/CoreEvent/CoreEvent.hh"
+#include "E/TextInputUpdaterEvents/TextInputUpdaterEventsIn.hpp"
 #include "Entity/EntityManager.hh"
+#include "C/TextInput/TextInput.hh"
+#include "C/TextInput/TextInputState.hh"
+#include "C/Commands/Commands.hpp"
 
 namespace
 {
@@ -143,6 +147,110 @@ namespace
   {
     attrset(A_NORMAL);
   }
+
+  void testNCursesAttributes(std::unique_ptr<lel::ecs::CoreProxy>& proxy)
+  {
+    if (start_color() == OK)
+    {
+      auto callback = [&proxy](const auto fg, const auto bg, const auto attr)
+      {
+        auto draw = std::make_shared<lel::ecs::component::TerminalText>(
+          "a", realColor[fg], realColor[bg], termattr[attr]);
+        auto transform = std::make_shared<lel::ecs::system::NCurses::NCTransform>(fg * 8 + attr, bg, 0);
+        proxy->createEntity({draw, transform});
+      };
+      ::execOnColorsAndAttr(callback);
+      ::initNCursesColor();
+    }
+  }
+
+  void testNCursesSystemExecution(std::unique_ptr<lel::ecs::CoreProxy>& proxy)
+  {
+    // Straight line test
+    std::vector<lel::ecs::Vector2<int>> pts{{0, 0}, {0, 3}, {3, 3}, {3, 0}};
+    auto poly = std::make_shared<lel::ecs::component::TerminalPolygon>(pts);
+    auto transform = std::make_shared<lel::ecs::system::NCurses::NCTransform>(20, 20, 0);
+    proxy->createEntity({poly, transform});
+
+    //'Perfect' Diagonale line test
+    pts = {{0, -2}, {2, 0}, {0, 2}, {-2, 0}};
+    poly = std::make_shared<lel::ecs::component::TerminalPolygon>(pts);
+    transform = std::make_shared<lel::ecs::system::NCurses::NCTransform>(28, 20, 0);
+    proxy->createEntity({poly, transform});
+
+    // Slight rotation line test
+    pts = {{3, 0}, {0, 1}, {1, 4}, {4, 3}};
+    poly = std::make_shared<lel::ecs::component::TerminalPolygon>(pts, TerminalColor::Color::RED);
+    transform = std::make_shared<lel::ecs::system::NCurses::NCTransform>(36, 20, 0);
+    proxy->createEntity({poly, transform});
+  }
+
+  void testNCursesTextInput(std::unique_ptr<lel::ecs::CoreProxy>& proxy)
+  {
+    auto textInput = std::make_shared<lel::ecs::component::TextInputStr>("input");
+    textInput->triggerCharacter = '\n';
+    auto cmds = std::make_shared<lel::ecs::component::CommandsStr>(
+      //textInput->textInputID,
+      "input5",
+      std::unordered_map<std::string, lel::ecs::component::CommandsStr::Fct>{
+        {"help", [](){ std::cout << "help, quit\n"; }},
+        {"exit", [&proxy](){
+          proxy->fire<lel::ecs::event::CoreEvent>(lel::ecs::event::CoreEvent::Type::EXIT);
+        }},
+        {"quit", [&proxy](){
+          proxy->fire<lel::ecs::event::CoreEvent>(lel::ecs::event::CoreEvent::Type::EXIT);
+        }},
+      }
+    );
+    auto inputPoly = std::make_shared<lel::ecs::component::TerminalPolygon>(
+      std::vector<lel::ecs::Vector2<int>>{{0, 0}, {0, 2}, {10, 2}, {10, 0}}
+    );
+    auto inputTrans = std::make_shared<lel::ecs::system::NCurses::NCTransform>(40, 30, 0);
+    auto inputText = std::make_shared<lel::ecs::component::TerminalText>("");
+    auto inputTextState = std::make_shared<lel::ecs::component::TextInputState>(true, true);
+
+    proxy->createEntity({textInput, cmds, inputPoly, inputTrans, inputText, inputTextState});
+
+    auto input2 = std::make_shared<lel::ecs::component::TextInputStr>("input2");
+    input2->triggerCharacter = '\n';
+    auto poly2 = std::make_shared<lel::ecs::component::TerminalPolygon>(
+      std::vector<lel::ecs::Vector2<int>>{{0, 0}, {0, 2}, {10, 2}, {10, 0}}
+    );
+    auto trans2 = std::make_shared<lel::ecs::system::NCurses::NCTransform>(40, 33, 0);
+    auto text2 = std::make_shared<lel::ecs::component::TerminalText>("");
+    auto state2 = std::make_shared<lel::ecs::component::TextInputState>(false, true);
+    proxy->createEntity({input2, poly2, trans2, text2, state2});
+
+    auto input3 = std::make_shared<lel::ecs::component::TextInputStr>("input3");
+    input3->triggerCharacter = '\n';
+    auto poly3 = std::make_shared<lel::ecs::component::TerminalPolygon>(
+      std::vector<lel::ecs::Vector2<int>>{{0, 0}, {0, 2}, {10, 2}, {10, 0}}
+    );
+    auto trans3 = std::make_shared<lel::ecs::system::NCurses::NCTransform>(40, 36, 0);
+    auto text3 = std::make_shared<lel::ecs::component::TerminalText>("");
+    auto state3 = std::make_shared<lel::ecs::component::TextInputState>(true, false);
+    proxy->createEntity({input3, poly3, trans3, text3, state3});
+
+    auto input4 = std::make_shared<lel::ecs::component::TextInputStr>("input4");
+    input4->triggerCharacter = '\n';
+    auto poly4 = std::make_shared<lel::ecs::component::TerminalPolygon>(
+      std::vector<lel::ecs::Vector2<int>>{{0, 0}, {0, 2}, {10, 2}, {10, 0}}
+    );
+    auto trans4 = std::make_shared<lel::ecs::system::NCurses::NCTransform>(40, 39, 0);
+    auto text4 = std::make_shared<lel::ecs::component::TerminalText>("");
+    auto state4 = std::make_shared<lel::ecs::component::TextInputState>(false, false);
+    proxy->createEntity({input4, poly4, trans4, text4, state4});
+
+    auto input5 = std::make_shared<lel::ecs::component::TextInputStr>("input5");
+    input5->triggerCharacter = '\n';
+    auto poly5 = std::make_shared<lel::ecs::component::TerminalPolygon>(
+      std::vector<lel::ecs::Vector2<int>>{{0, 0}, {0, 2}, {10, 2}, {10, 0}}
+    );
+    auto trans5 = std::make_shared<lel::ecs::system::NCurses::NCTransform>(40, 42, 0);
+    auto text5 = std::make_shared<lel::ecs::component::TerminalText>("");
+    auto state5 = std::make_shared<lel::ecs::component::TextInputState>(true, true);
+    proxy->createEntity({input5, poly5, trans5, text5, state5});
+  }
 } /* ! */
 
 namespace lel::ecs::system
@@ -154,21 +262,15 @@ namespace lel::ecs::system
   void NCurses::exec()
   {
     char c = getch();
-    if (c == 'q')
-      getProxy()->fire<event::CoreEvent>(event::CoreEvent::Type::EXIT);
-    else if (c == 'd')
-      getProxy()->destroyEntity(0);
-
-    for (const auto& comp : _text)
+    switch (c)
     {
-      auto index = ::getIndexColorPair(comp.text->fgColor, comp.text->bgColor);
-      attron(COLOR_PAIR(index));
-      toggleOnAttributes(comp.text->attributes);
-      mvprintw(comp.transform->position.y,
-               comp.transform->position.x,
-               comp.text->text);
-      toggleOffAttributes();
-      attroff(COLOR_PAIR(index));
+      case 127: // Delete character
+        getProxy()->fire<event::TextInputUpdaterEventsIn<std::string>>("");
+        clear();
+        break;
+      case ERR: break; //Ignored
+      default:
+        getProxy()->fire<event::TextInputUpdaterEventsIn<std::string>>("", c);
     }
 
     for (const auto& comp : _polygon)
@@ -201,6 +303,18 @@ namespace lel::ecs::system
         lel::graphic::drawLine(p1.x, p1.y, p2.x, p2.y, drawCallback);
       }
 
+      toggleOffAttributes();
+      attroff(COLOR_PAIR(index));
+    }
+
+    for (const auto& comp : _text)
+    {
+      auto index = ::getIndexColorPair(comp.text->fgColor, comp.text->bgColor);
+      attron(COLOR_PAIR(index));
+      toggleOnAttributes(comp.text->attributes);
+      mvprintw(comp.transform->position.y,
+               comp.transform->position.x,
+               comp.text->text);
       toggleOffAttributes();
       attroff(COLOR_PAIR(index));
     }
@@ -258,36 +372,10 @@ namespace lel::ecs::system
     cbreak();
     noecho();
     nodelay(stdscr, TRUE);
-    if (start_color() == OK)
-    {
-      auto callback = [this](const auto fg, const auto bg, const auto attr)
-      {
-        auto draw = std::make_shared<component::TerminalText>(
-          "a", realColor[fg], realColor[bg], termattr[attr]);
-        auto transform = std::make_shared<NCTransform>(fg * 8 + attr, bg, 0);
-        getProxy()->createEntity({draw, transform});
-      };
-      ::execOnColorsAndAttr(callback);
-      ::initNCursesColor();
-    }
 
-    // Straight line test
-    std::vector<Vector2<int>> pts{{0, 0}, {0, 3}, {3, 3}, {3, 0}};
-    auto poly = std::make_shared<component::TerminalPolygon>(pts);
-    auto transform = std::make_shared<NCTransform>(20, 20, 0);
-    getProxy()->createEntity({poly, transform});
-
-    //'Perfect' Diagonale line test
-    pts = {{0, -2}, {2, 0}, {0, 2}, {-2, 0}};
-    poly = std::make_shared<component::TerminalPolygon>(pts);
-    transform = std::make_shared<NCTransform>(28, 20, 0);
-    getProxy()->createEntity({poly, transform});
-
-    // Slight rotation line test
-    pts = {{3, 0}, {0, 1}, {1, 4}, {4, 3}};
-    poly = std::make_shared<component::TerminalPolygon>(pts, TerminalColor::Color::RED);
-    transform = std::make_shared<NCTransform>(36, 20, 0);
-    getProxy()->createEntity({poly, transform});
+    testNCursesAttributes(getProxy());
+    testNCursesSystemExecution(getProxy());
+    testNCursesTextInput(getProxy());
   }
 
   void NCurses::atRemove()

@@ -38,9 +38,8 @@ set(LIBRARY_INSTALL_DIR ${INSTALL_FOLDER}/lib)
 set(INCLUDE_INSTALL_DIR ${INSTALL_FOLDER}/include)
 
 if(UNIX)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -W -Wall -Wextra")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -W -Wall -Wextra -Wl,--no-undefined")
   set(CMAKE_CXX_FLAGS_DEBUG "-g3 -DDEBUG -fsanitize=address,undefined")
-  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wl,--no-undefined")
 endif(UNIX)
 
 add_subdirectory(./lel_library)

@@ -1,35 +1,24 @@
-set(NAME NCursesSystem)
+set(NAME TextInputUpdater)
 
-file(GLOB SRCS
-  *.cpp
-  *.hh
-  *.hpp
-  ../S_lib.hh)
+file(GLOB SRCS *.cpp *.hh *.hpp ../S_lib.hh)
 set(DIRS
-  ${PROJECT_SOURCE_DIR}
-  ${CMAKE_BINARY_DIR})
+  ${CMAKE_BINARY_DIR}
+  ${PROJECT_SOURCE_DIR})
 
 add_library(${NAME} SHARED ${SRCS})
 target_include_directories(${NAME} PUBLIC ${DIRS})
 # IDLIB_NAME variable available from ECS/S/CMakeLists.txt
 target_link_libraries(${NAME} PUBLIC
-  ncurses
-
   ${IDLIB_NAME}
-  CoreProxy
+  CIDGen
+  EManager
 
+  OSDLLoader
   EntityLogic
 
-  EManager
-  CLISystemEvent
-  CoreEvent
-
   TextInput
-  Transform
-  TerminalComponents
-  Commands
+  CoreProxy
   )
-
 set_target_properties(${NAME} PROPERTIES IMPORTED_LOCATION ${SYS_OUTPUT_LOCATION})
 generate_export_header(${NAME})
 

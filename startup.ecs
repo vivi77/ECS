@@ -1,3 +1,5 @@
 libDebugSystem.so
 libCLISystem.so
+libTextInputUpdater.so
+libCommandsInterpreter.so
 libNCursesSystem.so

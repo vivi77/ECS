@@ -1,6 +1,7 @@
 #pragma once
 
 #include "C/BaseComp/BaseComp.hh"
+#include "C/IDComponent.hh"
 #include "E/EManager/EManager.hh"
 #include "Utility/TemplateUniqueID.hpp"
 #include "Utility/meta.hpp"
@@ -19,7 +20,8 @@ namespace lel::ecs::component
       : BaseComp{entityOwnerID}
     {}
 
-    virtual ~CRTPC() = default;
+    ~CRTPC() override = default;
+
     ID getID() const final
     {
       return getComponentID();
