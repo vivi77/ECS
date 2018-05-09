@@ -4,6 +4,14 @@
 #include "E/TextInputUpdaterEvents/TextInputUpdaterEventsIn.hpp"
 #include "E/TextInputUpdaterEvents/TextInputUpdaterEventsOut.hpp"
 
+namespace
+{
+  bool isTextInputValidForUpdate(const lel::ecs::component::TextInputState& obj)
+  {
+    return obj.active && obj.focused;
+  }
+} /* ! */
+
 namespace lel::ecs::system
 {
   TextInputUpdater::TextInputUpdater(std::unique_ptr<CoreProxy>& proxy)
@@ -68,12 +76,12 @@ namespace lel::ecs::system
           std::for_each(std::begin(_components), std::end(_components),
             [&ev, isBroadcast, this](auto& item) -> void
             {
+              if (!::isTextInputValidForUpdate(*item.inputStateComp))
+                return ;
+
               const auto itemID = item.inputComp->textInputID;
               if (isBroadcast || itemID == ev->getReceiverID())
               {
-                if (!item.inputStateComp->active || !item.inputStateComp->focused)
-                  return ;
-
                 const auto c = ev->getChar();
                 if (item.inputComp->triggerCharacter == c)
                 {
@@ -90,11 +98,11 @@ namespace lel::ecs::system
           std::for_each(std::begin(_components), std::end(_components),
             [&ev, isBroadcast](auto& item)
             {
+              if (!::isTextInputValidForUpdate(*item.inputStateComp))
+                return ;
+
               if (isBroadcast || item.inputComp->textInputID == ev->getReceiverID())
               {
-                if (!item.inputStateComp->active || !item.inputStateComp->focused)
-                  return ;
-
                 component::removeLastChar(*item.inputComp);
                 item.textComp->text = item.inputComp->input.c_str();
               }
