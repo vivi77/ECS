@@ -11,7 +11,7 @@ target_include_directories(${NAME} PUBLIC ${DIRS})
 target_link_libraries(${NAME} PUBLIC
   ${IDLIB_NAME}
   EManager
-  CoreEvent
+  #CoreEvent
   CLISystemEvent
   # From lel_library
   CLIParser)

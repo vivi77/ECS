@@ -7,7 +7,7 @@
 #include <curses.h>
 #include <algorithm>
 
-#include "E/CoreEvent/CoreEvent.hh"
+//#include "E/CoreEvent/CoreEvent.hh"
 #include "E/TextInputUpdaterEvents/TextInputUpdaterEventsIn.hpp"
 #include "Entity/EntityManager.hh"
 #include "C/TextInput/TextInput.hh"
@@ -195,10 +195,10 @@ namespace
       std::unordered_map<std::string, lel::ecs::component::CommandsStr::Fct>{
         {"help", [](){ std::cout << "help, quit\n"; }},
         {"exit", [&proxy](){
-          proxy->fire<lel::ecs::event::CoreEvent>(lel::ecs::event::CoreEvent::Type::EXIT);
+          //proxy->fire<lel::ecs::event::CoreEvent>(lel::ecs::event::CoreEvent::Type::EXIT);
         }},
         {"quit", [&proxy](){
-          proxy->fire<lel::ecs::event::CoreEvent>(lel::ecs::event::CoreEvent::Type::EXIT);
+          //proxy->fire<lel::ecs::event::CoreEvent>(lel::ecs::event::CoreEvent::Type::EXIT);
         }},
       }
     );
