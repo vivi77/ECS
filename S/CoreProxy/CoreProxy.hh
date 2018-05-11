@@ -19,9 +19,14 @@ namespace lel::ecs
     using SystemContainer = std::list<CoreSystemData>; //Core::'Container of the systems'
 
   public:
-    CoreProxy(SystemContainer&, entity::EntityManager&, event::EManager&);
+    CoreProxy(SystemContainer&, entity::EntityManager&, event::EManager&, bool&);
+
     entity::EntityManager::EntityPtr createEntity(std::initializer_list<entity::EntityManager::ComponentPtr>);
     void destroyEntity(const entity::EntityManager::ID id);
+    void stopCore();
+    void addSystem(const std::string&);
+    void removeSystem();
+    void reloadSystem();
 
     template <class Event, typename ... Args>
     void fire(Args&& ... args)
@@ -33,5 +38,6 @@ namespace lel::ecs
     SystemContainer& _systems;
     entity::EntityManager& _entityManager;
     event::EManager& _eventManager;
+    bool& _quit;
   };
 } /* !lel::ecs */

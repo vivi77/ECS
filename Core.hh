@@ -18,6 +18,8 @@ namespace lel::ecs
     Core();
     virtual ~Core() = default;
     void run();
+    void addSystem(const std::string&);
+
     void update(const IEListener::EPtr&) override;
 
   private:

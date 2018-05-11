@@ -13,10 +13,14 @@ namespace
 
 namespace lel::ecs
 {
-  CoreProxy::CoreProxy(SystemContainer& systems, entity::EntityManager& manager, event::EManager& eventManager)
+  CoreProxy::CoreProxy(SystemContainer& systems,
+                       entity::EntityManager& manager,
+                       event::EManager& eventManager,
+                       bool& quit)
     : _systems{systems}
     , _entityManager{manager}
     , _eventManager{eventManager}
+    , _quit{quit}
   {}
 
   entity::EntityManager::EntityPtr CoreProxy::createEntity(std::initializer_list<entity::EntityManager::ComponentPtr> il)
@@ -44,5 +48,22 @@ namespace lel::ecs
         eventType = event::EntityManagerEvent::Type::ENTITY_DESTROYED;
     }
     _eventManager.fire<event::EntityManagerEvent>(eventType, id);
+  }
+
+  void CoreProxy::stopCore()
+  {
+    _quit = true;
+  }
+
+  void CoreProxy::addSystem(const std::string& path)
+  {
+  }
+
+  void CoreProxy::removeSystem()
+  {
+  }
+
+  void CoreProxy::reloadSystem()
+  {
   }
 } /* !lel::ecs */
