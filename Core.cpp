@@ -91,7 +91,7 @@ namespace lel::ecs
 
   void Core::delayedEventUpdate()
   {
-    updateAddRequest(_addRequest, _data);
+    updateAddRequest(_data);
     updateRemoveRequest(_remRequest, _data);
   }
 
@@ -151,32 +151,35 @@ namespace lel::ecs
     startup.applyOnPaths(libFetcher);
   }
 
-  void Core::updateAddRequest(std::list<std::string>& addRequest, std::list<lel::ecs::CoreSystemData>& datalist)
+  void Core::updateAddRequest(std::list<lel::ecs::CoreSystemData>& datalist)
   {
-    for (const auto& addSysPath : addRequest)
+    for (auto& proxy : _proxies)
     {
-      lel::ecs::CoreSystemData data;
-      data.path = lel::ecs::Core::sysLibPath;
-      data.path += addSysPath;
-
-      if (lel::OSDLLoader::isLibraryLoaded(addSysPath.c_str()))
+      for (const auto& sysPath : proxy._systemsToAdd)
       {
-        //_eventManager.fire<lel::ecs::event::CoreEvent>(lel::ecs::event::CoreEvent::Type::ALREADY_ADDED_SYSTEM,
-                                                       //data.path.u8string());
-        continue ;
-      }
+        CoreSystemData data;
+        data.path = Core::sysLibPath;
+        data.path += sysPath;
 
-      data.loader.loadLibrary(data.path.u8string().c_str());
-      if (trySystemRegistering(data))
-      {
-        datalist.emplace_back(std::move(data));
-        //_eventManager.fire<lel::ecs::event::CoreEvent>(lel::ecs::event::CoreEvent::Type::ADD_SYSTEM_SUCCESS,
-                                                       //datalist.back().path.u8string(),
-                                                       //to_string(datalist.back().sys.get()),
-                                                       //std::to_string(datalist.back().sys->getID()));
+        if (lel::OSDLLoader::isLibraryLoaded(sysPath.c_str()))
+        {
+          //_eventManager.fire<lel::ecs::event::CoreEvent>(lel::ecs::event::CoreEvent::Type::ALREADY_ADDED_SYSTEM,
+                                                         //data.path.u8string());
+          continue ;
+        }
+
+        data.loader.loadLibrary(data.path.u8string().c_str());
+        if (trySystemRegistering(data))
+        {
+          datalist.emplace_back(std::move(data));
+          //_eventManager.fire<lel::ecs::event::CoreEvent>(lel::ecs::event::CoreEvent::Type::ADD_SYSTEM_SUCCESS,
+                                                         //datalist.back().path.u8string(),
+                                                         //to_string(datalist.back().sys.get()),
+                                                         //std::to_string(datalist.back().sys->getID()));
+        }
       }
+      proxy._systemsToAdd.clear();
     }
-    addRequest.clear();
   }
 
   void Core::updateRemoveRequest(std::list<std::string>& removeRequest, std::list<lel::ecs::CoreSystemData>& datalist)

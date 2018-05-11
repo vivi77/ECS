@@ -27,7 +27,6 @@ namespace lel::ecs::system
           }
 
           auto sysPath = o.getArgs()[0]->getTerminal();
-          //getProxy()->fire<event::CoreEvent>(event::CoreEvent::Type::ADD_SYSTEM, sysPath);
           getProxy().addSystem(sysPath);
         }
       },
@@ -64,7 +63,7 @@ namespace lel::ecs::system
         if (expr->getType() == CLIParserType::CANCEL)
         {
           std::cout << "quit\n";
-          //getProxy()->fire<event::CoreEvent>(event::CoreEvent::Type::EXIT);
+          getProxy().stopCore();
         }
         else if (expr->getType() != CLIParserType::EOL)
           std::cout << "This is not a command. (Type: " << expr->getType() << ")\n";

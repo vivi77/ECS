@@ -44,5 +44,8 @@ namespace lel::ecs
     bool& _quit;
 
     std::vector<std::string> _systemsToAdd;
+
+    // Authorized as it should be an extension of Core for system usage
+    friend Core;
   };
 } /* !lel::ecs */

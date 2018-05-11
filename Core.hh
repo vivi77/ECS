@@ -29,7 +29,7 @@ namespace lel::ecs
     void delayedEventUpdate();
     bool trySystemRegistering(lel::ecs::CoreSystemData&);
     void setupData();
-    void updateAddRequest(std::list<std::string>&, std::list<CoreSystemData>&);
+    void updateAddRequest(std::list<CoreSystemData>&);
     void updateRemoveRequest(std::list<std::string>&, std::list<CoreSystemData>&);
     void reverseClear(std::list<CoreSystemData>&);
 
