@@ -28,7 +28,7 @@ namespace lel::ecs
     void destroyEntity(const entity::EntityManager::ID id);
     void stopCore();
     void addSystem(const std::string&);
-    void removeSystem();
+    void removeSystem(const std::string&);
     void reloadSystem();
 
     template <class Event, typename ... Args>
@@ -44,6 +44,7 @@ namespace lel::ecs
     bool& _quit;
 
     std::vector<std::string> _systemsToAdd;
+    std::vector<std::string> _systemsToRemove;
 
     // Authorized as it should be an extension of Core for system usage
     friend Core;

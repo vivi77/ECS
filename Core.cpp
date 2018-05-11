@@ -57,26 +57,8 @@ namespace lel::ecs
     reverseClear(_data);
   }
 
-  void Core::update(const IEListener::EPtr& e)
+  void Core::update(const IEListener::EPtr&)
   {
-    //if (e->getID() == event::CoreEvent::getEventID())
-    //{
-      //const auto event = std::static_pointer_cast<event::CoreEvent>(e);
-      //switch (event->getType())
-      //{
-        //case event::CoreEvent::Type::EXIT:
-          //stopCore();
-          //break;
-        //case event::CoreEvent::Type::ADD_SYSTEM:
-          //_addRequest.emplace_back(event->getData()[0]);
-          //break;
-        //case event::CoreEvent::Type::REM_SYSTEM:
-          //_remRequest.emplace_back(event->getData()[0]);
-          //break;
-        //default:
-          //break;
-      //}
-    //}
   }
 
   bool Core::shouldQuit() const
@@ -92,7 +74,7 @@ namespace lel::ecs
   void Core::delayedEventUpdate()
   {
     updateAddRequest(_data);
-    updateRemoveRequest(_remRequest, _data);
+    updateRemoveRequest(_data);
   }
 
   bool Core::trySystemRegistering(CoreSystemData& data)
@@ -182,36 +164,35 @@ namespace lel::ecs
     }
   }
 
-  void Core::updateRemoveRequest(std::list<std::string>& removeRequest, std::list<lel::ecs::CoreSystemData>& datalist)
+  void Core::updateRemoveRequest(std::list<CoreSystemData>& datalist)
   {
-    for (const auto& removeSysPath : removeRequest)
+    for (auto& proxy : _proxies)
     {
-      auto systemPath = removeSysPath;
-
-      auto beginIt = std::begin(datalist);
-      auto endIt = std::end(datalist);
-      auto pred = [&systemPath](const lel::ecs::CoreSystemData& data) -> bool
+      for (const auto& sysPath : proxy._systemsToRemove)
       {
-        return data.path.filename() == systemPath;
-      };
-      auto it = std::find_if(beginIt, endIt, pred);
+        const auto endIt = std::end(datalist);
+        const auto pred = [&sysPath](const CoreSystemData& data) -> bool
+        {
+          return data.path.filename() == sysPath;
+        };
+        const auto it = std::find_if(std::begin(datalist), endIt, pred);
+        if (it == endIt)
+        {
+          //_eventManager.fire<event::CoreEvent>(event::CoreEvent::Type::SYSTEM_NOT_FOUND, systemPath);
+          continue;
+        }
 
-      if (it == endIt)
-      {
-        //_eventManager.fire<event::CoreEvent>(event::CoreEvent::Type::SYSTEM_NOT_FOUND, systemPath);
-        continue;
+        if (it->sys->isListener())
+          _eventManager.deregisterListener(castToListener(it->sys));
+        it->sys->atRemove();
+        //_eventManager.fire<event::CoreEvent>(event::CoreEvent::Type::REM_SYSTEM_SUCCESS,
+                                             //it->path.u8string(),
+                                             //to_string(it->sys.get()),
+                                             //std::to_string(it->sys->getID()));
+        datalist.erase(it);
       }
-
-      if (it->sys->isListener())
-        _eventManager.deregisterListener(castToListener(it->sys));
-      it->sys->atRemove();
-      //_eventManager.fire<event::CoreEvent>(event::CoreEvent::Type::REM_SYSTEM_SUCCESS,
-                                           //it->path.u8string(),
-                                           //to_string(it->sys.get()),
-                                           //std::to_string(it->sys->getID()));
-      datalist.erase(it);
+      proxy._systemsToRemove.clear();
     }
-    removeRequest.clear();
   }
 
   void Core::reverseClear(std::list<CoreSystemData>& container)

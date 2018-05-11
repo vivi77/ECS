@@ -27,18 +27,16 @@ namespace lel::ecs
     bool shouldQuit() const;
     void stopCore();
     void delayedEventUpdate();
-    bool trySystemRegistering(lel::ecs::CoreSystemData&);
+    bool trySystemRegistering(CoreSystemData&);
     void setupData();
     void updateAddRequest(std::list<CoreSystemData>&);
-    void updateRemoveRequest(std::list<std::string>&, std::list<CoreSystemData>&);
+    void updateRemoveRequest(std::list<CoreSystemData>&);
     void reverseClear(std::list<CoreSystemData>&);
 
   private:
     bool _quit = false;
     entity::EntityManager _entityManager;
     event::EManager _eventManager;
-    std::list<std::string> _addRequest;
-    std::list<std::string> _remRequest;
     std::list<CoreSystemData> _data;
     std::list<CoreProxy> _proxies;
 

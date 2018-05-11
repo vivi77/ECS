@@ -41,7 +41,7 @@ namespace lel::ecs::system
           }
 
           auto sysPath = o.getArgs()[0]->getTerminal();
-          //getProxy()->fire<event::CoreEvent>(event::CoreEvent::Type::REM_SYSTEM, sysPath);
+          getProxy().removeSystem(sysPath);
         }
       },
     } //CLI::_cmds end of initialization

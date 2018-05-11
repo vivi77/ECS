@@ -196,6 +196,10 @@ namespace
         {"help", [](){ std::cout << "help, quit\n"; }},
         {"exit", [&proxy](){ proxy.stopCore(); }},
         {"quit", [&proxy](){ proxy.stopCore(); }},
+        //{"exit", [&proxy](const std::string&){ proxy.stopCore(); }},
+        //{"quit", [&proxy](const std::string&){ proxy.stopCore(); }},
+        //{"add", [&proxy](const std::string& path){ proxy.addSystem(path); }},
+        //{"remove", [&proxy](const std::string& path){ proxy.removeSystem(path); }},
       }
     );
     auto inputPoly = std::make_shared<lel::ecs::component::TerminalPolygon>(
