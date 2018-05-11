@@ -57,6 +57,7 @@ namespace lel::ecs
 
   void CoreProxy::addSystem(const std::string& path)
   {
+    _systemsToAdd.emplace_back(path);
   }
 
   void CoreProxy::removeSystem()

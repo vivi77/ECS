@@ -14,7 +14,7 @@ namespace
 
 namespace lel::ecs::system
 {
-  TextInputUpdater::TextInputUpdater(std::unique_ptr<CoreProxy>& proxy)
+  TextInputUpdater::TextInputUpdater(CoreProxy& proxy)
     : CRTPS{proxy}
   {
   }
@@ -85,7 +85,7 @@ namespace lel::ecs::system
                 const auto c = ev->getChar();
                 if (item.inputComp->triggerCharacter == c)
                 {
-                  getProxy()->fire<TIEventOut>(itemID, item.inputComp->input);
+                  getProxy().fire<TIEventOut>(itemID, item.inputComp->input);
                   item.inputComp->input.clear();
                 }
                 else

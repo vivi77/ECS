@@ -3,7 +3,6 @@
 //#include "E/CoreEvent/CoreEvent.hh"
 #include "E/EManager/EManager.hh"
 #include "StartupLoader.hh"
-#include "S/CoreProxy/CoreProxy.hh"
 #include "S/IS.hh"
 #include "S/IDSystem.hh"
 #include <iostream>
@@ -96,7 +95,7 @@ namespace lel::ecs
     updateRemoveRequest(_remRequest, _data);
   }
 
-  bool Core::trySystemRegistering(lel::ecs::CoreSystemData& data)
+  bool Core::trySystemRegistering(CoreSystemData& data)
   {
     //using CoreEvent = lel::ecs::event::CoreEvent;
 
@@ -109,8 +108,8 @@ namespace lel::ecs
       return false;
     }
 
-    auto ctor = data.loader.getSymbol<lel::ecs::system::IS*(*)(CoreProxy*)>("create");
-    auto dtor = data.loader.getSymbol<void(*)(lel::ecs::system::IS*)>("destroy");
+    auto ctor = data.loader.getSymbol<system::IS*(*)(CoreProxy&)>("create");
+    auto dtor = data.loader.getSymbol<void(*)(system::IS*)>("destroy");
     if (!ctor.isValid() || !dtor.isValid())
     {
       //_eventManager.fire<CoreEvent>(CoreEvent::Type::INVALID_SYSTEM,
@@ -119,8 +118,8 @@ namespace lel::ecs
       return false;
     }
 
-    auto proxy = new CoreProxy{_data, _entityManager, _eventManager, _quit};
-    data.sys = std::shared_ptr<lel::ecs::system::IS>(ctor(proxy), dtor);
+    _proxies.emplace_back(_data, _entityManager, _eventManager, _quit);
+    data.sys = std::shared_ptr<system::IS>(ctor(_proxies.back()), dtor);
     data.sys->setup();
     if (data.sys->isListener())
       _eventManager.registerListener(castToListener(data.sys));

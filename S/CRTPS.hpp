@@ -16,8 +16,8 @@ namespace lel::ecs::system
     using ID = typename IS::ID;
 
   public:
-    CRTPS(std::unique_ptr<CoreProxy>& proxy)
-      : _proxy{std::move(proxy)}
+    CRTPS(CoreProxy& proxy)
+      : _proxy{proxy}
     {}
 
     virtual ~CRTPS() = default;
@@ -32,7 +32,7 @@ namespace lel::ecs::system
       return std::is_base_of_v<event::IEListener, D>;
     }
 
-    std::unique_ptr<CoreProxy>& getProxy()
+    CoreProxy& getProxy()
     {
       return _proxy;
     }
@@ -44,7 +44,7 @@ namespace lel::ecs::system
 
   private:
     static ID _id;
-    std::unique_ptr<CoreProxy> _proxy;
+    CoreProxy& _proxy;
   };
 
   template <class D>

@@ -22,7 +22,7 @@ namespace lel::ecs::system
     };
 
   public:
-    CommandsInterpreter(std::unique_ptr<CoreProxy>& proxy);
+    CommandsInterpreter(CoreProxy& proxy);
 
     ~CommandsInterpreter() override = default;
 

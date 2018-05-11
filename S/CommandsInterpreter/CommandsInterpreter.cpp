@@ -3,7 +3,7 @@
 
 namespace lel::ecs::system
 {
-  CommandsInterpreter::CommandsInterpreter(std::unique_ptr<CoreProxy>& proxy)
+  CommandsInterpreter::CommandsInterpreter(CoreProxy& proxy)
     : CRTPS{proxy}
   {}
 

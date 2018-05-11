@@ -5,7 +5,7 @@
 
 namespace lel::ecs::system
 {
-  CLI::CLI(std::unique_ptr<CoreProxy>& proxy)
+  CLI::CLI(CoreProxy& proxy)
     : CRTPS{proxy}
     , _cliparser{}
     , _cmds{
@@ -13,7 +13,7 @@ namespace lel::ecs::system
         "quit",
         [this](const CmdOutput&) -> void
         {
-          getProxy()->stopCore();
+          getProxy().stopCore();
         }
       },
       {
@@ -28,7 +28,7 @@ namespace lel::ecs::system
 
           auto sysPath = o.getArgs()[0]->getTerminal();
           //getProxy()->fire<event::CoreEvent>(event::CoreEvent::Type::ADD_SYSTEM, sysPath);
-          getProxy()->addSystem(sysPath);
+          getProxy().addSystem(sysPath);
         }
       },
       {

@@ -1,9 +1,10 @@
 #pragma once
 
+#include "CoreSystemData.hh"
 #include "E/IEListener.hh"
 #include "E/EManager/EManager.hh"
-#include "CoreSystemData.hh"
 #include "Entity/EntityManager.hh"
+#include "S/CoreProxy/CoreProxy.hh"
 #include <memory>
 #include <list>
 
@@ -39,6 +40,7 @@ namespace lel::ecs
     std::list<std::string> _addRequest;
     std::list<std::string> _remRequest;
     std::list<CoreSystemData> _data;
+    std::list<CoreProxy> _proxies;
 
   public:
     static std::string_view sysLibPath;

@@ -13,6 +13,9 @@ namespace lel::ecs
   //   It provides services that Core should provide. But it does not need to the
   //   users of theses services to include/link against Core (which is not in a
   //   shared library)
+  //
+  // MUST NOT CONTAIN A Core class inside. Else this class does not do its work
+  // which is uncoupling the Core class and all systems
   class COREPROXY_EXPORT CoreProxy
   {
   public:
@@ -39,5 +42,7 @@ namespace lel::ecs
     entity::EntityManager& _entityManager;
     event::EManager& _eventManager;
     bool& _quit;
+
+    std::vector<std::string> _systemsToAdd;
   };
 } /* !lel::ecs */
