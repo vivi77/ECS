@@ -1,12 +1,11 @@
 #include "CLI.hh"
-#include "E/CoreEvent/CoreEvent.hh"
 #include "E/EManager/EManager.hh"
 #include "E/CLISystemEvent/CLISystemEvent.hh"
 #include <experimental/source_location>
 
 namespace lel::ecs::system
 {
-  CLI::CLI(std::unique_ptr<CoreProxy>& proxy)
+  CLI::CLI(CoreProxy& proxy)
     : CRTPS{proxy}
     , _cliparser{}
     , _cmds{
@@ -14,7 +13,7 @@ namespace lel::ecs::system
         "quit",
         [this](const CmdOutput&) -> void
         {
-          getProxy()->fire<event::CoreEvent>(event::CoreEvent::Type::EXIT);
+          getProxy().stopCore();
         }
       },
       {
@@ -28,7 +27,7 @@ namespace lel::ecs::system
           }
 
           auto sysPath = o.getArgs()[0]->getTerminal();
-          getProxy()->fire<event::CoreEvent>(event::CoreEvent::Type::ADD_SYSTEM, sysPath);
+          getProxy().addSystem(sysPath);
         }
       },
       {
@@ -42,7 +41,7 @@ namespace lel::ecs::system
           }
 
           auto sysPath = o.getArgs()[0]->getTerminal();
-          getProxy()->fire<event::CoreEvent>(event::CoreEvent::Type::REM_SYSTEM, sysPath);
+          getProxy().removeSystem(sysPath);
         }
       },
     } //CLI::_cmds end of initialization
@@ -64,7 +63,7 @@ namespace lel::ecs::system
         if (expr->getType() == CLIParserType::CANCEL)
         {
           std::cout << "quit\n";
-          getProxy()->fire<event::CoreEvent>(event::CoreEvent::Type::EXIT);
+          getProxy().stopCore();
         }
         else if (expr->getType() != CLIParserType::EOL)
           std::cout << "This is not a command. (Type: " << expr->getType() << ")\n";

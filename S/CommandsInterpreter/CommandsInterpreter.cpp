@@ -1,9 +1,10 @@
 #include "CommandsInterpreter.hh"
 #include "E/TextInputUpdaterEvents/TextInputUpdaterEventsOut.hpp"
+#include <sstream>
 
 namespace lel::ecs::system
 {
-  CommandsInterpreter::CommandsInterpreter(std::unique_ptr<CoreProxy>& proxy)
+  CommandsInterpreter::CommandsInterpreter(CoreProxy& proxy)
     : CRTPS{proxy}
   {}
 
@@ -55,8 +56,8 @@ namespace lel::ecs::system
           {
             case event::TextInputUpdaterEventsOut<std::string>::Type::INPUT_SEND:
               {
-                const auto key = event->getInput();
-                const auto it = ent.commands->_functions.find(key);
+                const auto cmd = event->getInput();
+                const auto it = ent.commands->_functions.find(cmd);
                 if (it != std::end(ent.commands->_functions))
                   it->second();
               }

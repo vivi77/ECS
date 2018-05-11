@@ -29,7 +29,7 @@ namespace lel::ecs::system
     };
 
   public:
-    TextInputUpdater(std::unique_ptr<CoreProxy>& proxy);
+    TextInputUpdater(CoreProxy& proxy);
     ~TextInputUpdater() override = default;
     void exec() override;
     void registerEntity(const EntityPtr&) override;

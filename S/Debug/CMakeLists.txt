@@ -17,7 +17,7 @@ target_link_libraries(${NAME} PUBLIC
   EManager
   EManagerEvent
   CManagerEvent
-  CoreEvent
+  #CoreEvent
   CLISystemEvent
   EntityManagerEvent
   ${IDLIB_NAME}

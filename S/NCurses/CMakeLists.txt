@@ -22,7 +22,7 @@ target_link_libraries(${NAME} PUBLIC
 
   EManager
   CLISystemEvent
-  CoreEvent
+  #CoreEvent
 
   TextInput
   Transform

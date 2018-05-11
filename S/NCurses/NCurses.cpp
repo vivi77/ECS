@@ -7,7 +7,7 @@
 #include <curses.h>
 #include <algorithm>
 
-#include "E/CoreEvent/CoreEvent.hh"
+//#include "E/CoreEvent/CoreEvent.hh"
 #include "E/TextInputUpdaterEvents/TextInputUpdaterEventsIn.hpp"
 #include "Entity/EntityManager.hh"
 #include "C/TextInput/TextInput.hh"
@@ -148,7 +148,7 @@ namespace
     attrset(A_NORMAL);
   }
 
-  void testNCursesAttributes(std::unique_ptr<lel::ecs::CoreProxy>& proxy)
+  void testNCursesAttributes(lel::ecs::CoreProxy& proxy)
   {
     if (start_color() == OK)
     {
@@ -157,35 +157,35 @@ namespace
         auto draw = std::make_shared<lel::ecs::component::TerminalText>(
           "a", realColor[fg], realColor[bg], termattr[attr]);
         auto transform = std::make_shared<lel::ecs::system::NCurses::NCTransform>(fg * 8 + attr, bg, 0);
-        proxy->createEntity({draw, transform});
+        proxy.createEntity({draw, transform});
       };
       ::execOnColorsAndAttr(callback);
       ::initNCursesColor();
     }
   }
 
-  void testNCursesSystemExecution(std::unique_ptr<lel::ecs::CoreProxy>& proxy)
+  void testNCursesSystemExecution(lel::ecs::CoreProxy& proxy)
   {
     // Straight line test
     std::vector<lel::ecs::Vector2<int>> pts{{0, 0}, {0, 3}, {3, 3}, {3, 0}};
     auto poly = std::make_shared<lel::ecs::component::TerminalPolygon>(pts);
     auto transform = std::make_shared<lel::ecs::system::NCurses::NCTransform>(20, 20, 0);
-    proxy->createEntity({poly, transform});
+    proxy.createEntity({poly, transform});
 
     //'Perfect' Diagonale line test
     pts = {{0, -2}, {2, 0}, {0, 2}, {-2, 0}};
     poly = std::make_shared<lel::ecs::component::TerminalPolygon>(pts);
     transform = std::make_shared<lel::ecs::system::NCurses::NCTransform>(28, 20, 0);
-    proxy->createEntity({poly, transform});
+    proxy.createEntity({poly, transform});
 
     // Slight rotation line test
     pts = {{3, 0}, {0, 1}, {1, 4}, {4, 3}};
     poly = std::make_shared<lel::ecs::component::TerminalPolygon>(pts, TerminalColor::Color::RED);
     transform = std::make_shared<lel::ecs::system::NCurses::NCTransform>(36, 20, 0);
-    proxy->createEntity({poly, transform});
+    proxy.createEntity({poly, transform});
   }
 
-  void testNCursesTextInput(std::unique_ptr<lel::ecs::CoreProxy>& proxy)
+  void testNCursesTextInput(lel::ecs::CoreProxy& proxy)
   {
     auto textInput = std::make_shared<lel::ecs::component::TextInputStr>("input");
     textInput->triggerCharacter = '\n';
@@ -194,12 +194,12 @@ namespace
       "input5",
       std::unordered_map<std::string, lel::ecs::component::CommandsStr::Fct>{
         {"help", [](){ std::cout << "help, quit\n"; }},
-        {"exit", [&proxy](){
-          proxy->fire<lel::ecs::event::CoreEvent>(lel::ecs::event::CoreEvent::Type::EXIT);
-        }},
-        {"quit", [&proxy](){
-          proxy->fire<lel::ecs::event::CoreEvent>(lel::ecs::event::CoreEvent::Type::EXIT);
-        }},
+        {"exit", [&proxy](){ proxy.stopCore(); }},
+        {"quit", [&proxy](){ proxy.stopCore(); }},
+        //{"exit", [&proxy](const std::string&){ proxy.stopCore(); }},
+        //{"quit", [&proxy](const std::string&){ proxy.stopCore(); }},
+        //{"add", [&proxy](const std::string& path){ proxy.addSystem(path); }},
+        //{"remove", [&proxy](const std::string& path){ proxy.removeSystem(path); }},
       }
     );
     auto inputPoly = std::make_shared<lel::ecs::component::TerminalPolygon>(
@@ -209,7 +209,7 @@ namespace
     auto inputText = std::make_shared<lel::ecs::component::TerminalText>("");
     auto inputTextState = std::make_shared<lel::ecs::component::TextInputState>(true, true);
 
-    proxy->createEntity({textInput, cmds, inputPoly, inputTrans, inputText, inputTextState});
+    proxy.createEntity({textInput, cmds, inputPoly, inputTrans, inputText, inputTextState});
 
     auto input2 = std::make_shared<lel::ecs::component::TextInputStr>("input2");
     input2->triggerCharacter = '\n';
@@ -219,7 +219,7 @@ namespace
     auto trans2 = std::make_shared<lel::ecs::system::NCurses::NCTransform>(40, 33, 0);
     auto text2 = std::make_shared<lel::ecs::component::TerminalText>("");
     auto state2 = std::make_shared<lel::ecs::component::TextInputState>(false, true);
-    proxy->createEntity({input2, poly2, trans2, text2, state2});
+    proxy.createEntity({input2, poly2, trans2, text2, state2});
 
     auto input3 = std::make_shared<lel::ecs::component::TextInputStr>("input3");
     input3->triggerCharacter = '\n';
@@ -229,7 +229,7 @@ namespace
     auto trans3 = std::make_shared<lel::ecs::system::NCurses::NCTransform>(40, 36, 0);
     auto text3 = std::make_shared<lel::ecs::component::TerminalText>("");
     auto state3 = std::make_shared<lel::ecs::component::TextInputState>(true, false);
-    proxy->createEntity({input3, poly3, trans3, text3, state3});
+    proxy.createEntity({input3, poly3, trans3, text3, state3});
 
     auto input4 = std::make_shared<lel::ecs::component::TextInputStr>("input4");
     input4->triggerCharacter = '\n';
@@ -239,7 +239,7 @@ namespace
     auto trans4 = std::make_shared<lel::ecs::system::NCurses::NCTransform>(40, 39, 0);
     auto text4 = std::make_shared<lel::ecs::component::TerminalText>("");
     auto state4 = std::make_shared<lel::ecs::component::TextInputState>(false, false);
-    proxy->createEntity({input4, poly4, trans4, text4, state4});
+    proxy.createEntity({input4, poly4, trans4, text4, state4});
 
     auto input5 = std::make_shared<lel::ecs::component::TextInputStr>("input5");
     input5->triggerCharacter = '\n';
@@ -249,13 +249,13 @@ namespace
     auto trans5 = std::make_shared<lel::ecs::system::NCurses::NCTransform>(40, 42, 0);
     auto text5 = std::make_shared<lel::ecs::component::TerminalText>("");
     auto state5 = std::make_shared<lel::ecs::component::TextInputState>(true, true);
-    proxy->createEntity({input5, poly5, trans5, text5, state5});
+    proxy.createEntity({input5, poly5, trans5, text5, state5});
   }
 } /* ! */
 
 namespace lel::ecs::system
 {
-  NCurses::NCurses(std::unique_ptr<CoreProxy>& proxy)
+  NCurses::NCurses(CoreProxy& proxy)
     : CRTPS{proxy}
   {}
 
@@ -265,12 +265,12 @@ namespace lel::ecs::system
     switch (c)
     {
       case 127: // Delete character
-        getProxy()->fire<event::TextInputUpdaterEventsIn<std::string>>("");
+        getProxy().fire<event::TextInputUpdaterEventsIn<std::string>>("");
         clear();
         break;
       case ERR: break; //Ignored
       default:
-        getProxy()->fire<event::TextInputUpdaterEventsIn<std::string>>("", c);
+        getProxy().fire<event::TextInputUpdaterEventsIn<std::string>>("", c);
     }
 
     for (const auto& comp : _polygon)
@@ -367,7 +367,7 @@ namespace lel::ecs::system
 
   void NCurses::setup()
   {
-    getProxy()->fire<event::CLISystemEvent>(event::CLISystemEvent::Type::DISABLE);
+    getProxy().fire<event::CLISystemEvent>(event::CLISystemEvent::Type::DISABLE);
     initscr();
     cbreak();
     noecho();
@@ -381,6 +381,6 @@ namespace lel::ecs::system
   void NCurses::atRemove()
   {
     endwin();
-    getProxy()->fire<event::CLISystemEvent>(event::CLISystemEvent::Type::ENABLE);
+    getProxy().fire<event::CLISystemEvent>(event::CLISystemEvent::Type::ENABLE);
   }
 } /* !lel::ecs::system */

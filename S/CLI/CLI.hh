@@ -35,7 +35,7 @@ namespace lel::ecs::system
   class CLI : public CRTPS<CLI>, public event::IEListener
   {
   public:
-    CLI(std::unique_ptr<CoreProxy>& proxy);
+    CLI(CoreProxy& proxy);
     virtual ~CLI() = default;
     void exec() override;
     void registerEntity(const EntityPtr&) override;
