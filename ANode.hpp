@@ -59,9 +59,7 @@ namespace lel
 
       /** @brief Get node data
        */
-      // 01/03/2018: Is there a reason about why this is virtual ? No reason...
-      // TODO: Remove this virtual and return a copy of the data instead of a
-      // ref
+      // 01/03/2018: Is there a reason about why this is virtual ?
       virtual T& getData()
       {
         return _data;
@@ -122,7 +120,7 @@ namespace lel
        *
        *  @param node A node
        *
-       *  @return It returns whether the node has been added or not
+       *  @return `true` is the node has been added. Else `false`
        */
       // Look comment at the bottom of the file to know why it is not const ref
       virtual bool link(NodePtr node)
@@ -140,7 +138,7 @@ namespace lel
        *
        *  @param node A linked node
        *
-       *  @return It returns whether the node has been removed or not
+       *  @return `true` is the node has been removed. Else `false`
        */
       // Look comment at the bottom of the file to know why it is not const ref
       virtual bool unlink(NodePtr node)

@@ -37,10 +37,7 @@ namespace lel
   class CLIParser : public Parser<CLIProducer, CLIParserOutPolicy>
   {
   public:
-    CLIParser();
-
-  private:
-    IP _p;
+    CLIParser(IP& p);
   };
 } /* !lel */
 
