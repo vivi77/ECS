@@ -39,6 +39,8 @@ namespace lel
   public:
     CLIParser();
 
+    IP& getProducer();
+
   private:
     IP _p;
   };
