@@ -3,6 +3,7 @@
 #include "E/IDEvent.hh"
 #include "E/TextInputUpdaterEvents/TextInputUpdaterEventsIn.hpp"
 #include "E/TextInputUpdaterEvents/TextInputUpdaterEventsOut.hpp"
+#include "E/CoreCommandsEvent/CoreCommandsEvent.hh"
 
 namespace
 {
@@ -85,7 +86,8 @@ namespace lel::ecs::system
                 const auto c = ev->getChar();
                 if (item.inputComp->triggerCharacter == c)
                 {
-                  getProxy().fire<TIEventOut>(itemID, item.inputComp->input);
+                  getProxy().fire<event::CoreCommandsEvent>(item.inputComp->input + "\n");
+                  //getProxy().fire<TIEventOut>(itemID, item.inputComp->input);
                   item.inputComp->input.clear();
                 }
                 else
