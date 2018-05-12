@@ -86,10 +86,22 @@ namespace lel::ecs::system
     if (evID == event::CoreCommandsEvent::getEventID())
     {
       const auto event = std::static_pointer_cast<event::CoreCommandsEvent>(ev);
-      basicParsing(event->getInput());
+      switch (event->getType())
+      {
+        case event::CoreCommandsEvent::Type::CTRL_D:
+          std::cout << "quit\n";
+          getProxy().stopCore();
+          break;
+        case event::CoreCommandsEvent::Type::INPUT:
+          basicParsing(event->getInput());
+          break;
+      }
     }
   }
 
+  // Input format anything without '\n'
+  // Unknown behavior if this is not respected
+  // TODO: Maybe need to change the producer of CLIParser ??
   void CoreCommands::basicParsing(const std::string& input)
   {
     try
@@ -101,15 +113,10 @@ namespace lel::ecs::system
       _parser.consume({lel::CLIProducerType::EOL, lel::CLIProducerType::CTRL_D});
 
       const auto exprType = expr->getType();
-      if (exprType != lel::CLIParserType::COMMAND)
+      if (exprType != lel::CLIParserType::COMMAND
+          && exprType != lel::CLIParserType::EOL)
       {
-        if (exprType == lel::CLIParserType::CANCEL)
-        {
-          std::cout << "quit\n";
-          getProxy().stopCore();
-        }
-        else if (exprType != lel::CLIParserType::EOL)
-          std::cout << "This is not a command. (Type: " << exprType << ")\n";
+        std::cout << "This is not a command. (Type: " << exprType << ")\n";
         return ;
       }
 

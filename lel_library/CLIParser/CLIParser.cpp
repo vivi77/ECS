@@ -18,8 +18,9 @@ namespace lel
     return Precedence::EXPR;
   }
 
-  CLIParser::CLIParser(IP& p)
-    : Parser{p}
+  CLIParser::CLIParser()
+    : Parser{_p}
+    , _p{}
   {
     registerPrefix(CLIProducerType::STRING, std::make_shared<CommandParselet>());
     registerPrefix(CLIProducerType::DASH, std::make_shared<OptionParselet>());

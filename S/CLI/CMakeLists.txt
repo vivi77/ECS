@@ -14,6 +14,7 @@ target_link_libraries(${NAME} PUBLIC
 
   EManager
   #CoreEvent
+  CoreCommandsEvent
   CLISystemEvent
   # From lel_library
   CLIParser
