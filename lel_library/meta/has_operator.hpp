@@ -109,7 +109,7 @@ namespace lel
     METACONCEPT_HAS_BINARY_OPERATOR(multiplication, decltype(std::declval<_LHS>() * std::declval<_RHS>()));
     METACONCEPT_HAS_BINARY_OPERATOR(division, decltype(std::declval<_LHS>() / std::declval<_RHS>()));
     METACONCEPT_HAS_BINARY_OPERATOR(modulo, decltype(std::declval<_LHS>() % std::declval<_RHS>()));
-    METACONCEPT_HAS_UNARY_OPERATOR(bit_not, decltype(&_LHS::operator~)); // TODO: to change
+    METACONCEPT_HAS_UNARY_OPERATOR(bit_not, decltype(&_LHS::operator~));
     METACONCEPT_HAS_BINARY_OPERATOR(bit_and, decltype(std::declval<_LHS>() & std::declval<_RHS>()));
     METACONCEPT_HAS_BINARY_OPERATOR(bit_or, decltype(std::declval<_LHS>() | std::declval<_RHS>()));
     METACONCEPT_HAS_BINARY_OPERATOR(bit_xor, decltype(std::declval<_LHS>() ^ std::declval<_RHS>()));
@@ -117,7 +117,7 @@ namespace lel
     METACONCEPT_HAS_BINARY_OPERATOR(rightshift, decltype(std::declval<_LHS>() >> std::declval<_RHS>()));
 
     // Logical operators
-    METACONCEPT_HAS_UNARY_OPERATOR(neg, decltype(&_LHS::operator!)); // TODO: to change
+    METACONCEPT_HAS_UNARY_OPERATOR(neg, decltype(&_LHS::operator!));
     METACONCEPT_HAS_BINARY_OPERATOR(logic_and, decltype(std::declval<_LHS>() && std::declval<_RHS>()));
     METACONCEPT_HAS_BINARY_OPERATOR(logic_or, decltype(std::declval<_LHS>() || std::declval<_RHS>()));
 

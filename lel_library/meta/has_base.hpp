@@ -23,8 +23,8 @@
 //             decltype can be use.
 //             Allow usage of comma in this chunk of code
 //             The template parameter '_LHS' can be used which is the type send
-//             as argument to the concept. Don't forget the underscore '_' in
-//             the name of parameter
+//             as argument to the concept. Be careful about the underscore '_'
+//             in the name of parameter
 #define METACONCEPT_HAS_BASE(item, name, pre_test, yes, test_ret, ...)         \
   template <class LHS, bool = pre_test>                                        \
   struct has_##item##_##name                                                   \
