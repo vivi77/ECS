@@ -1,6 +1,6 @@
 #include "Core.hh"
 #include "meta/conditional_os.hpp"
-//#include "E/CoreEvent/CoreEvent.hh"
+#include "E/CoreEvent/CoreEvent.hh"
 #include "E/EManager/EManager.hh"
 #include "StartupLoader.hh"
 #include "S/IS.hh"
@@ -39,7 +39,7 @@ namespace lel::ecs
   {
     if (_data.empty())
     {
-      //_eventManager.fire<event::CoreEvent>(event::CoreEvent::Type::CLOSING);
+      _eventManager.fire<event::CoreEvent>(event::CoreEvent::Type::CLOSING);
       return ;
     }
 
@@ -53,7 +53,7 @@ namespace lel::ecs
       delayedEventUpdate();
     }
     _eventManager.deregisterListener(shared_from_this());
-    //_eventManager.fire<event::CoreEvent>(event::CoreEvent::Type::CLOSING);
+    _eventManager.fire<event::CoreEvent>(event::CoreEvent::Type::CLOSING);
     reverseClear(_data);
   }
 
@@ -79,13 +79,13 @@ namespace lel::ecs
 
   bool Core::trySystemRegistering(CoreSystemData& data)
   {
-    //using CoreEvent = lel::ecs::event::CoreEvent;
+    using CoreEvent = lel::ecs::event::CoreEvent;
 
     if (!data.loader.isValid())
     {
-      //_eventManager.fire<CoreEvent>(CoreEvent::Type::SYSTEM_NOT_FOUND,
-                                    //data.path.u8string(),
-                                    //data.loader.getLastError());
+      _eventManager.fire<CoreEvent>(CoreEvent::Type::SYSTEM_NOT_FOUND,
+                                    data.path.u8string(),
+                                    data.loader.getLastError());
       std::cerr << data.loader.getLastError() << "\n";
       return false;
     }
@@ -94,9 +94,9 @@ namespace lel::ecs
     auto dtor = data.loader.getSymbol<void(*)(system::IS*)>("destroy");
     if (!ctor.isValid() || !dtor.isValid())
     {
-      //_eventManager.fire<CoreEvent>(CoreEvent::Type::INVALID_SYSTEM,
-                                    //data.path.filename().u8string(),
-                                    //data.loader.getLastError());
+      _eventManager.fire<CoreEvent>(CoreEvent::Type::INVALID_SYSTEM,
+                                    data.path.filename().u8string(),
+                                    data.loader.getLastError());
       return false;
     }
 
@@ -111,7 +111,7 @@ namespace lel::ecs
 
   void Core::setupData()
   {
-    //using CoreEvent = lel::ecs::event::CoreEvent;
+    using CoreEvent = lel::ecs::event::CoreEvent;
 
     lel::ecs::StartupLoader startup{"startup.ecs"};
 
@@ -124,10 +124,10 @@ namespace lel::ecs
       if (trySystemRegistering(data))
       {
         _data.emplace_back(data);
-        //_eventManager.fire<CoreEvent>(CoreEvent::Type::ADD_SYSTEM_SUCCESS,
-                                      //data.path.u8string(),
-                                      //to_string(data.sys.get()),
-                                      //std::to_string(data.sys->getID()));
+        _eventManager.fire<CoreEvent>(CoreEvent::Type::ADD_SYSTEM_SUCCESS,
+                                      data.path.u8string(),
+                                      to_string(data.sys.get()),
+                                      std::to_string(data.sys->getID()));
       }
     };
     startup.applyOnPaths(libFetcher);
@@ -145,8 +145,8 @@ namespace lel::ecs
 
         if (lel::OSDLLoader::isLibraryLoaded(sysPath.c_str()))
         {
-          //_eventManager.fire<lel::ecs::event::CoreEvent>(lel::ecs::event::CoreEvent::Type::ALREADY_ADDED_SYSTEM,
-                                                         //data.path.u8string());
+          _eventManager.fire<lel::ecs::event::CoreEvent>(lel::ecs::event::CoreEvent::Type::ALREADY_ADDED_SYSTEM,
+                                                         data.path.u8string());
           continue ;
         }
 
@@ -154,10 +154,10 @@ namespace lel::ecs
         if (trySystemRegistering(data))
         {
           datalist.emplace_back(std::move(data));
-          //_eventManager.fire<lel::ecs::event::CoreEvent>(lel::ecs::event::CoreEvent::Type::ADD_SYSTEM_SUCCESS,
-                                                         //datalist.back().path.u8string(),
-                                                         //to_string(datalist.back().sys.get()),
-                                                         //std::to_string(datalist.back().sys->getID()));
+          _eventManager.fire<lel::ecs::event::CoreEvent>(lel::ecs::event::CoreEvent::Type::ADD_SYSTEM_SUCCESS,
+                                                         datalist.back().path.u8string(),
+                                                         to_string(datalist.back().sys.get()),
+                                                         std::to_string(datalist.back().sys->getID()));
         }
       }
       proxy._systemsToAdd.clear();
@@ -178,17 +178,17 @@ namespace lel::ecs
         const auto it = std::find_if(std::begin(datalist), endIt, pred);
         if (it == endIt)
         {
-          //_eventManager.fire<event::CoreEvent>(event::CoreEvent::Type::SYSTEM_NOT_FOUND, systemPath);
+          _eventManager.fire<event::CoreEvent>(event::CoreEvent::Type::SYSTEM_NOT_FOUND, sysPath);
           continue;
         }
 
         if (it->sys->isListener())
           _eventManager.deregisterListener(castToListener(it->sys));
         it->sys->atRemove();
-        //_eventManager.fire<event::CoreEvent>(event::CoreEvent::Type::REM_SYSTEM_SUCCESS,
-                                             //it->path.u8string(),
-                                             //to_string(it->sys.get()),
-                                             //std::to_string(it->sys->getID()));
+        _eventManager.fire<event::CoreEvent>(event::CoreEvent::Type::REM_SYSTEM_SUCCESS,
+                                             it->path.u8string(),
+                                             to_string(it->sys.get()),
+                                             std::to_string(it->sys->getID()));
         datalist.erase(it);
       }
       proxy._systemsToRemove.clear();
@@ -202,10 +202,10 @@ namespace lel::ecs
       if (container.back().sys->isListener())
         _eventManager.deregisterListener(castToListener(container.back().sys));
       container.back().sys->atRemove();
-      //_eventManager.fire<lel::ecs::event::CoreEvent>(lel::ecs::event::CoreEvent::Type::REM_SYSTEM_SUCCESS,
-                                                     //container.back().path.u8string(),
-                                                     //to_string(container.back().sys.get()),
-                                                     //std::to_string(container.back().sys->getID()));
+      _eventManager.fire<lel::ecs::event::CoreEvent>(lel::ecs::event::CoreEvent::Type::REM_SYSTEM_SUCCESS,
+                                                     container.back().path.u8string(),
+                                                     to_string(container.back().sys.get()),
+                                                     std::to_string(container.back().sys->getID()));
       container.pop_back();
     }
   }

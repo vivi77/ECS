@@ -82,7 +82,7 @@ target_link_libraries(${NAME} PUBLIC
   CoreProxy
   EntityLogic
   EManager
-  #CoreEvent
+  CoreEvent
   CManagerEvent)
 target_include_directories(${NAME} PUBLIC
   ${CMAKE_BINARY_DIR}

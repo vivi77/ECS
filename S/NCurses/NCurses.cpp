@@ -7,7 +7,6 @@
 #include <curses.h>
 #include <algorithm>
 
-//#include "E/CoreEvent/CoreEvent.hh"
 #include "E/TextInputUpdaterEvents/TextInputUpdaterEventsIn.hpp"
 #include "C/TextInput/TextInput.hh"
 #include "C/TextInput/TextInputState.hh"
