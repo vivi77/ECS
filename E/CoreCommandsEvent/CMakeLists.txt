@@ -1,4 +1,4 @@
-set(NAME CoreEvent)
+set(NAME CoreCommandsEvent)
 
 file(GLOB SRCS *.cpp)
 file(GLOB HDRS *.hh *.hpp)

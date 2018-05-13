@@ -2,7 +2,7 @@
 #include "E/IE.hh"
 #include "E/IDEvent.hh"
 #include "E/TextInputUpdaterEvents/TextInputUpdaterEventsIn.hpp"
-#include "E/TextInputUpdaterEvents/TextInputUpdaterEventsOut.hpp"
+#include "E/CoreCommandsEvent/CoreCommandsEvent.hh"
 
 namespace
 {
@@ -14,7 +14,7 @@ namespace
 
 namespace lel::ecs::system
 {
-  TextInputUpdater::TextInputUpdater(std::unique_ptr<CoreProxy>& proxy)
+  TextInputUpdater::TextInputUpdater(CoreProxy& proxy)
     : CRTPS{proxy}
   {
   }
@@ -64,7 +64,6 @@ namespace lel::ecs::system
   void TextInputUpdater::update(const EPtr& ptr)
   {
     using TIEventIn = event::TextInputUpdaterEventsIn<std::string>;
-    using TIEventOut = event::TextInputUpdaterEventsOut<std::string>;
 
     if (ptr->getID() == TIEventIn::getEventID())
     {
@@ -85,7 +84,7 @@ namespace lel::ecs::system
                 const auto c = ev->getChar();
                 if (item.inputComp->triggerCharacter == c)
                 {
-                  getProxy()->fire<TIEventOut>(itemID, item.inputComp->input);
+                  getProxy().fire<event::CoreCommandsEvent>(item.inputComp->input + "\n");
                   item.inputComp->input.clear();
                 }
                 else

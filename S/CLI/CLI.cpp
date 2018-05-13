@@ -1,51 +1,14 @@
 #include "CLI.hh"
-#include "E/CoreEvent/CoreEvent.hh"
 #include "E/EManager/EManager.hh"
 #include "E/CLISystemEvent/CLISystemEvent.hh"
+#include "E/CoreCommandsEvent/CoreCommandsEvent.hh"
 #include <experimental/source_location>
 
 namespace lel::ecs::system
 {
-  CLI::CLI(std::unique_ptr<CoreProxy>& proxy)
+  CLI::CLI(CoreProxy& proxy)
     : CRTPS{proxy}
     , _cliparser{}
-    , _cmds{
-      {
-        "quit",
-        [this](const CmdOutput&) -> void
-        {
-          getProxy()->fire<event::CoreEvent>(event::CoreEvent::Type::EXIT);
-        }
-      },
-      {
-        "add",
-        [this](const CmdOutput& o) -> void
-        {
-          if (o.getArgs().size() != 1)
-          {
-            std::cout << "Usage: add <system path>\n";
-            return ;
-          }
-
-          auto sysPath = o.getArgs()[0]->getTerminal();
-          getProxy()->fire<event::CoreEvent>(event::CoreEvent::Type::ADD_SYSTEM, sysPath);
-        }
-      },
-      {
-        "remove",
-        [this](const CmdOutput& o) -> void
-        {
-          if (o.getArgs().size() != 1)
-          {
-            std::cout << "Usage: remove <system path>\n";
-            return ;
-          }
-
-          auto sysPath = o.getArgs()[0]->getTerminal();
-          getProxy()->fire<event::CoreEvent>(event::CoreEvent::Type::REM_SYSTEM, sysPath);
-        }
-      },
-    } //CLI::_cmds end of initialization
     , _enabled{true}
   {}
 
@@ -54,32 +17,16 @@ namespace lel::ecs::system
     if (!_enabled)
       return ;
 
-    try
-    {
-      auto expr = _cliparser.parseExpression();
-      _cliparser.consume({CLIProducerType::EOL, CLIProducerType::CTRL_D});
+    std::cout << "$> ";
+    std::string input;
+    std::getline(std::cin, input);
 
-      if (expr->getType() != CLIParserType::COMMAND)
-      {
-        if (expr->getType() == CLIParserType::CANCEL)
-        {
-          std::cout << "quit\n";
-          getProxy()->fire<event::CoreEvent>(event::CoreEvent::Type::EXIT);
-        }
-        else if (expr->getType() != CLIParserType::EOL)
-          std::cout << "This is not a command. (Type: " << expr->getType() << ")\n";
-        return ;
-      }
-
-      auto cmd = std::static_pointer_cast<CmdOutput>(expr);
-      _cmds.exec(*cmd);
-    }
-    catch (const std::exception& e)
+    if (std::cin.eof())
+      getProxy().fire<event::CoreCommandsEvent>();
+    else if (std::cin.good())
     {
-      std::cerr << std::experimental::source_location::current().function_name()
-        << ": " << e.what() << "\n";
-      _cliparser.reset();
-      return ;
+      input += '\n';
+      getProxy().fire<event::CoreCommandsEvent>(input);
     }
   }
 

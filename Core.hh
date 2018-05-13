@@ -1,9 +1,10 @@
 #pragma once
 
+#include "CoreSystemData.hh"
 #include "E/IEListener.hh"
 #include "E/EManager/EManager.hh"
-#include "CoreSystemData.hh"
 #include "Entity/EntityManager.hh"
+#include "S/CoreProxy/CoreProxy.hh"
 #include <memory>
 #include <list>
 
@@ -18,25 +19,26 @@ namespace lel::ecs
     Core();
     virtual ~Core() = default;
     void run();
+    void addSystem(const std::string&);
+
     void update(const IEListener::EPtr&) override;
 
   private:
     bool shouldQuit() const;
     void stopCore();
     void delayedEventUpdate();
-    bool trySystemRegistering(lel::ecs::CoreSystemData&);
+    bool trySystemRegistering(CoreSystemData&);
     void setupData();
-    void updateAddRequest(std::list<std::string>&, std::list<CoreSystemData>&);
-    void updateRemoveRequest(std::list<std::string>&, std::list<CoreSystemData>&);
+    void updateAddRequest(std::list<CoreSystemData>&);
+    void updateRemoveRequest(std::list<CoreSystemData>&);
     void reverseClear(std::list<CoreSystemData>&);
 
   private:
     bool _quit = false;
     entity::EntityManager _entityManager;
     event::EManager _eventManager;
-    std::list<std::string> _addRequest;
-    std::list<std::string> _remRequest;
     std::list<CoreSystemData> _data;
+    std::list<CoreProxy> _proxies;
 
   public:
     static std::string_view sysLibPath;

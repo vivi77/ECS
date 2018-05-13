@@ -17,7 +17,7 @@ namespace lel
       using LoadOption = has_alias_LoadOption_t<T>;
 
       METACONCEPT_HAS_VARIABLE(NULL_HANDLE);
-      METACONCEPT_HAS_VARIABLE(lastError); // TODO: Remove this trait. Not mandatory by DLLoader
+      METACONCEPT_HAS_VARIABLE(lastError);
 
       METACONCEPT_HAS_STATIC_METHOD_TYPE_CHECK_SPEC(loadLibrary, Handle, noexcept, const char*, const LoadOption);
       METACONCEPT_HAS_STATIC_METHOD_TYPE_CHECK_SPEC(unloadLibrary, void, noexcept, Handle);

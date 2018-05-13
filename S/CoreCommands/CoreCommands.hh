@@ -1,15 +1,17 @@
 #pragma once
 
 #include "S/CRTPS.hpp"
-#include "CLIParser/CLIParser.hh"
+#include "E/IEListener.hh"
+#include "lel_library/CLIParser/CLIParser.hh"
 
 namespace lel::ecs::system
 {
-  class CLI : public CRTPS<CLI>, public event::IEListener
+  class CoreCommands : public CRTPS<CoreCommands>, public event::IEListener
   {
   public:
-    CLI(CoreProxy& proxy);
-    virtual ~CLI() = default;
+    CoreCommands(CoreProxy& proxy);
+    ~CoreCommands() override = default;
+
     void exec() override;
     void registerEntity(const EntityPtr&) override;
     void deregisterEntity(const EntityPtr&) override;
@@ -19,10 +21,9 @@ namespace lel::ecs::system
     void update(const EPtr&) override;
 
   private:
-    CLIParser _cliparser;
-    bool _enabled = true;
+    void basicParsing(const std::string& input);
 
-  public:
-    constexpr static std::string_view name{"CLIParser"};
+  private:
+    CLIParser _parser;
   };
 } /* !lel::ecs::system */

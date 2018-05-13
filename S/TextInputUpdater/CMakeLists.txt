@@ -13,6 +13,8 @@ target_link_libraries(${NAME} PUBLIC
   CIDGen
   EManager
 
+  CoreCommandsEvent
+
   OSDLLoader
   EntityLogic
 
