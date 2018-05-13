@@ -2,7 +2,6 @@
 #include "E/IE.hh"
 #include "E/IDEvent.hh"
 #include "E/TextInputUpdaterEvents/TextInputUpdaterEventsIn.hpp"
-#include "E/TextInputUpdaterEvents/TextInputUpdaterEventsOut.hpp"
 #include "E/CoreCommandsEvent/CoreCommandsEvent.hh"
 
 namespace
@@ -65,7 +64,6 @@ namespace lel::ecs::system
   void TextInputUpdater::update(const EPtr& ptr)
   {
     using TIEventIn = event::TextInputUpdaterEventsIn<std::string>;
-    using TIEventOut = event::TextInputUpdaterEventsOut<std::string>;
 
     if (ptr->getID() == TIEventIn::getEventID())
     {
@@ -87,7 +85,6 @@ namespace lel::ecs::system
                 if (item.inputComp->triggerCharacter == c)
                 {
                   getProxy().fire<event::CoreCommandsEvent>(item.inputComp->input + "\n");
-                  //getProxy().fire<TIEventOut>(itemID, item.inputComp->input);
                   item.inputComp->input.clear();
                 }
                 else

@@ -9,7 +9,6 @@
 
 //#include "E/CoreEvent/CoreEvent.hh"
 #include "E/TextInputUpdaterEvents/TextInputUpdaterEventsIn.hpp"
-#include "Entity/EntityManager.hh"
 #include "C/TextInput/TextInput.hh"
 #include "C/TextInput/TextInputState.hh"
 #include "C/Commands/Commands.hpp"
@@ -189,19 +188,6 @@ namespace
   {
     auto textInput = std::make_shared<lel::ecs::component::TextInputStr>("input");
     textInput->triggerCharacter = '\n';
-    auto cmds = std::make_shared<lel::ecs::component::CommandsStr>(
-      //textInput->textInputID,
-      "input5",
-      std::unordered_map<std::string, lel::ecs::component::CommandsStr::Fct>{
-        {"help", [](){ std::cout << "help, quit\n"; }},
-        {"exit", [&proxy](){ proxy.stopCore(); }},
-        {"quit", [&proxy](){ proxy.stopCore(); }},
-        //{"exit", [&proxy](const std::string&){ proxy.stopCore(); }},
-        //{"quit", [&proxy](const std::string&){ proxy.stopCore(); }},
-        //{"add", [&proxy](const std::string& path){ proxy.addSystem(path); }},
-        //{"remove", [&proxy](const std::string& path){ proxy.removeSystem(path); }},
-      }
-    );
     auto inputPoly = std::make_shared<lel::ecs::component::TerminalPolygon>(
       std::vector<lel::ecs::Vector2<int>>{{0, 0}, {0, 2}, {10, 2}, {10, 0}}
     );
@@ -209,7 +195,7 @@ namespace
     auto inputText = std::make_shared<lel::ecs::component::TerminalText>("");
     auto inputTextState = std::make_shared<lel::ecs::component::TextInputState>(true, true);
 
-    proxy.createEntity({textInput, cmds, inputPoly, inputTrans, inputText, inputTextState});
+    proxy.createEntity({textInput, inputPoly, inputTrans, inputText, inputTextState});
 
     auto input2 = std::make_shared<lel::ecs::component::TextInputStr>("input2");
     input2->triggerCharacter = '\n';
@@ -240,16 +226,6 @@ namespace
     auto text4 = std::make_shared<lel::ecs::component::TerminalText>("");
     auto state4 = std::make_shared<lel::ecs::component::TextInputState>(false, false);
     proxy.createEntity({input4, poly4, trans4, text4, state4});
-
-    auto input5 = std::make_shared<lel::ecs::component::TextInputStr>("input5");
-    input5->triggerCharacter = '\n';
-    auto poly5 = std::make_shared<lel::ecs::component::TerminalPolygon>(
-      std::vector<lel::ecs::Vector2<int>>{{0, 0}, {0, 2}, {10, 2}, {10, 0}}
-    );
-    auto trans5 = std::make_shared<lel::ecs::system::NCurses::NCTransform>(40, 42, 0);
-    auto text5 = std::make_shared<lel::ecs::component::TerminalText>("");
-    auto state5 = std::make_shared<lel::ecs::component::TextInputState>(true, true);
-    proxy.createEntity({input5, poly5, trans5, text5, state5});
   }
 } /* ! */
 
