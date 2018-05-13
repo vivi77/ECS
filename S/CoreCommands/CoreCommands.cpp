@@ -51,6 +51,7 @@ namespace
       "help",
       [](const auto&, auto&) -> void
       {
+        // Maybe send an event back ?
         std::cout << "Available commands are:\n"
           << "\tquit: Exit the program\n"
           << "\tadd <system> [system ...]: Add one or more systems\n"

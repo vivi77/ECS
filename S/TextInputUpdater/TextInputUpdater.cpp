@@ -71,6 +71,8 @@ namespace lel::ecs::system
     }
   }
 
+  // It is advised to create its own event if you plan to make this system send
+  // out new events
   void TextInputUpdater::basicUpdate(const std::shared_ptr<DefaultInputEvent>& ev)
   {
     const bool isBroadcast = ev->getReceiverID().empty();
@@ -89,7 +91,7 @@ namespace lel::ecs::system
               const auto c = ev->getChar();
               if (item.inputComp->triggerCharacter == c)
               {
-                  getProxy().fire<event::TextInputUpdaterEventsOut<std::string>>(item.inputComp->input + "\n");
+                getProxy().fire<event::TextInputUpdaterEventsOut<std::string>>(itemID, item.inputComp->input + "\n");
                 item.inputComp->input.clear();
               }
               else
