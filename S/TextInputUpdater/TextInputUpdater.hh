@@ -1,6 +1,8 @@
 #pragma once
 
 #include "S/CRTPS.hpp"
+#include "E/TextInputUpdaterEvents/TextInputUpdaterEventsIn.hpp"
+#include "E/TextInputUpdaterEvents/TextInputUpdaterEventsOut.hpp"
 #include "E/IEListener.hh"
 #include "C/TextInput/TextInput.hh"
 #include "C/TextInput/TextInputState.hh"
@@ -15,7 +17,10 @@ namespace lel::ecs::system
     using TextCompPtr = std::shared_ptr<component::TerminalText>;
     using TextInputStatePtr = std::shared_ptr<component::TextInputState>;
 
-  private:
+    using DefaultInputEvent = event::TextInputUpdaterEventsIn<std::string>;
+    using DefaultOutputEvent = event::TextInputUpdaterEventsOut<std::string>;
+
+  public:
     struct Item
     {
       TextInputCompPtr inputComp = nullptr;
@@ -38,6 +43,9 @@ namespace lel::ecs::system
     void atRemove() override;
 
     void update(const EPtr&) override;
+
+  private:
+    void basicUpdate(const std::shared_ptr<DefaultInputEvent>& ev);
 
   private:
     std::vector<Item> _components;

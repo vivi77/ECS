@@ -1,7 +1,6 @@
 #include "TextInputUpdater.hh"
 #include "E/IE.hh"
 #include "E/IDEvent.hh"
-#include "E/TextInputUpdaterEvents/TextInputUpdaterEventsIn.hpp"
 #include "E/CoreCommandsEvent/CoreCommandsEvent.hh"
 
 namespace
@@ -68,46 +67,51 @@ namespace lel::ecs::system
     if (ptr->getID() == TIEventIn::getEventID())
     {
       const auto ev = std::static_pointer_cast<TIEventIn>(ptr);
-      const bool isBroadcast = ev->getReceiverID().empty();
-      switch (ev->getType())
-      {
-        case TIEventIn::Type::ADD_CHAR:
-          std::for_each(std::begin(_components), std::end(_components),
-            [&ev, isBroadcast, this](auto& item) -> void
-            {
-              if (!::isTextInputValidForUpdate(*item.inputStateComp))
-                return ;
+      basicUpdate(ev);
+    }
+  }
 
-              const auto itemID = item.inputComp->textInputID;
-              if (isBroadcast || itemID == ev->getReceiverID())
-              {
-                const auto c = ev->getChar();
-                if (item.inputComp->triggerCharacter == c)
-                {
-                  getProxy().fire<event::CoreCommandsEvent>(item.inputComp->input + "\n");
-                  item.inputComp->input.clear();
-                }
-                else
-                  item.inputComp->input += c;
-                item.textComp->text = item.inputComp->input.c_str();
-              }
-            });
-          break;
-        case TIEventIn::Type::REMOVE_CHAR:
-          std::for_each(std::begin(_components), std::end(_components),
-            [&ev, isBroadcast](auto& item)
-            {
-              if (!::isTextInputValidForUpdate(*item.inputStateComp))
-                return ;
+  void TextInputUpdater::basicUpdate(const std::shared_ptr<DefaultInputEvent>& ev)
+  {
+    const bool isBroadcast = ev->getReceiverID().empty();
+    switch (ev->getType())
+    {
+      case DefaultInputEvent::Type::ADD_CHAR:
+        std::for_each(std::begin(_components), std::end(_components),
+          [&ev, this, isBroadcast](auto& item) -> void
+          {
+            if (!::isTextInputValidForUpdate(*item.inputStateComp))
+              return ;
 
-              if (isBroadcast || item.inputComp->textInputID == ev->getReceiverID())
+            const auto itemID = item.inputComp->textInputID;
+            if (isBroadcast || itemID == ev->getReceiverID())
+            {
+              const auto c = ev->getChar();
+              if (item.inputComp->triggerCharacter == c)
               {
-                component::removeLastChar(*item.inputComp);
-                item.textComp->text = item.inputComp->input.c_str();
+                  getProxy().fire<event::TextInputUpdaterEventsOut<std::string>>(item.inputComp->input + "\n");
+                item.inputComp->input.clear();
               }
-            });
-          break;
-      }
+              else
+                item.inputComp->input += c;
+              item.textComp->text = item.inputComp->input.c_str();
+            }
+          });
+        break;
+      case DefaultInputEvent::Type::REMOVE_CHAR:
+        std::for_each(std::begin(_components), std::end(_components),
+          [&ev, isBroadcast](auto& item)
+          {
+            if (!::isTextInputValidForUpdate(*item.inputStateComp))
+              return ;
+
+            if (isBroadcast || item.inputComp->textInputID == ev->getReceiverID())
+            {
+              component::removeLastChar(*item.inputComp);
+              item.textComp->text = item.inputComp->input.c_str();
+            }
+          });
+        break;
     }
   }
 }

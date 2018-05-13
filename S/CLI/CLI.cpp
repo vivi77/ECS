@@ -22,7 +22,10 @@ namespace lel::ecs::system
     std::getline(std::cin, input);
 
     if (std::cin.eof())
+    {
       getProxy().fire<event::CoreCommandsEvent>();
+      std::cin.clear();
+    }
     else if (std::cin.good())
     {
       input += '\n';

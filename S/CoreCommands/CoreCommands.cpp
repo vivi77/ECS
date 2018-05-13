@@ -1,5 +1,6 @@
 #include "CoreCommands.hh"
 #include "E/CoreCommandsEvent/CoreCommandsEvent.hh"
+#include "E/TextInputUpdaterEvents/TextInputUpdaterEventsOut.hpp"
 #include "CLIParser/CLIParserOutputs.hh"
 #include <experimental/source_location>
 #include <functional>
@@ -89,13 +90,17 @@ namespace lel::ecs::system
       switch (event->getType())
       {
         case event::CoreCommandsEvent::Type::CTRL_D:
-          std::cout << "quit\n";
           getProxy().stopCore();
           break;
         case event::CoreCommandsEvent::Type::INPUT:
           basicParsing(event->getInput());
           break;
       }
+    }
+    else if (evID == event::TextInputUpdaterEventsOut<std::string>::getEventID())
+    {
+      const auto event = std::static_pointer_cast<event::TextInputUpdaterEventsOut<std::string>>(ev);
+      basicParsing(event->getInput());
     }
   }
 
