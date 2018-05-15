@@ -24,13 +24,9 @@ namespace
       [](const lel::CmdOutput& o, lel::ecs::CoreProxy& proxy) -> void
       {
         if (o.getArgs().size() != 1)
-        {
           std::cout << "Usage: add <system path>\n";
-          return ;
-        }
-
-        auto sysPath = o.getArgs()[0]->getTerminal();
-        proxy.addSystem(sysPath);
+        else
+          proxy.addSystem(o.getArgs()[0]->getTerminal());
       }
     },
     {
@@ -38,13 +34,19 @@ namespace
       [](const lel::CmdOutput& o, lel::ecs::CoreProxy& proxy) -> void
       {
         if (o.getArgs().size() != 1)
-        {
           std::cout << "Usage: remove <system path>\n";
-          return ;
-        }
-
-        auto sysPath = o.getArgs()[0]->getTerminal();
-        proxy.removeSystem(sysPath);
+        else
+          proxy.removeSystem(o.getArgs()[0]->getTerminal());
+      }
+    },
+    {
+      "reload",
+      [](const lel::CmdOutput& o, lel::ecs::CoreProxy& proxy) -> void
+      {
+        if (o.getArgs().size() != 1)
+          std::cout << "Usage: reload <system path>\n";
+        else
+          proxy.reloadSystem(o.getArgs()[0]->getTerminal());
       }
     },
     {

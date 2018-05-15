@@ -65,7 +65,8 @@ namespace lel::ecs
     _systemsToRemove.emplace_back(path);
   }
 
-  void CoreProxy::reloadSystem()
+  void CoreProxy::reloadSystem(const std::string& path)
   {
+    _systemsToReload.emplace_back(path);
   }
 } /* !lel::ecs */
