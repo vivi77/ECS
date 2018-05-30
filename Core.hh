@@ -5,6 +5,8 @@
 #include "E/EManager/EManager.hh"
 #include "Entity/EntityManager.hh"
 #include "S/CoreProxy/CoreProxy.hh"
+#include "S/IDSystem.hh" //Required by Utility/IDCenter.hpp
+#include "Utility/IDCenter.hpp"
 #include <memory>
 #include <list>
 
@@ -41,6 +43,7 @@ namespace lel::ecs
     event::EManager _eventManager;
     std::list<CoreSystemData> _data;
     std::list<CoreProxy> _proxies;
+    utility::IDCenter<system::IDSystem> _sidcenter;
 
   public:
     static std::string_view sysLibPath;
