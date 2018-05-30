@@ -26,17 +26,21 @@ namespace lel::ecs::system
 
   void TextInputUpdater::registerEntity(const EntityPtr& entity)
   {
+    using TIS = component::TextInputStr;
+    using TT = component::TerminalText;
+    using TIState = component::TextInputState;
+
     Item item;
     auto comps = entity->getComponents();
     for (auto& comp : comps)
     {
       const auto compID = comp->getID();
-      if (compID == component::TextInputStr::getComponentID())
-        item.inputComp = std::static_pointer_cast<component::TextInputStr>(comp);
-      else if (compID == component::TerminalText::getComponentID())
-        item.textComp = std::static_pointer_cast<component::TerminalText>(comp);
-      else if (compID == component::TextInputState::getComponentID())
-        item.inputStateComp = std::static_pointer_cast<component::TextInputState>(comp);
+      if (compID == TIS::getComponentID())
+        item.inputComp = std::static_pointer_cast<TIS>(comp);
+      else if (compID == TT::getComponentID())
+        item.textComp = std::static_pointer_cast<TT>(comp);
+      else if (compID == TIState::getComponentID())
+        item.inputStateComp = std::static_pointer_cast<TIState>(comp);
     }
     if (item.isValid())
       _components.emplace_back(item);
@@ -49,7 +53,8 @@ namespace lel::ecs::system
     {
       return it.inputComp->getEntityOwnerID() == entity->getID();
     };
-    const auto it = std::find_if(std::begin(_components), std::end(_components), pred);
+    const auto it = std::find_if(std::begin(_components),
+                                 std::end(_components), pred);
     if (it != end)
       _components.erase(it);
   }

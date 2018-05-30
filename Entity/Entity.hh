@@ -24,7 +24,7 @@ namespace lel::ecs::entity
     CContainer getComponents() const;
 
     void addComponent(const CPtr& comp);
-    void removeComponent(const component::IDComponent);
+    void removeComponent(const component::IDComponent&);
 
   private:
     ID _id;

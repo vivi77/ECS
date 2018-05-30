@@ -1,16 +1,11 @@
 #include "NCurses.hh"
-#include "S/CoreProxy/CoreProxy.hh"
-#include "C/Transform/Transform.hpp"
 #include "E/CLISystemEvent/CLISystemEvent.hh"
-#include "E/EManager/EManager.hh"
-#include "Utility/Bresenham.hpp"
-#include <curses.h>
-#include <algorithm>
-
 #include "E/TextInputUpdaterEvents/TextInputUpdaterEventsIn.hpp"
 #include "C/TextInput/TextInput.hh"
 #include "C/TextInput/TextInputState.hh"
-#include "C/Commands/Commands.hpp"
+#include "Utility/Bresenham.hpp"
+#include <curses.h>
+#include <algorithm>
 
 ECS_CREATE_IDSYSTEM(NCurses)
 
@@ -273,6 +268,7 @@ namespace lel::ecs::system
         const auto& p2 = comp.polygon->points[i + 1];
         lel::graphic::drawLine(p1.x, p1.y, p2.x, p2.y, drawCallback);
       }
+      // Draw the last line of the polygon
       if (nbSegment > 2)
       {
         const auto& p1 = comp.polygon->points[nbSegment - 1];

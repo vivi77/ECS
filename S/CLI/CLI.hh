@@ -9,7 +9,7 @@ namespace lel::ecs::system
   {
   public:
     CLI(CoreProxy& proxy);
-    virtual ~CLI() = default;
+    ~CLI() override = default;
     void exec() override;
     void registerEntity(const EntityPtr&) override;
     void deregisterEntity(const EntityPtr&) override;

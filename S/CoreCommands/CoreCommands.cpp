@@ -88,10 +88,13 @@ namespace lel::ecs::system
 
   void CoreCommands::update(const EPtr& ev)
   {
+    using CCE = event::CoreCommandsEvent;
+    using TIUEOStr = event::TextInputUpdaterEventsOut<std::string>;
+
     const auto evID = ev->getID();
-    if (evID == event::CoreCommandsEvent::getEventID())
+    if (evID == CCE::getEventID())
     {
-      const auto event = std::static_pointer_cast<event::CoreCommandsEvent>(ev);
+      const auto event = std::static_pointer_cast<CCE>(ev);
       switch (event->getType())
       {
         case event::CoreCommandsEvent::Type::CTRL_D:
@@ -102,9 +105,9 @@ namespace lel::ecs::system
           break;
       }
     }
-    else if (evID == event::TextInputUpdaterEventsOut<std::string>::getEventID())
+    else if (evID == TIUEOStr::getEventID())
     {
-      const auto event = std::static_pointer_cast<event::TextInputUpdaterEventsOut<std::string>>(ev);
+      const auto event = std::static_pointer_cast<TIUEOStr>(ev);
       basicParsing(event->getInput());
     }
   }
@@ -120,17 +123,16 @@ namespace lel::ecs::system
       const auto expr = _parser.parseExpression();
 
       // Maybe useless or too much
-      _parser.consume({lel::CLIProducerType::EOL, lel::CLIProducerType::CTRL_D});
+      _parser.consume({CLIProducerType::EOL, CLIProducerType::CTRL_D});
 
       const auto exprType = expr->getType();
-      if (exprType != lel::CLIParserType::COMMAND
-          && exprType != lel::CLIParserType::EOL)
+      if (exprType != CLIParserType::COMMAND && exprType != CLIParserType::EOL)
       {
         std::cout << "This is not a command. (Type: " << exprType << ")\n";
         return ;
       }
 
-      const auto cmd = std::static_pointer_cast<lel::CmdOutput>(expr);
+      const auto cmd = std::static_pointer_cast<CmdOutput>(expr);
       const auto it = CORE_COMMANDS.find(cmd->getCommand());
       if (it == std::end(CORE_COMMANDS))
         std::cout << "Unknown command '" << cmd->getCommand() << "'\n";

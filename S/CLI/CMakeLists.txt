@@ -12,8 +12,6 @@ target_link_libraries(${NAME} PUBLIC
   ${IDLIB_NAME}
   CoreProxy
 
-  EManager
-  #CoreEvent
   CoreCommandsEvent
   CLISystemEvent
   # From lel_library

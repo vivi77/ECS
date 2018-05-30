@@ -11,7 +11,6 @@ target_include_directories(${NAME} PUBLIC ${DIRS})
 target_link_libraries(${NAME} PUBLIC
   ${IDLIB_NAME}
   CIDGen
-  EManager
 
   CoreCommandsEvent
 

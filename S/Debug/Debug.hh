@@ -10,7 +10,7 @@ namespace lel::ecs::system
   {
   public:
     Debug(CoreProxy&);
-    virtual ~Debug() = default;
+    ~Debug() override = default;
     void exec() override;
     void update(const EPtr&) override;
     void registerEntity(const EntityPtr&) override;

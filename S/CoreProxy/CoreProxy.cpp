@@ -25,29 +25,36 @@ namespace lel::ecs
 
   entity::EntityManager::EntityPtr CoreProxy::createEntity(std::initializer_list<entity::EntityManager::ComponentPtr> il)
   {
+    using EME = event::EntityManagerEvent;
+
     auto entity = _entityManager.createEntity(il);
     // Try to register the new entity into all existing system
-    std::for_each(std::begin(_systems), std::end(_systems),
-                  [&entity](auto& data) { data.sys->registerEntity(entity); });
-    _eventManager.fire<event::EntityManagerEvent>(event::EntityManagerEvent::Type::ENTITY_CREATED, entity->getID());
+    std::for_each(std::begin(_systems),
+                  std::end(_systems),
+                  [&entity](auto& data)
+                  { data.sys->registerEntity(entity); });
+    _eventManager.fire<EME>(EME::Type::ENTITY_CREATED, entity->getID());
     return entity;
   }
 
   void CoreProxy::destroyEntity(const entity::EntityManager::ID id)
   {
-    auto eventType = event::EntityManagerEvent::Type::ENTITY_NOT_FOUND;
+    using EME = event::EntityManagerEvent;
+
+    auto eventType = EME::Type::ENTITY_NOT_FOUND;
 
     auto entityToDelete = _entityManager.fetchEntity(id);
     if (entityToDelete != nullptr)
     {
-      std::for_each(std::begin(_systems), std::end(_systems),
+      std::for_each(std::begin(_systems),
+                    std::end(_systems),
                     [&entityToDelete](auto& data)
                     { data.sys->deregisterEntity(entityToDelete); });
 
       if (_entityManager.destroyEntity(id))
-        eventType = event::EntityManagerEvent::Type::ENTITY_DESTROYED;
+        eventType = EME::Type::ENTITY_DESTROYED;
     }
-    _eventManager.fire<event::EntityManagerEvent>(eventType, id);
+    _eventManager.fire<EME>(eventType, id);
   }
 
   void CoreProxy::stopCore()

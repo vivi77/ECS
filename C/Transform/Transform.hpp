@@ -21,7 +21,7 @@ namespace lel::ecs::component
       , rotation{rot}
       , scale{sc}
     {}
-    virtual ~Transform() = default;
+    ~Transform() override = default;
 
   public:
     Position position;

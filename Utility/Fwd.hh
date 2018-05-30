@@ -2,9 +2,6 @@
 
 #include <memory>
 
-// TODO: Change to make all ID* classes works as integer without them colliding
-// or it will cause compiler to consider all those ID* classes as same if they
-// have the same type.
 namespace lel::ecs
 {
   class Core;

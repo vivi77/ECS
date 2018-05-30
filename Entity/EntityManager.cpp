@@ -1,7 +1,5 @@
 #include "EntityManager.hh"
 #include "S/IS.hh"
-#include "E/EntityManagerEvent/EntityManagerEvent.hh"
-#include "E/EManager/EManager.hh"
 #include <algorithm>
 
 namespace lel::ecs::entity

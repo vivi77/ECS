@@ -17,7 +17,7 @@ namespace lel::ecs
 
   public:
     Core();
-    virtual ~Core() = default;
+    ~Core() override = default;
     void run();
 
     void update(const IEListener::EPtr&) override;

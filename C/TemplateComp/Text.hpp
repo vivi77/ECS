@@ -19,7 +19,7 @@ namespace lel::ecs::component::templateComponent
       , text{txt}
     {}
 
-    virtual ~Text() = default;
+    ~Text() override = default;
 
   public:
     const char* text = "";

@@ -35,7 +35,7 @@ namespace lel::ecs::event
       : _t{t}
       , _data{std::forward<T>(data)}
     {}
-    virtual ~EManagerEvent() = default;
+    ~EManagerEvent() override = default;
 
     Type getType() const;
     Data getData() const;

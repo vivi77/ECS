@@ -4,8 +4,6 @@
 #include "S/CoreProxy/CoreProxy.hh"
 #include "S/IDSystem.hh"
 #include "E/IEListener.hh"
-#include "E/EManager/EManager.hh"
-#include "Utility/TemplateUniqueID.hpp"
 #include "Utility/meta.hpp"
 
 //For convenience
@@ -25,7 +23,7 @@ namespace lel::ecs::system
       : _proxy{proxy}
     {}
 
-    virtual ~CRTPS() = default;
+    ~CRTPS() override = default;
 
     ID getID() const final
     {

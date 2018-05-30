@@ -36,7 +36,7 @@ namespace lel::ecs::event
       : _type{t}
       , _data{std::forward<Args>(args)...}
     {}
-    virtual ~CoreEvent() = default;
+    ~CoreEvent() override = default;
 
     Type getType() const;
     std::vector<std::string> getData() const;

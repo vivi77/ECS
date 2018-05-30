@@ -1,4 +1,5 @@
 #include "ReloadSystemTest.hh"
+#include <iostream>
 
 ECS_CREATE_IDSYSTEM(ReloadSystemTest)
 

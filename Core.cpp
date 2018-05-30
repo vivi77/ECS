@@ -1,8 +1,7 @@
 #include "Core.hh"
+#include "StartupLoader.hh"
 #include "meta/conditional_os.hpp"
 #include "E/CoreEvent/CoreEvent.hh"
-#include "E/EManager/EManager.hh"
-#include "StartupLoader.hh"
 #include "S/IS.hh"
 #include "S/IDSystem.hh"
 #include <iostream>
@@ -37,9 +36,11 @@ namespace lel::ecs
 
   void Core::run()
   {
+    using CoreEvent = event::CoreEvent;
+
     if (_data.empty())
     {
-      _eventManager.fire<event::CoreEvent>(event::CoreEvent::Type::CLOSING);
+      _eventManager.fire<CoreEvent>(CoreEvent::Type::CLOSING);
       return ;
     }
 
@@ -53,7 +54,7 @@ namespace lel::ecs
       delayedEventUpdate();
     }
     _eventManager.deregisterListener(shared_from_this());
-    _eventManager.fire<event::CoreEvent>(event::CoreEvent::Type::CLOSING);
+    _eventManager.fire<CoreEvent>(CoreEvent::Type::CLOSING);
     reverseClear(_data);
   }
 
@@ -80,7 +81,7 @@ namespace lel::ecs
 
   bool Core::trySystemRegistering(CoreSystemData& data)
   {
-    using CoreEvent = lel::ecs::event::CoreEvent;
+    using CoreEvent = event::CoreEvent;
 
     if (!data.loader.isValid())
     {
@@ -112,14 +113,14 @@ namespace lel::ecs
 
   void Core::setupData()
   {
-    using CoreEvent = lel::ecs::event::CoreEvent;
+    using CoreEvent = event::CoreEvent;
 
-    lel::ecs::StartupLoader startup{"startup.ecs"};
+    StartupLoader startup{"startup.ecs"};
 
     auto libFetcher = [this](const std::experimental::filesystem::path& path)
     {
-      lel::ecs::CoreSystemData data;
-      data.path = lel::ecs::Core::sysLibPath;
+      CoreSystemData data;
+      data.path = Core::sysLibPath;
       data.path += path;
       data.loader.loadLibrary(data.path.u8string().c_str());
       if (trySystemRegistering(data))
@@ -169,15 +170,18 @@ namespace lel::ecs
 
   void Core::reverseClear(std::list<CoreSystemData>& container)
   {
+    using CoreEvent = event::CoreEvent;
+
     while (!container.empty())
     {
-      if (container.back().sys->isListener())
-        _eventManager.deregisterListener(castToListener(container.back().sys));
-      container.back().sys->atRemove();
-      _eventManager.fire<lel::ecs::event::CoreEvent>(lel::ecs::event::CoreEvent::Type::REM_SYSTEM_SUCCESS,
-                                                     container.back().path.u8string(),
-                                                     to_string(container.back().sys.get()),
-                                                     std::to_string(container.back().sys->getID()));
+      auto& backData = container.back();
+      if (backData.sys->isListener())
+        _eventManager.deregisterListener(castToListener(backData.sys));
+      backData.sys->atRemove();
+      _eventManager.fire<CoreEvent>(CoreEvent::Type::REM_SYSTEM_SUCCESS,
+                                    backData.path.u8string(),
+                                    to_string(backData.sys.get()),
+                                    std::to_string(backData.sys->getID()));
       container.pop_back();
     }
   }

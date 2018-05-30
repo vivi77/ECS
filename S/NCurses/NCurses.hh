@@ -1,21 +1,14 @@
 #pragma once
 
 #include "S/CRTPS.hpp"
-#include "S/NCurses/ncursessystem_export.h"
 #include "C/TerminalComponents/Text.hh"
 #include "C/TerminalComponents/Polygon.hh"
+#include "C/Transform/Transform.hpp"
 #include <vector>
-
-// NCurses specific forward declaration
-// In C++, It is not possible to fast forward type-alias
-namespace lel::ecs::component
-{
-  template <class T> struct Transform;
-} /* !lel::ecs::component */
 
 namespace lel::ecs::system
 {
-  class NCURSESSYSTEM_EXPORT NCurses : public CRTPS<NCurses>
+  class NCurses : public CRTPS<NCurses>
   {
   public:
     template <typename T> using Container = std::vector<T>;
@@ -51,7 +44,7 @@ namespace lel::ecs::system
 
   public:
     NCurses(CoreProxy& proxy);
-    virtual ~NCurses() = default;
+    ~NCurses() override = default;
 
     void exec() override;
     void registerEntity(const EntityPtr&) override;

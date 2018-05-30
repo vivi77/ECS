@@ -1,11 +1,9 @@
 #pragma once
 
-#include "S/CoreProxy/coreproxy_export.h"
+#include "CoreSystemData.hh"
 #include "E/EManager/EManager.hh"
 #include "Entity/EntityManager.hh"
-#include "CoreSystemData.hh"
 #include <list>
-#include <iostream>
 
 namespace lel::ecs
 {
@@ -16,7 +14,7 @@ namespace lel::ecs
   //
   // MUST NOT CONTAIN A Core class inside. Else this class does not do its work
   // which is uncoupling the Core class and all systems
-  class COREPROXY_EXPORT CoreProxy
+  class CoreProxy
   {
   public:
     using SystemContainer = std::list<CoreSystemData>; //Core::'Container of the systems'
@@ -30,7 +28,6 @@ namespace lel::ecs
     void addSystem(const std::string&);
     void removeSystem(const std::string&);
     void reloadSystem(const std::string&);
-    // TODO: Create function to find the id of a system
 
     template <class Event, typename ... Args>
     void fire(Args&& ... args)

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "IE.hh"
-#include "E/EManager/EManager.hh"
 #include "Utility/TemplateUniqueID.hpp"
 #include "Utility/meta.hpp"
 #include "E/IDEvent.hh"
@@ -15,7 +14,7 @@ namespace lel::ecs::event
     using ID = typename IE::ID;
 
   public:
-    virtual ~CRTPE() = default;
+    ~CRTPE() override = default;
 
     ID getID() const final
     {

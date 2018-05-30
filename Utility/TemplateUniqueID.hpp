@@ -25,6 +25,7 @@ namespace lel::ecs::meta
     class TemplateUniqueID_helper<Out<void>, ID>
     {
     public:
+      // TODO: Try to make callback a template parameter ?
       static ID generateID(const std::function<void(ID)>& callback = nullptr)
       {
         if (_generator == nullptr)

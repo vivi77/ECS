@@ -14,7 +14,7 @@ namespace lel::ecs::component
       std::string input = "";
       char triggerCharacter = -1;
     };
-  }
+  } /* !details */
 
   namespace meta
   {

@@ -20,7 +20,7 @@ namespace lel::ecs::event
     {
     public:
       DebugEvent(const std::string& msg);
-      virtual ~DebugEvent() = default;
+      ~DebugEvent() override = default;
 
       std::string getMessage() const;
       ID getID() const override;

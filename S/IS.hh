@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Utility/Fwd.hh"
 #include "Entity/Entity.hh"
 
 namespace lel::ecs::system

@@ -36,7 +36,7 @@ namespace lel::ecs::event
       : _t{t}
       , _data{data}
     {}
-    virtual ~CManagerEvent() = default;
+    ~CManagerEvent() override = default;
 
     Type getType() const;
     Data getData() const;

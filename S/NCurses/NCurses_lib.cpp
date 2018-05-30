@@ -1,4 +1,5 @@
 #include "NCurses.hh"
+#include "S/NCurses/ncursessystem_export.h"
 #include "S/IS.hh"
 
 extern "C"

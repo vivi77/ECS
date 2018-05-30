@@ -1,8 +1,6 @@
 #include "CLI.hh"
-#include "E/EManager/EManager.hh"
 #include "E/CLISystemEvent/CLISystemEvent.hh"
 #include "E/CoreCommandsEvent/CoreCommandsEvent.hh"
-#include <experimental/source_location>
 
 ECS_CREATE_IDSYSTEM(CLI)
 

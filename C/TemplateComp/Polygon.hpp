@@ -21,7 +21,7 @@ namespace lel::ecs::component::templateComponent
       , Color{std::forward<Args>(args)...}
       , points{pts}
     {}
-    virtual ~Polygon() = default;
+    ~Polygon() override = default;
 
     std::vector<Vector> points;
   };

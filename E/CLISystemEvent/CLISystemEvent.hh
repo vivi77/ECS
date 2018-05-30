@@ -17,7 +17,7 @@ namespace lel::ecs::event
 
   public:
     CLISystemEvent(Type t);
-    virtual ~CLISystemEvent() = default;
+    ~CLISystemEvent() override = default;
 
     Type getType() const;
 

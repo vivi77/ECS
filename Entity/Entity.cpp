@@ -38,7 +38,7 @@ namespace lel::ecs::entity
       _components.emplace_back(comp);
   }
 
-  void Entity::removeComponent(const lel::ecs::component::IC::ID id)
+  void Entity::removeComponent(const component::IC::ID& id)
   {
     auto beginIt = std::begin(_components);
     auto endIt = std::end(_components);

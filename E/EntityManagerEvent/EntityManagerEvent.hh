@@ -21,7 +21,7 @@ namespace lel::ecs::event
   public:
     EntityManagerEvent(const Type t);
     EntityManagerEvent(const Type t, const EntityID);
-    virtual ~EntityManagerEvent() = default;
+    ~EntityManagerEvent() override = default;
 
     Type getType() const;
     EntityID getEntityID() const;
