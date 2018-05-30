@@ -3,6 +3,8 @@
 #include "E/IDEvent.hh"
 #include "E/CoreCommandsEvent/CoreCommandsEvent.hh"
 
+ECS_CREATE_IDSYSTEM(TextInputUpdater)
+
 namespace
 {
   bool isTextInputValidForUpdate(const lel::ecs::component::TextInputState& obj)

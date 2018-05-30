@@ -36,7 +36,12 @@ namespace lel::ecs::event
     [](auto id)
     {
       std::string msg;
-      if constexpr (meta::has_variable_name_v<D>)
+      // Double 'check' MAYBE because of a bug in g++ 8.1 in which it does not
+      // recognize the expression 'has_variable_name_v<D>' as a value-dependent
+      // expression when the lambda has 1 parameter. But it do recognize it as
+      // one when it is double
+      if constexpr (meta::has_variable_name_v<D>
+                    && meta::has_variable_name_v<D>)
         msg += D::name;
       else
         msg += typeid(D).name();

@@ -19,7 +19,6 @@ namespace lel::ecs
     Core();
     virtual ~Core() = default;
     void run();
-    void addSystem(const std::string&);
 
     void update(const IEListener::EPtr&) override;
 
@@ -29,9 +28,12 @@ namespace lel::ecs
     void delayedEventUpdate();
     bool trySystemRegistering(CoreSystemData&);
     void setupData();
-    void updateAddRequest(std::list<CoreSystemData>&);
-    void updateRemoveRequest(std::list<CoreSystemData>&);
+    void updateAddRequest();
+    void updateRemoveRequest();
+    void updateReloadRequest();
     void reverseClear(std::list<CoreSystemData>&);
+    void addSystem(const std::string& sysPath);
+    void removeSystem(const std::string& sysPath);
 
   private:
     bool _quit = false;

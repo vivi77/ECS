@@ -29,7 +29,8 @@ namespace lel::ecs
     void stopCore();
     void addSystem(const std::string&);
     void removeSystem(const std::string&);
-    void reloadSystem();
+    void reloadSystem(const std::string&);
+    // TODO: Create function to find the id of a system
 
     template <class Event, typename ... Args>
     void fire(Args&& ... args)
@@ -45,6 +46,7 @@ namespace lel::ecs
 
     std::vector<std::string> _systemsToAdd;
     std::vector<std::string> _systemsToRemove;
+    std::vector<std::string> _systemsToReload;
 
     // Authorized as it should be an extension of Core for system usage
     friend Core;

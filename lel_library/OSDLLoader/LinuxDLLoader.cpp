@@ -39,7 +39,7 @@ namespace lel
 
   bool _LinuxDLLoader::isLibraryLoaded(const char* libPath) noexcept
   {
-    Handle tmp = dlopen(libPath, RTLD_NOW | RTLD_NOLOAD);
+    Handle tmp = dlopen(libPath, RTLD_NOLOAD);
     return tmp != nullptr;
   }
 } /* !lel */
