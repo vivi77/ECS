@@ -4,6 +4,8 @@
 #include "E/CoreCommandsEvent/CoreCommandsEvent.hh"
 #include <experimental/source_location>
 
+ECS_CREATE_IDSYSTEM(CLI)
+
 namespace lel::ecs::system
 {
   CLI::CLI(CoreProxy& proxy)

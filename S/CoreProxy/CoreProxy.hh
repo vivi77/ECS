@@ -30,6 +30,7 @@ namespace lel::ecs
     void addSystem(const std::string&);
     void removeSystem(const std::string&);
     void reloadSystem(const std::string&);
+    // TODO: Create function to find the id of a system
 
     template <class Event, typename ... Args>
     void fire(Args&& ... args)

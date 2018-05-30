@@ -5,6 +5,8 @@
 #include <experimental/source_location>
 #include <functional>
 
+ECS_CREATE_IDSYSTEM(CoreCommands)
+
 namespace
 {
   const std::unordered_map<

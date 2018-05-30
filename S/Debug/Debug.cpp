@@ -8,6 +8,8 @@
 #include "E/EIDGenerator/EIDGenerator.hh"
 #include <sstream>
 
+ECS_CREATE_IDSYSTEM(Debug)
+
 namespace
 {
   inline void requestEvent(lel::Log& log, const std::string& msg)
