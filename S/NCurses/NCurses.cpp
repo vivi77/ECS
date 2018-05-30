@@ -12,6 +12,8 @@
 #include "C/TextInput/TextInputState.hh"
 #include "C/Commands/Commands.hpp"
 
+ECS_CREATE_IDSYSTEM(NCurses)
+
 namespace
 {
   using TerminalDrawable = lel::ecs::component::TerminalText;

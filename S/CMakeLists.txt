@@ -20,7 +20,7 @@ file(GLOB IDSYSTEM_SRCS IDSystem*)
 add_subdirectory(SIDGenerator)
 
 subdirlist(SYS_LIST ${CMAKE_CURRENT_SOURCE_DIR})
-list(REMOVE_ITEM SYS_LIST SIDGenerator)
+list(REMOVE_ITEM SYS_LIST SIDGenerator Utility)
 foreach(S ${SYS_LIST})
   add_subdirectory(${S})
 endforeach()
