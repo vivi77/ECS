@@ -4,8 +4,6 @@
 #include "E/EManager/EManager.hh"
 #include "Entity/EntityManager.hh"
 #include "CoreSystemData.hh"
-#include "S/IDSystem.hh" //Required by Utlity/IDCenter.hpp
-#include "Utility/IDCenter.hpp"
 #include <list>
 #include <iostream>
 
@@ -24,8 +22,7 @@ namespace lel::ecs
     using SystemContainer = std::list<CoreSystemData>; //Core::'Container of the systems'
 
   public:
-    CoreProxy(SystemContainer&, entity::EntityManager&, event::EManager&,
-              utility::IDCenter<system::IDSystem>&, bool&);
+    CoreProxy(SystemContainer&, entity::EntityManager&, event::EManager&, bool&);
 
     entity::EntityManager::EntityPtr createEntity(std::initializer_list<entity::EntityManager::ComponentPtr>);
     void destroyEntity(const entity::EntityManager::ID id);
@@ -45,7 +42,6 @@ namespace lel::ecs
     SystemContainer& _systems;
     entity::EntityManager& _entityManager;
     event::EManager& _eventManager;
-    utility::IDCenter<system::IDSystem>& _sidcenter;
     bool& _quit;
 
     std::vector<std::string> _systemsToAdd;

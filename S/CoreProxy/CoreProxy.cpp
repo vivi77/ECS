@@ -16,12 +16,10 @@ namespace lel::ecs
   CoreProxy::CoreProxy(SystemContainer& systems,
                        entity::EntityManager& manager,
                        event::EManager& eventManager,
-                       utility::IDCenter<system::IDSystem>& sidcenter,
                        bool& quit)
     : _systems{systems}
     , _entityManager{manager}
     , _eventManager{eventManager}
-    , _sidcenter{sidcenter}
     , _quit{quit}
   {}
 

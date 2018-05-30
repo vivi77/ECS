@@ -101,7 +101,7 @@ namespace lel::ecs
       return false;
     }
 
-    _proxies.emplace_back(_data, _entityManager, _eventManager, _sidcenter, _quit);
+    _proxies.emplace_back(_data, _entityManager, _eventManager, _quit);
     data.sys = std::shared_ptr<system::IS>(ctor(_proxies.back()), dtor);
     data.sys->setup();
     if (data.sys->isListener())
