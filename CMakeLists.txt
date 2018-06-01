@@ -51,17 +51,7 @@ add_subdirectory(./C)
 add_subdirectory(./E)
 add_subdirectory(./S)
 
-set(SRCS
-  main.cpp
-  Core.cpp
-  StartupLoader.cpp
-  )
-
-set(HDRS
-  Core.hh
-  StartupLoader.hh
-  CoreSystemData.hh
-  )
+file(GLOB SRCS *.cpp *.hh)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/CMakeModules)
 if (CMAKE_COMPILER_IS_GNUCXX)
@@ -76,14 +66,14 @@ if (CMAKE_COMPILER_IS_GNUCXX)
   endif()
 endif()
 
-add_executable(${NAME} ${SRCS} ${HDRS})
+add_executable(${NAME} ${SRCS})
 target_link_libraries(${NAME} PUBLIC
   lel_lib
   CoreProxy
   EntityLogic
   EManager
-  CoreEvent
-  CManagerEvent)
+  CoreEvent)
+  #CManagerEvent)
 target_include_directories(${NAME} PUBLIC
   ${CMAKE_BINARY_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR})
@@ -94,12 +84,3 @@ if(UNIX)
   endif()
   target_link_libraries(${NAME} PUBLIC dl stdc++fs)
 endif(UNIX)
-
-
-#install(TARGETS ${NAME}
-#  RUNTIME DESTINATION ${INSTALL_FOLDER}
-#  ARCHIVE DESTINATION ${LIBRARY_INSTALL_DIR}
-#  LIBRARY DESTINATION ${LIBRARY_INSTALL_DIR}
-#  PRIVATE_HEADER DESTINATION ${INCLUDE_INSTALL_DIR}
-#  PUBLIC_HEADER DESTINATION ${INSTALL_FOLDER})
-#install(FILES ${HDRS} DESTINATION ${INCLUDE_INSTALL_DIR})
