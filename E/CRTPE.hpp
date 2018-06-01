@@ -3,7 +3,7 @@
 #include "IE.hh"
 #include "Utility/TemplateUniqueID.hpp"
 #include "Utility/meta.hpp"
-#include "E/IDEvent.hh"
+#include "IDEvent.hh"
 
 namespace lel::ecs::event
 {

@@ -1,10 +1,10 @@
 #pragma once
 
 #include "CoreSystemData.hh"
-#include "E/IEListener.hh"
-#include "E/EManager/EManager.hh"
-#include "Entity/EntityManager.hh"
-#include "S/CoreProxy/CoreProxy.hh"
+#include "IEListener.hh"
+#include "EManager.hh"
+#include "EntityManager.hh"
+#include "CoreProxy.hh"
 #include <memory>
 #include <list>
 
