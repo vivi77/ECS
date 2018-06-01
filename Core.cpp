@@ -1,9 +1,9 @@
 #include "Core.hh"
 #include "StartupLoader.hh"
 #include "meta/conditional_os.hpp"
-#include "E/CoreEvent/CoreEvent.hh"
-#include "S/IS.hh"
-#include "S/IDSystem.hh"
+#include "CoreEvent.hh"
+#include "IS.hh"
+#include "IDSystem.hh"
 #include <iostream>
 #include <algorithm>
 #include <sstream>

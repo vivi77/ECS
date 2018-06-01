@@ -1,13 +1,13 @@
 #pragma once
 
-#include "S/IS.hh"
-#include "S/CoreProxy/CoreProxy.hh"
-#include "S/IDSystem.hh"
-#include "E/IEListener.hh"
+#include "IS.hh"
+#include "CoreProxy.hh"
+#include "IDSystem.hh"
+#include "IEListener.hh"
 #include "Utility/meta.hpp"
 
 //For convenience
-#include "S/Utility/macros.hh"
+#include "S/macros.hh"
 
 namespace lel::ecs::system
 {

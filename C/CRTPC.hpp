@@ -1,7 +1,7 @@
 #pragma once
 
-#include "C/BaseComp/BaseComp.hh"
-#include "C/IDComponent.hh"
+#include "BaseComp.hh"
+#include "IDComponent.hh"
 #include "Utility/TemplateUniqueID.hpp"
 #include "Utility/meta.hpp"
 
