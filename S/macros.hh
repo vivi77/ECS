@@ -1,6 +1,6 @@
 #pragma once
 
-#include "S/IS.hh"
+#include "IS.hh"
 #include "Utility/TemplateUniqueID.hpp"
 
 #define ECS_CREATE_IDSYSTEM_FULL(system_name, class_name)\
