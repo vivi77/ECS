@@ -1,33 +1,49 @@
 #pragma once
 
-#include "IEListener.hh"
 #include "CoreSystemData.hh"
+#include "IEListener.hh"
+#include "EManager.hh"
+#include "EntityManager.hh"
+#include "CoreProxy.hh"
 #include <memory>
 #include <list>
 
-class Core : public IEListener, public std::enable_shared_from_this<Core>
+namespace lel::ecs
 {
-public:
-  using SysPtr = std::shared_ptr<IS>;
+  class Core : public event::IEListener, public std::enable_shared_from_this<Core>
+  {
+  public:
+    using SysPtr = std::shared_ptr<system::IS>;
 
-public:
-  Core();
-  virtual ~Core() = default;
-  void run();
-  void update(const IEListener::EPtr&) override;
+  public:
+    Core();
+    ~Core() override = default;
+    void run();
 
-private:
-  bool shouldQuit() const;
-  void stopCore();
-  void delayedEventUpdate();
+    void update(const IEListener::EPtr&) override;
 
-private:
-  bool _quit = false;
-  std::list<CoreSystemData> _data;
-  std::list<std::string> _addRequest;
-  std::list<std::string> _remRequest;
+  private:
+    bool shouldQuit() const;
+    void stopCore();
+    void delayedEventUpdate();
+    bool trySystemRegistering(CoreSystemData&);
+    void setupData();
+    void updateAddRequest();
+    void updateRemoveRequest();
+    void updateReloadRequest();
+    void reverseClear(std::list<CoreSystemData>&);
+    void addSystem(const std::string& sysPath);
+    void removeSystem(const std::string& sysPath);
 
-public:
-  static std::string_view sysLibPath;
-  static std::string_view autoLoadedSysRegex;
-};
+  private:
+    bool _quit = false;
+    entity::EntityManager _entityManager;
+    event::EManager _eventManager;
+    std::list<CoreSystemData> _data;
+    std::list<CoreProxy> _proxies;
+
+  public:
+    static std::string_view sysLibPath;
+    static std::string_view autoLoadedSysRegex;
+  };
+} /* !lel */

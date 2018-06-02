@@ -1,11 +1,9 @@
 #include "Core.hh"
-#include "meta/conditional_os.hpp"
-#include "E/CoreEvent/CoreEvent.hh"
-#include "EManager.hh"
-#include "C/CManager/CManager.hh"
-#include "Entity/EntityManager.hh"
 #include "StartupLoader.hh"
-#include "S/CoreSystemProxy/CoreSystemProxy.hh"
+#include "meta/conditional_os.hpp"
+#include "CoreEvent.hh"
+#include "IS.hh"
+#include "IDSystem.hh"
 #include <iostream>
 #include <algorithm>
 #include <sstream>
@@ -19,41 +17,107 @@ namespace
     return ss.str();
   }
 
-  bool trySystemRegistering(CoreSystemData& data)
+  // TODO: Find a better way to check than this
+  std::shared_ptr<lel::ecs::event::IEListener> castToListener(const std::shared_ptr<lel::ecs::system::IS>& sys)
   {
+    return std::dynamic_pointer_cast<lel::ecs::event::IEListener>(sys);
+  }
+} /* ! */
+
+namespace lel::ecs
+{
+  std::string_view Core::sysLibPath = lel::meta::conditional_os<std::string_view>("lib/S/", "./").value;
+  std::string_view Core::autoLoadedSysRegex = lel::meta::conditional_os<std::string_view>("lib(CLISystem)[.]so", "S[0-9]*[.]dll").value;
+
+  Core::Core()
+  {
+    setupData();
+  }
+
+  void Core::run()
+  {
+    using CoreEvent = event::CoreEvent;
+
+    if (_data.empty())
+    {
+      _eventManager.fire<CoreEvent>(CoreEvent::Type::CLOSING);
+      return ;
+    }
+
+    _eventManager.registerListener(shared_from_this());
+    while (!shouldQuit() && !_data.empty())
+    {
+      for (auto& data : _data)
+      {
+        data.sys->exec();
+      }
+      delayedEventUpdate();
+    }
+    _eventManager.deregisterListener(shared_from_this());
+    _eventManager.fire<CoreEvent>(CoreEvent::Type::CLOSING);
+    reverseClear(_data);
+  }
+
+  void Core::update(const IEListener::EPtr&)
+  {
+  }
+
+  bool Core::shouldQuit() const
+  {
+    return _quit;
+  }
+
+  void Core::stopCore()
+  {
+    _quit = true;
+  }
+
+  void Core::delayedEventUpdate()
+  {
+    updateAddRequest();
+    updateRemoveRequest();
+    updateReloadRequest();
+  }
+
+  bool Core::trySystemRegistering(CoreSystemData& data)
+  {
+    using CoreEvent = event::CoreEvent;
+
     if (!data.loader.isValid())
     {
-      EManager::fire<CoreEvent>(CoreEvent::Type::SYSTEM_NOT_FOUND,
-                                data.path.u8string(),
-                                data.loader.getLastError());
+      _eventManager.fire<CoreEvent>(CoreEvent::Type::SYSTEM_NOT_FOUND,
+                                    data.path.u8string(),
+                                    data.loader.getLastError());
       std::cerr << data.loader.getLastError() << "\n";
       return false;
     }
 
-    auto ctor = data.loader.getSymbol<IS*(*)()>("create");
-    auto dtor = data.loader.getSymbol<void(*)(IS*)>("destroy");
+    auto ctor = data.loader.getSymbol<system::IS*(*)(CoreProxy&)>("create");
+    auto dtor = data.loader.getSymbol<void(*)(system::IS*)>("destroy");
     if (!ctor.isValid() || !dtor.isValid())
     {
-      EManager::fire<CoreEvent>(CoreEvent::Type::INVALID_SYSTEM,
-                                data.path.filename().u8string(),
-                                data.loader.getLastError());
+      _eventManager.fire<CoreEvent>(CoreEvent::Type::INVALID_SYSTEM,
+                                    data.path.filename().u8string(),
+                                    data.loader.getLastError());
       return false;
     }
 
-    data.sys = std::shared_ptr<IS>(ctor(), dtor);
+    _proxies.emplace_back(_data, _entityManager, _eventManager, _quit);
+    data.sys = std::shared_ptr<system::IS>(ctor(_proxies.back()), dtor);
     data.sys->setup();
     if (data.sys->isListener())
-      EManager::registerListenerSystem(data.sys);
-    EntityManager::updateSysComponent(data.sys);
+      _eventManager.registerListener(castToListener(data.sys));
+    _entityManager.tryRegisterEntitiesInSystem(data.sys);
     return true;
   }
 
-  std::list<CoreSystemData> setupData()
+  void Core::setupData()
   {
-    std::list<CoreSystemData> l;
+    using CoreEvent = event::CoreEvent;
+
     StartupLoader startup{"startup.ecs"};
 
-    auto libFetcher = [&l](const std::experimental::filesystem::path& path)
+    auto libFetcher = [this](const std::experimental::filesystem::path& path)
     {
       CoreSystemData data;
       data.path = Core::sysLibPath;
@@ -61,149 +125,112 @@ namespace
       data.loader.loadLibrary(data.path.u8string().c_str());
       if (trySystemRegistering(data))
       {
-        l.emplace_back(data);
-        EManager::fire<CoreEvent>(CoreEvent::Type::ADD_SYSTEM_SUCCESS,
-                                  data.path.u8string(), to_string(data.sys.get()));
+        _data.emplace_back(data);
+        _eventManager.fire<CoreEvent>(CoreEvent::Type::ADD_SYSTEM_SUCCESS,
+                                      data.path.u8string(),
+                                      to_string(data.sys.get()),
+                                      std::to_string(data.sys->getID()));
       }
     };
     startup.applyOnPaths(libFetcher);
-    return l;
   }
 
-  void updateAddRequest(std::list<std::string>& addRequest, std::list<CoreSystemData>& datalist)
+  void Core::updateAddRequest()
   {
-    for (const auto& addSysPath : addRequest)
+    for (auto& proxy : _proxies)
     {
-      CoreSystemData data;
-      data.path = Core::sysLibPath;
-      data.path += addSysPath;
-
-      if (lel::OSDLLoader::isLibraryLoaded(addSysPath.c_str()))
-      {
-        EManager::fire<CoreEvent>(CoreEvent::Type::ALREADY_ADDED_SYSTEM,
-                                  data.path.u8string());
-        continue ;
-      }
-
-      data.loader.loadLibrary(data.path.u8string().c_str());
-      if (trySystemRegistering(data))
-      {
-        datalist.emplace_back(std::move(data));
-        EManager::fire<CoreEvent>(CoreEvent::Type::ADD_SYSTEM_SUCCESS,
-                                  datalist.back().path.u8string(), to_string(datalist.back().sys.get()));
-      }
+      for (const auto& sysPath : proxy._systemsToAdd)
+        addSystem(sysPath);
+      proxy._systemsToAdd.clear();
     }
-    addRequest.clear();
   }
 
-  void updateRemoveRequest(std::list<std::string>& removeRequest, std::list<CoreSystemData>& datalist)
+  void Core::updateRemoveRequest()
   {
-    for (const auto& removeSysPath : removeRequest)
+    for (auto& proxy : _proxies)
     {
-      auto systemPath = removeSysPath;
-
-      auto beginIt = std::begin(datalist);
-      auto endIt = std::end(datalist);
-      auto pred = [&systemPath](const CoreSystemData& data) -> bool
-      {
-        return data.path.filename() == systemPath;
-      };
-      auto it = std::find_if(beginIt, endIt, pred);
-
-      if (it == endIt)
-      {
-        EManager::fire<CoreEvent>(CoreEvent::Type::SYSTEM_NOT_FOUND, systemPath);
-        continue;
-      }
-
-      if (it->sys->isListener())
-        EManager::deregisterListenerSystem(it->sys);
-      EManager::fire<CoreEvent>(CoreEvent::Type::REM_SYSTEM_SUCCESS,
-                                it->path.u8string(), to_string(it->sys.get()));
-      it->sys->atRemove();
-      datalist.erase(it);
+      for (const auto& sysPath : proxy._systemsToRemove)
+        removeSystem(sysPath);
+      proxy._systemsToRemove.clear();
     }
-    removeRequest.clear();
   }
 
-  void reverseClear(std::list<CoreSystemData>& container)
+  void Core::updateReloadRequest()
   {
+    for (auto& proxy : _proxies)
+    {
+      for (const auto& sysPath : proxy._systemsToReload)
+      {
+        removeSystem(sysPath);
+        addSystem(sysPath);
+      }
+      proxy._systemsToReload.clear();
+    }
+  }
+
+  void Core::reverseClear(std::list<CoreSystemData>& container)
+  {
+    using CoreEvent = event::CoreEvent;
+
     while (!container.empty())
     {
-      if (container.back().sys->isListener())
-        EManager::deregisterListenerSystem(container.back().sys);
-      EManager::fire<CoreEvent>(CoreEvent::Type::REM_SYSTEM_SUCCESS,
-                                container.back().path.u8string(), to_string(container.back().sys.get()));
-      container.back().sys->atRemove();
+      auto& backData = container.back();
+      if (backData.sys->isListener())
+        _eventManager.deregisterListener(castToListener(backData.sys));
+      backData.sys->atRemove();
+      _eventManager.fire<CoreEvent>(CoreEvent::Type::REM_SYSTEM_SUCCESS,
+                                    backData.path.u8string(),
+                                    to_string(backData.sys.get()),
+                                    std::to_string(backData.sys->getID()));
       container.pop_back();
     }
   }
-} /* ! */
 
-std::string_view Core::sysLibPath = lel::meta::conditional_os<std::string_view>("lib/S/", "./").value;
-std::string_view Core::autoLoadedSysRegex = lel::meta::conditional_os<std::string_view>("lib(CLISystem)[.]so", "S[0-9]*[.]dll").value;
-
-Core::Core()
-  : _data{setupData()}
-{}
-
-void Core::run()
-{
-  if (_data.empty())
+  void Core::addSystem(const std::string& sysPath)
   {
-    EManager::fire<CoreEvent>(CoreEvent::Type::CLOSING);
-    return ;
-  }
+    CoreSystemData data;
+    data.path = Core::sysLibPath;
+    data.path += sysPath;
 
-  CoreSystemProxy::setSystemsList(_data);
-  EManager::registerListener(shared_from_this());
-  while (!shouldQuit() && !_data.empty())
-  {
-    for (auto& data : _data)
+    if (OSDLLoader::isLibraryLoaded(sysPath.c_str()))
     {
-      data.sys->exec();
+      _eventManager.fire<event::CoreEvent>(event::CoreEvent::Type::ALREADY_ADDED_SYSTEM,
+                                           data.path.u8string());
+      return ;
     }
-    delayedEventUpdate();
-  }
-  EManager::deregisterListener(shared_from_this());
-  reverseClear(_data);
-  EManager::fire<CoreEvent>(CoreEvent::Type::CLOSING);
-}
 
-void Core::update(const IEListener::EPtr& e)
-{
-  if (e->getID() == CoreEvent::getEventID())
-  {
-    const auto event = std::static_pointer_cast<CoreEvent>(e);
-    switch (event->getType())
+    data.loader.loadLibrary(data.path.u8string().c_str());
+    if (trySystemRegistering(data))
     {
-    case CoreEvent::Type::EXIT:
-      stopCore();
-      break;
-    case CoreEvent::Type::ADD_SYSTEM:
-      _addRequest.emplace_back(event->getData()[0]);
-      break;
-    case CoreEvent::Type::REM_SYSTEM:
-      _remRequest.emplace_back(event->getData()[0]);
-      break;
-    default:
-      break;
+      _data.emplace_back(std::move(data));
+      _eventManager.fire<event::CoreEvent>(event::CoreEvent::Type::ADD_SYSTEM_SUCCESS,
+                                           _data.back().path.u8string(),
+                                           to_string(_data.back().sys.get()),
+                                           std::to_string(_data.back().sys->getID()));
     }
   }
-}
 
-bool Core::shouldQuit() const
-{
-  return _quit;
-}
+  void Core::removeSystem(const std::string& sysPath)
+  {
+    const auto endIt = std::end(_data);
+    const auto pred = [&sysPath](const CoreSystemData& data) -> bool
+    {
+      return data.path.filename() == sysPath;
+    };
+    const auto it = std::find_if(std::begin(_data), endIt, pred);
+    if (it == endIt)
+    {
+      _eventManager.fire<event::CoreEvent>(event::CoreEvent::Type::SYSTEM_NOT_FOUND, sysPath);
+      return ;
+    }
 
-void Core::stopCore()
-{
-  _quit = true;
-}
-
-void Core::delayedEventUpdate()
-{
-  updateAddRequest(_addRequest, _data);
-  updateRemoveRequest(_remRequest, _data);
-}
+    if (it->sys->isListener())
+      _eventManager.deregisterListener(castToListener(it->sys));
+    it->sys->atRemove();
+    _eventManager.fire<event::CoreEvent>(event::CoreEvent::Type::REM_SYSTEM_SUCCESS,
+                                         it->path.u8string(),
+                                         to_string(it->sys.get()),
+                                         std::to_string(it->sys->getID()));
+    _data.erase(it);
+  }
+} /* !lel::ecs */

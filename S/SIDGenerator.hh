@@ -1,18 +1,16 @@
 #pragma once
 
-#include "sidgen_export.h"
+#include "IDSystem.hh"
+#include "Utility/IIDGenerator.hpp"
 
-class SIDGEN_EXPORT SIDGenerator
+namespace lel::ecs::system
 {
-  using ID = unsigned;
+  class SIDGenerator : public utility::IIDGenerator<IDSystem>
+  {
+  public:
+    IDSystem generateID();
 
-public:
-  static SIDGenerator& getSingleton();
-  ID generateID();
-
-private:
-  SIDGenerator();
-
-private:
-  ID _idGenerator;
-};
+  private:
+    IDSystem _id{0};
+  };
+} /* !lel::ecs::system */

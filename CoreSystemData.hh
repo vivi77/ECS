@@ -1,12 +1,15 @@
 #pragma once
 
 #include "OSDLLoader/OSDLLoader.hh"
-#include "S/IS.hh"
+#include "Utility/Fwd.hh"
 #include <experimental/filesystem>
 
-struct CoreSystemData
+namespace lel::ecs
 {
-  std::experimental::filesystem::path path;
-  lel::OSDLLoader loader;
-  std::shared_ptr<IS> sys;
-};
+  struct CoreSystemData
+  {
+    std::experimental::filesystem::path path;
+    OSDLLoader loader;
+    std::shared_ptr<system::IS> sys;
+  };
+} /* !lel::ecs */

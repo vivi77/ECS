@@ -1,47 +1,49 @@
 #pragma once
 
 #include "IE.hh"
+#include "Utility/TemplateUniqueID.hpp"
+#include "Utility/meta.hpp"
+#include "IDEvent.hh"
 
-template <class D>
-class CRTPE : public IE
+namespace lel::ecs::event
 {
-public:
-  using ID = IE::ID;
-
-public:
-  virtual ~CRTPE() = default;
-
-  ID getID() const final
+  template <class D>
+  class CRTPE : public IE, public meta::TemplateUniqueID<CRTPE<D>, IE::ID>
   {
-    return getEventID();
-  }
+  public:
+    using ID = typename IE::ID;
 
-  static ID getEventID()
-  {
-    return _id;
-  }
+  public:
+    ~CRTPE() override = default;
 
-  static void assignID(const ID id)
-  {
-    if (!isIDAssigned())
+    ID getID() const final
     {
-      _id = id;
-      _idAssigned = true;
+      return getEventID();
     }
-  }
 
-  static bool isIDAssigned()
-  {
-    return _idAssigned;
-  }
+    static ID getEventID()
+    {
+      return _id;
+    }
 
-private:
-  static ID _id;
-  static bool _idAssigned;
-};
+  private:
+    static ID _id;
+  };
 
-template <class D>
-typename CRTPE<D>::ID CRTPE<D>::_id = 0;
-
-template <class D>
-bool CRTPE<D>::_idAssigned = false;
+  template <class D>
+  typename CRTPE<D>::ID CRTPE<D>::_id = CRTPE<D>::generateID(
+    [](auto id)
+    {
+      std::string msg;
+      // Double 'check' MAYBE because of a bug in g++ 8.1 in which it does not
+      // recognize the expression 'has_variable_name_v<D>' as a value-dependent
+      // expression when the lambda has 1 parameter. But it do recognize it as
+      // one when it is double
+      if constexpr (meta::has_variable_name_v<D>
+                    && meta::has_variable_name_v<D>)
+        msg += D::name;
+      else
+        msg += typeid(D).name();
+      msg += " EVENT has been attributed the ID#" + std::to_string(id);
+    });
+} /* !lel::ecs::event */

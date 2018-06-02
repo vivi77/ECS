@@ -1,18 +1,16 @@
 #include "CIDGenerator.hh"
+#include "Utility/Fwd.hh"
 
-CIDGenerator::CIDGenerator()
-  : _idGenerator{0}
+template <>
+std::unique_ptr<lel::ecs::utility::IIDGenerator<lel::ecs::component::IDComponent>> createGenerator()
 {
-  ;
+  return std::make_unique<lel::ecs::component::CIDGenerator>();
 }
 
-CIDGenerator::ID CIDGenerator::generateID()
+namespace lel::ecs::component
 {
-  return _idGenerator++;
-}
-
-CIDGenerator& CIDGenerator::getSingleton()
-{
-  static CIDGenerator singleton;
-  return singleton;
-}
+  CIDGenerator::ID CIDGenerator::generateID()
+  {
+    return _id++;
+  }
+} /* !lel::ecs::component */

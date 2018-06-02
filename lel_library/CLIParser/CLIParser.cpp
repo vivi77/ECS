@@ -31,6 +31,11 @@ namespace lel
     registerInfix(CLIProducerType::STRING, std::make_shared<InfixCmdArgParselet>());
     registerInfix(CLIProducerType::DASH, std::make_shared<InfixCmdArgParselet>());
   }
+
+  CLIParser::IP& CLIParser::getProducer()
+  {
+    return _p;
+  }
 } /* !lel */
 
 std::ostream& operator<<(std::ostream& s, const lel::CLIParserType& t)

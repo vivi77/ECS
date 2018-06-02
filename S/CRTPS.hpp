@@ -1,54 +1,51 @@
 #pragma once
 
-#include "S/IS.hh"
-#include "E/IEListener.hh"
-#include <type_traits>
-#include <iostream>
+#include "IS.hh"
+#include "CoreProxy.hh"
+#include "IDSystem.hh"
+#include "IEListener.hh"
+#include "Utility/meta.hpp"
 
-template <class D>
-class CRTPS : public IS
+//For convenience
+#include "S/macros.hh"
+
+namespace lel::ecs::system
 {
-  using ID = typename IS::ID;
+  extern IDSystem g_systemID;
 
-public:
-  virtual ~CRTPS() = default;
-
-  static void assignID(const ID id)
+  template <class D>
+  class CRTPS : public IS
   {
-    if (!isIDAssigned())
+    using ID = typename IS::ID;
+
+  public:
+    CRTPS(CoreProxy& proxy)
+      : _proxy{proxy}
+    {}
+
+    ~CRTPS() override = default;
+
+    ID getID() const final
     {
-      _id = id;
-      _idAssigned = true;
+      return getSystemID();
     }
-  }
 
-  ID getID() const final
-  {
-    return getSystemID();
-  }
+    bool isListener() const final
+    {
+      return std::is_base_of_v<event::IEListener, D>;
+    }
 
-  bool isListener() const final
-  {
-    return std::is_base_of_v<IEListener, D>;
-  }
+    CoreProxy& getProxy()
+    {
+      return _proxy;
+    }
 
-  static ID getSystemID()
-  {
-    return _id;
-  }
+    static ID getSystemID()
+    {
+      return g_systemID;
+    }
 
-  static bool isIDAssigned()
-  {
-    return _idAssigned;
-  }
-
-private:
-  static ID _id;
-  static bool _idAssigned;
-};
-
-template <class D>
-typename CRTPS<D>::ID CRTPS<D>::_id = 0;
-
-template <class D>
-bool CRTPS<D>::_idAssigned = false;
+  private:
+    CoreProxy& _proxy;
+  };
+} /* !lel::ecs::system */

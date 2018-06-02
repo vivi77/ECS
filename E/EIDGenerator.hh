@@ -1,19 +1,43 @@
 #pragma once
 
-#include "E/eidgen_export.h"
+#include "IE.hh"
+#include "IDEvent.hh"
+#include "Utility/IIDGenerator.hpp"
 
-class EIDGEN_EXPORT EIDGenerator
+namespace lel::ecs::event
 {
-public:
-  using ID = unsigned;
+  // TODO: DebugEvent could become DebugEvent, a nested class of EIDGenerator.
+  // ==> Problem: having DebugEvent being a 'friend' class
+  class EIDGenerator : public utility::IIDGenerator<IDEvent>
+  {
+  public:
+    using ID = IDEvent;
 
-public:
-  static EIDGenerator& getSingleton();
-  ID generateID();
+  public:
+    // This class is here to solve a cyclic dependency problem
+    class DebugEvent : public IE
+    {
+    public:
+      DebugEvent(const std::string& msg);
+      ~DebugEvent() override = default;
 
-private:
-  EIDGenerator();
+      std::string getMessage() const;
+      ID getID() const override;
 
-private:
-  ID _idGenerator;
-};
+      static ID getEventID();
+
+    private:
+      static ID _id;
+
+    private:
+      std::string _msg = "";
+    };
+
+  public:
+    virtual ~EIDGenerator() = default;
+    ID generateID() override;
+
+  private:
+    ID _id{0};
+  };
+} /* !lel::ecs::event */

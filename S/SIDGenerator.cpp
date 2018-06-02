@@ -1,18 +1,16 @@
 #include "SIDGenerator.hh"
+#include "Utility/Fwd.hh"
 
-SIDGenerator::SIDGenerator()
-  : _idGenerator{0}
+template <>
+std::unique_ptr<lel::ecs::utility::IIDGenerator<lel::ecs::system::IDSystem>> createGenerator()
 {
-  ;
+  return std::make_unique<lel::ecs::system::SIDGenerator>();
 }
 
-SIDGenerator::ID SIDGenerator::generateID()
+namespace lel::ecs::system
 {
-  return _idGenerator++;
-}
-
-SIDGenerator& SIDGenerator::getSingleton()
-{
-  static SIDGenerator singleton;
-  return singleton;
-}
+  IDSystem SIDGenerator::generateID()
+  {
+    return _id++;
+  }
+} /* !lel::ecs::system */

@@ -1,18 +1,19 @@
 #pragma once
 
-#include "C/cidgen_export.h"
+#include "IDComponent.hh"
+#include "Utility/IIDGenerator.hpp"
 
-class CIDGEN_EXPORT CIDGenerator
+namespace lel::ecs::component
 {
-  using ID = unsigned;
+  class CIDGenerator : public utility::IIDGenerator<IDComponent>
+  {
+  public:
+    using ID = IDComponent;
 
-public:
-  static CIDGenerator& getSingleton();
-  ID generateID();
+  public:
+    ID generateID() override;
 
-private:
-  CIDGenerator();
-
-private:
-  ID _idGenerator;
-};
+  private:
+    ID _id{0};
+  };
+} /* !lel::ecs::component */
