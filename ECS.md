@@ -19,13 +19,15 @@ There is also often Event objects that Systems to communicate together.
   * Every ECS objects (Entity Component System Event) are in *shared libraries*.
   * *Automatic ID attribution* for every classes in the ECS. It can be
     customize and does not change how you check the ID of a system.
+    Only if you are using the provided class templates 'CRTPX' but you can
+    implement your own automatic ID attribution system logic.
   * It is possible to have more than 1 Core class. (Well what can be the usage
     of such feature ? I don't know...)
   * Its usage is not only restricted to game development.
 
 ## How does it work ?
 
-*In this section every path will be relative to the***executable**.
+*In this section every path will be relative to the* **executable**.
 
 A Core class will act as a mediator and as a system manager for all the systems.
 It will load, unload, reload systems. At the beginning of the program, it will
@@ -41,19 +43,28 @@ no manager for Components and Events.
 
 ## How to create a System for this ECS ?
 
-To create a valid System, the System needs to inherit from the interface IS. A
-class template CRTPS<> is also provided that already implements some logics
+To create a valid System, the System **MUST** to inherit from the interface IS.
+A class template CRTPS<> is also provided that already implements some logics
 related to the ECS operations. I recommend to make your System inherits from
 this class template first.
+Your class **MUST** can only have a constructor which takes as parameter a
+`lel::ecs::CoreProxy&` object. This object is essential if you need to do
+anything that handle Core (Fire Events, create Entities, ...).
+If you want your System to listen to Events, it MUST inherits from `IEListener`
+and makes its method `isListener()` should return `true`.
+To identify which events has been broadcast you can just check their IDs with
+`<ExpectedEvent>::getEventID()`.
 
-### General advices
+### General advices for System creation
 
 Be careful of **global variables and static class members**.
 **On Linux AND with g++** if those are exported, these variables can be flaged
 as a **STB\_GNU\_UNIQUE** symbol. If it happens then your system **cannot be
 reloaded** because `dlclose` will not unload the library code because of this
 symbol. It means that the System behavior cannot be changed at runtime (you will
-have to restart the program).
+have to restart the program). Other situations may lead to this but I do not
+know what are these but you can check it with the command `readelf -Ws <your
+library>`.
 
 ### When using the class template CRTPS<>
 
@@ -63,23 +74,41 @@ This macro will help you to generate the id of your system.
 
 ### If you are not using the class template CRTPS<>
 
-Be careful to **not export** the symbol that you use as your system ID.
+Be careful to **not export** the symbol that you use as your system ID if it is
+a global or a static class member.
 
 ## How to create a Component or an Event for this ECS ?
 
 You just have to implement the corresponding interface (IC for the Component and
 IE for the Event).
-There is also 2 class templates CRTPC for Component and CRTPE for Event that
+There is also 2 class templates CRTPC<> for Component and CRTPE<> for Event that
 implement logic related to the ECS operations and that can be inherited.
 
-### General advices
+### General advices for Component and Event creation
 
 Components and Events have no specific restriction like Systems.
 
 ## Usage
 
+Now it is designed to be used with `cmake`. Just clone the repository and in
+your CMakeLists.txt, use `add_subdirectory(ecs)` (or any other name you may have
+given to the repository) and add the library as a dependency of your executable
+`target_link_libraries(... ... ecs_core)`
+
+## Example
+
+You can clone an other repository which make use of the library here.
+[https://github.com/vivi77/ECS\_sample]
+
 ## Incoming features
 
   * Control on Core startup through an interface to extend.
-  * *Asynchronous events* because actual events are all synchronous.
-  * Detection of library that contains STB\_GNU\_UNIQUE
+  * Asynchronous events.
+  * Cross-compatibility with Windows.
+  * System execution ordering.
+  * Detection of libraries that contains STB\_GNU\_UNIQUE.
+  * Detection of Component or Event replacement.
+
+## Architecture
+
+There is the description of this [ECS architecture](doc/architecture.md).
