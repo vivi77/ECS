@@ -32,7 +32,7 @@ ID of the Entity that owns the Component.
 A System is a class that *should* apply only 1 logic of the program. It can
 register entities and/or components then apply its logic on them.
 
-## EManager
+## EManager (Event Manager)
 
 This class handles anything related to Event. It broadcast Events to all Systems
 that has been registered.
@@ -60,3 +60,10 @@ user check its objects type.
 
 Load all the systems written on the file it was given and transfer the result to
 the Core.
+
+## Note
+
+There is no Component manager because component can be created with only the
+header file of the Component. A Component manager may speed up the program by
+having all Components laying on a contiguous memory range but it optimization is
+but a priority now.
