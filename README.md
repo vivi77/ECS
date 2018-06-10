@@ -1,6 +1,6 @@
 # ECS
 
-Lel's implementation of an Entity Component System (ECS)
+Lel's implementation of an Entity Component System (ECS) using C++17.
 
 ## What's an Entity Component System ?
 
@@ -15,15 +15,17 @@ A Component should only be an object which holds data.
 A System is a class which holds one logic and apply modifications on Components.
 There is also often Event objects that Systems to communicate together.
 
-## Features
+## Features and Specificities
 
   * It can be extended at runtime with *shared libraries*.
   * System logic can be **changed at runtime**. You just need to *reload* it.
   * System can communicate together with **Events**.
   * Components, Systems and Events are in *shared libraries*.
-  * [*Customizable automatic ID attribution*](#customizeid) for Entity,
-    Components, Systems and Events in the ECS. It can be customize and does not
-    change how you check the ID of thoses objects.
+  * [*Customizable automatic ID attribution*]
+    (#create-your-own-attribution-id-logic) for Entity, Components, Systems and
+    Events in the ECS. It can be customize and does not change how you check the
+    ID of thoses objects.
+
     Only if you are using the provided class templates 'CRTPX' but you can
     implement your own automatic ID attribution logic.
   * It is possible to have more than 1 Core class. (Well what can be the usage
@@ -44,17 +46,17 @@ the execution of all the systems will follow the same order as specified in the
 file.
 
 When a System is loaded thanks to the dynamic loader its dependencies will also
-be loaded (therefore dependent library will not follow the same logic). So
+be loaded (therefore dependent library will not follow the same logic). So the
 Components and Events that a System use will also be loaded.
 
 ## How to create a System for this ECS ?
 
 To create a valid System, the System **MUST** inherit from the interface IS.
 A class template CRTPS<> is also provided that already implements some logics
-related to the ECS operations. I recommend to make your System inherits from
+related to the ECS operations. I recommend to make your Systems inherit from
 this class template first.
 
-Your class **MUST** only have a constructor which takes as parameter a
+Your System **MUST** only have a constructor which takes as parameter a
 `lel::ecs::CoreProxy&` object. This object is essential if you need to do
 anything that handle Core (Fire Events, create Entities, ...).
 
@@ -69,18 +71,43 @@ Be careful of **global variables and static class members**.
 
 **On Linux AND with g++** if those are exported, these variables can be flaged
 as a **STB\_GNU\_UNIQUE** symbol. If it happens then your system **cannot be
-reloaded** because `dlclose` will not unload the library code because of this
+reloaded**. `dlclose` will not unload the library code because of this
 symbol. It means that the System behavior cannot be changed at runtime (you will
 have to restart the program).
 
 Other situations may lead to this but I do not know what are these but you can
-check it with the command `readelf -Ws <your library>`.
+check STB\_GNU\_UNIQUE symbol with the command `readelf -Ws <your library> |
+grep UNIQUE`.
 
 ### When using the class template CRTPS<>
 
 In one of your source file you will have to add the following macro
-  `ECS\_CREATE\_IDSYSTEM\_FULL(system\_name, class\_name)`
+  `ECS_CREATE_IDSYSTEM_FULL(system_name, class_name)`
 This macro will help you to generate the id of your system.
+
+### Code sample
+
+system.hh
+```c++
+#include "CoreProxy.hh"
+// Inherit IEListener if the systeme needs to listen to events.
+class MySystem : public CRTPS<MySystem>//, public lel::ecs::event::IEListener
+{
+public:
+  MySystem(lel::ecs::CoreProxy& proxy);
+  //All virtual methods needed.
+};
+```
+
+system.cpp
+```c++
+#include "system.hh"
+ECS_CREATE_IDSYSTEM_FULL(MySystem)
+
+MySystem::MySystem(lel::ecs::CoreProxy& proxy)
+  : CRTPS{proxy}
+{}
+```
 
 ### If you are not using the class template CRTPS<>
 
@@ -122,9 +149,9 @@ You can clone an other repository which make use of the library here.
 
 ## Architecture
 
-There is the description of this [ECS architecture](doc/architecture.md).
+Here is the description of this [ECS architecture](doc/architecture.md).
 
-## [Create your own attribution ID logic](#customizeid)
+## [Create your own attribution ID logic]
 
 ### When using CRTPX<> classes
 
@@ -136,7 +163,7 @@ To create your own attribution ID logic for a class, you **MUST**:
     **NB**: This is not an error. You may want to use the same ID type for
     everything.
   * create an IDGenerator that inherit from
-    `lel::ecs::utility::IIDGenerator<Your custom ID type>`
+    `lel::ecs::utility::IIDGenerator<YourCustomIDType>`
   * create a **free function** with the following signature and symbol:
     ```c++
     template <>
@@ -151,9 +178,14 @@ You will have to think all the system but here are my advice:
   * Access to the class ID can be done through a method or a call to a static
     member function. So the ID will probably be a global or a static member
     variable.
+
+    *NOTE: Be careful Systems have a different way to get their ID than
+    Components and Events because they need to be reloadable. So exported global
+    or static member class should be avoided.*
   * Your IDGenerator will *PROBABLY* need to be a **shared library**. If it is
-    not in a shared library then the data of the IDGenerator will be different
-    everywhere this class use.
+    not in a shared library then the IDGenerator will be duplicated directly in
+    the code of your shared library and so the ID that your Systems will get
+    will be the first one that give a newly created IDGenerator.
 
 ### Alternative
 
