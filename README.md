@@ -8,23 +8,22 @@ An ECS is an architectural pattern that gives great flexibility to an object
 using the 'Composition over inheritence' rule. This pattern is mostly used in
 game development.
 
-An Entity is an object which characteristics relies on the Components it has.
+An *Entity* is an object which characteristics relies on the Components it has.
 
-A Component should only be an object which holds data.
+A *Component* should only be an object which holds data.
 
-A System is a class which holds one logic and apply modifications on Components.
+A *System* is a class which holds one logic and apply modifications on Components.
 There is also often Event objects that Systems to communicate together.
 
 ## Features and Specificities
 
-  * It can be extended at runtime with *shared libraries*.
+  * It can be extended at runtime with **shared libraries**.
   * System logic can be **changed at runtime**. You just need to *reload* it.
   * System can communicate together with **Events**.
-  * Components, Systems and Events are in *shared libraries*.
-  * [*Customizable automatic ID attribution*]
-    (#create-your-own-attribution-id-logic) for Entity, Components, Systems and
-    Events in the ECS. It can be customize and does not change how you check the
-    ID of thoses objects.
+  * Components, Systems and Events are in **shared libraries**.
+  * [Customizable automatic ID attribution](#create-your-own-attribution-id-logic)
+    for Entity, Components, Systems andEvents in the ECS. It can be customize and
+    does not change how you check the ID of thoses objects.
 
     Only if you are using the provided class templates 'CRTPX' but you can
     implement your own automatic ID attribution logic.
@@ -149,9 +148,9 @@ You can clone an other repository which make use of the library here.
 
 ## Architecture
 
-Here is the description of this [ECS architecture](doc/architecture.md).
+Here is a description of this [ECS architecture](doc/architecture.md).
 
-## [Create your own attribution ID logic]
+## Create your own attribution ID logic
 
 ### When using CRTPX<> classes
 
